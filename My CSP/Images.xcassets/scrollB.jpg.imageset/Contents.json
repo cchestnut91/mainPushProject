@@ -5,12 +5,12 @@
     },
     {
       "idiom" : "universal",
-      "scale" : "1x",
-      "filename" : "d42cb9688b2a4a93b79670083ba1cd6b_300x400.jpg"
+      "scale" : "1x"
     },
     {
       "idiom" : "universal",
-      "scale" : "2x"
+      "scale" : "2x",
+      "filename" : "scrollB.jpg"
     }
   ],
   "info" : {

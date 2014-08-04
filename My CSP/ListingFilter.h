@@ -10,26 +10,26 @@
 #import <CoreLocation/CoreLocation.h>
 #import "Listing.h"
 
-@interface ListingFilter : NSObject
+@interface ListingFilter : NSObject <NSCoding>
 
-@property (nonatomic) BOOL favorite;
-@property (nonatomic) BOOL images;
-@property (nonatomic) BOOL checkLocation;
-@property (nonatomic) BOOL cable;
-@property (nonatomic) BOOL hardWood;
-@property (nonatomic) BOOL fridge;
-@property (nonatomic) BOOL laundry;
-@property (nonatomic) BOOL oven;
-@property (nonatomic) BOOL air;
-@property (nonatomic) BOOL balcony;
-@property (nonatomic) BOOL carport;
-@property (nonatomic) BOOL dish;
-@property (nonatomic) BOOL fence;
-@property (nonatomic) BOOL fire;
-@property (nonatomic) BOOL garage;
-@property (nonatomic) BOOL internet;
-@property (nonatomic) BOOL microwave;
-@property (nonatomic) BOOL closet;
+@property (strong, nonatomic) NSNumber *favorite;
+@property (strong, nonatomic) NSNumber *images;
+@property (strong, nonatomic) NSNumber *checkLocation;
+@property (strong, nonatomic) NSNumber *cable;
+@property (strong, nonatomic) NSNumber *hardWood;
+@property (strong, nonatomic) NSNumber *fridge;
+@property (strong, nonatomic) NSNumber *laundry;
+@property (strong, nonatomic) NSNumber *oven;
+@property (strong, nonatomic) NSNumber *air;
+@property (strong, nonatomic) NSNumber *balcony;
+@property (strong, nonatomic) NSNumber *carport;
+@property (strong, nonatomic) NSNumber *dish;
+@property (strong, nonatomic) NSNumber *fence;
+@property (strong, nonatomic) NSNumber *fire;
+@property (strong, nonatomic) NSNumber *garage;
+@property (strong, nonatomic) NSNumber *internet;
+@property (strong, nonatomic) NSNumber *microwave;
+@property (strong, nonatomic) NSNumber *closet;
 @property (nonatomic) float lowRent;
 @property (nonatomic) float highRent;
 @property (nonatomic) float range;
@@ -40,6 +40,12 @@
 @property (strong, nonatomic) NSDate *available;
 
 -(id)init;
+-(id)initWithDefault;
 -(NSArray *)filterListings:(NSArray *)listings;
+-(void)sing;
+-(NSMutableArray *)getAmenities;
+
+-(id)initWithCoder:(NSCoder *)aDecoder;
+-(void)encodeWithCoder:(NSCoder *)aCoder;
 
 @end

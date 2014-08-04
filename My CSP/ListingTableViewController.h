@@ -18,5 +18,7 @@
 @property (strong, nonatomic) ListingFilter *filter;
 
 -(void)filterListings;
+-(void)closeParent;
+- (IBAction)pressMenu:(id)sender;
 
 @end

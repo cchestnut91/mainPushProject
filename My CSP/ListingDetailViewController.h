@@ -20,20 +20,23 @@
 @property (weak, nonatomic) IBOutlet UIImageView *bottomImage;
 @property (weak, nonatomic) IBOutlet UISegmentedControl *selector;
 @property (weak, nonatomic) IBOutlet UIView *infoView;
+@property (weak, nonatomic) IBOutlet UIScrollView *scrollView;
 @property (weak, nonatomic) IBOutlet MKMapView *mapView;
 @property (weak, nonatomic) IBOutlet UICollectionView *featuresCollection;
 @property (weak, nonatomic) IBOutlet UILabel *addressLabel;
 @property (weak, nonatomic) IBOutlet UILabel *townLabel;
 @property (weak, nonatomic) IBOutlet UILabel *rentLabel;
 @property (weak, nonatomic) IBOutlet UILabel *availableLabel;
+@property (weak, nonatomic) IBOutlet UIButton *contactButton;
 
-@property (weak, nonatomic) IBOutlet UITextView *detailText;
+@property (weak, nonatomic) IBOutlet UILabel *detailText;
 @property (strong, nonatomic) NSDictionary *features;
 
 @property (weak, nonatomic) IBOutlet UIPageControl *pageIndicator;
 @property (weak, nonatomic) IBOutlet UIActivityIndicatorView *activity;
 @property (weak, nonatomic) IBOutlet UIView *loadingView;
 
+@property BOOL wasFav;
 @property CGFloat deltaY;
 @property CGFloat ceil;
 @property CGFloat floor;

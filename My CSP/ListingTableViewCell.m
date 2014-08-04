@@ -32,7 +32,6 @@
     if (listingIn.beds == NULL){
         [self.bedLabel setText:@"No Info"];
     } else {
-        NSLog(@"%@", listingIn.beds.class);
         if (listingIn.beds.intValue == 1){
             [self.bedLabel setText:[NSString stringWithFormat:@"%@ Bedroom",listingIn.beds]];
         } else {

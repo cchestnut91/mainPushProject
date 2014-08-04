@@ -20,6 +20,8 @@
 @property (weak, nonatomic) IBOutlet UILabel *rangeLabel;
 @property (strong, nonatomic) NSArray *optionsArray;
 
+@property (strong, nonatomic) NSMutableArray *toggles;
+
 
 - (IBAction)donePressed:(id)sender;
 - (IBAction)cancelPressed:(id)sender;

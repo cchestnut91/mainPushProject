@@ -25,13 +25,16 @@
     
     [self.navigationItem setHidesBackButton:YES];
     
-    UIButton *closeButton = [[UIButton alloc] initWithFrame:CGRectMake(0, 0, 50, 50)];
+    /*
+    UIButton *closeButton = [[UIButton alloc] initWithFrame:CGRectMake(-10, 0, 50, 30)];
     [closeButton setTitle:@"Menu" forState:UIControlStateNormal];
     [closeButton.titleLabel setFont:[self.navigationController.navigationBar.titleTextAttributes objectForKey:@"UITextAttributeFont"]];
+    [closeButton.titleLabel setTextAlignment:NSTextAlignmentLeft];
     [closeButton addTarget:self action:@selector(closeParent) forControlEvents:UIControlEventTouchUpInside];
     [closeButton setTitleColor:self.navigationController.navigationBar.tintColor forState:UIControlStateNormal];
     UIBarButtonItem *barButton = [[UIBarButtonItem alloc] initWithCustomView:closeButton];
     [self.navigationItem setLeftBarButtonItem:barButton];
+     */
 }
 
 -(void)viewWillAppear:(BOOL)animated{
@@ -44,8 +47,8 @@
     }
     */
     
-    NSLog(@"%@", [self.presentingViewController class]);
-     
+    [self.filter sing];
+    
     [self filterListings];
     [self.tableView reloadData];
 }
@@ -60,6 +63,10 @@
 
 -(void)closeParent{
     [self.parentViewController dismissViewControllerAnimated:YES completion:nil];
+}
+
+- (IBAction)pressMenu:(id)sender {
+    [self closeParent];
 }
 
 -(void)filterListings{
@@ -121,6 +128,7 @@
         [(ListingDetailViewController *)segue.destinationViewController passListing:self.selected];
     } else if ([[segue identifier] isEqualToString:@"showSearch"]){
         [(ListingTableNavigationController *)segue.destinationViewController setFilter:self.filter];
+        [self.filter sing];
     }
 }
 

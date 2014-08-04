@@ -1,0 +1,93 @@
+
+/* Class = "IBUILabel"; text = "700 Stewart Ave"; ObjectID = "0qH-mS-6Eq"; */
+"0qH-mS-6Eq.text" = "700 Stewart Ave";
+
+/* Class = "IBUILabel"; text = "Minimun Rent"; ObjectID = "6jc-yP-NwV"; */
+"6jc-yP-NwV.text" = "Minimun Rent";
+
+/* Class = "IBUINavigationItem"; title = "Search"; ObjectID = "9iW-JX-44z"; */
+"9iW-JX-44z.title" = "Search";
+
+/* Class = "IBUILabel"; text = "700 Stewart Ave"; ObjectID = "CjB-Lh-098"; */
+"CjB-Lh-098.text" = "700 Stewart Ave";
+
+/* Class = "IBUITextField"; placeholder = "$0"; ObjectID = "E4B-MW-FHo"; */
+"E4B-MW-FHo.placeholder" = "$0";
+
+/* Class = "IBUILabel"; text = "200"; ObjectID = "JM2-Zv-H32"; */
+"JM2-Zv-H32.text" = "200";
+
+/* Class = "IBUILabel"; text = "Trumansburg, NY"; ObjectID = "Nl4-r3-rmU"; */
+"Nl4-r3-rmU.text" = "Trumansburg, NY";
+
+/* Class = "IBUINavigationItem"; title = "Listings"; ObjectID = "OQA-hF-ebz"; */
+"OQA-hF-ebz.title" = "Listings";
+
+/* Class = "IBUILabel"; text = "Label"; ObjectID = "Py8-YH-aFj"; */
+"Py8-YH-aFj.text" = "Label";
+
+/* Class = "IBUITextView"; text = "On The Lake, just 7 minutes to central campus by car, spacious 3 bedrooms, washer/dryer, screened in porch, 100 feet of private beach with dock, expansive lawn, ample parking, on TCAT bus line, tenants pay all utilities."; ObjectID = "UXm-qq-XHw"; */
+"UXm-qq-XHw.text" = "On The Lake, just 7 minutes to central campus by car, spacious 3 bedrooms, washer/dryer, screened in porch, 100 feet of private beach with dock, expansive lawn, ample parking, on TCAT bus line, tenants pay all utilities.";
+
+/* Class = "IBUILabel"; text = "Near Me"; ObjectID = "XUg-pi-7yD"; */
+"XUg-pi-7yD.text" = "Near Me";
+
+/* Class = "IBUILabel"; text = "No Listings Found. Try adjusting search preferences"; ObjectID = "YSY-hq-RhM"; */
+"YSY-hq-RhM.text" = "No Listings Found. Try adjusting search preferences";
+
+/* Class = "IBUILabel"; text = "Refridgerator Refrige"; ObjectID = "ZKZ-37-9RZ"; */
+"ZKZ-37-9RZ.text" = "Refridgerator Refrige";
+
+/* Class = "IBUILabel"; text = "Available December 21st"; ObjectID = "bQP-Af-tkr"; */
+"bQP-Af-tkr.text" = "Available December 21st";
+
+/* Class = "IBUISegmentedControl"; bqy-1j-gkc.segmentTitles[0] = "0+"; ObjectID = "bqy-1j-gkc"; */
+"bqy-1j-gkc.segmentTitles[0]" = "0+";
+
+/* Class = "IBUISegmentedControl"; bqy-1j-gkc.segmentTitles[1] = "1+"; ObjectID = "bqy-1j-gkc"; */
+"bqy-1j-gkc.segmentTitles[1]" = "1+";
+
+/* Class = "IBUISegmentedControl"; bqy-1j-gkc.segmentTitles[2] = "2+"; ObjectID = "bqy-1j-gkc"; */
+"bqy-1j-gkc.segmentTitles[2]" = "2+";
+
+/* Class = "IBUISegmentedControl"; bqy-1j-gkc.segmentTitles[3] = "3+"; ObjectID = "bqy-1j-gkc"; */
+"bqy-1j-gkc.segmentTitles[3]" = "3+";
+
+/* Class = "IBUISegmentedControl"; bqy-1j-gkc.segmentTitles[4] = "4+"; ObjectID = "bqy-1j-gkc"; */
+"bqy-1j-gkc.segmentTitles[4]" = "4+";
+
+/* Class = "IBUISegmentedControl"; bqy-1j-gkc.segmentTitles[5] = "5+"; ObjectID = "bqy-1j-gkc"; */
+"bqy-1j-gkc.segmentTitles[5]" = "5+";
+
+/* Class = "IBUILabel"; text = "Loading Listings"; ObjectID = "d1S-iA-ZS4"; */
+"d1S-iA-ZS4.text" = "Loading Listings";
+
+/* Class = "IBUILabel"; text = "$1500"; ObjectID = "fIC-ky-c8K"; */
+"fIC-ky-c8K.text" = "$1500";
+
+/* Class = "IBUISegmentedControl"; iOH-GF-LHb.segmentTitles[0] = "Details"; ObjectID = "iOH-GF-LHb"; */
+"iOH-GF-LHb.segmentTitles[0]" = "Details";
+
+/* Class = "IBUISegmentedControl"; iOH-GF-LHb.segmentTitles[1] = "Amenities"; ObjectID = "iOH-GF-LHb"; */
+"iOH-GF-LHb.segmentTitles[1]" = "Amenities";
+
+/* Class = "IBUISegmentedControl"; iOH-GF-LHb.segmentTitles[2] = "Map"; ObjectID = "iOH-GF-LHb"; */
+"iOH-GF-LHb.segmentTitles[2]" = "Map";
+
+/* Class = "IBUILabel"; text = "$85,000"; ObjectID = "oRi-5z-ZJu"; */
+"oRi-5z-ZJu.text" = "$85,000";
+
+/* Class = "IBUILabel"; text = "1 Bedroom"; ObjectID = "pTt-e9-8Bj"; */
+"pTt-e9-8Bj.text" = "1 Bedroom";
+
+/* Class = "IBUINavigationItem"; title = "Detail"; ObjectID = "tTw-mW-Da8"; */
+"tTw-mW-Da8.title" = "Detail";
+
+/* Class = "IBUILabel"; text = "Baths"; ObjectID = "wA8-ZT-mmz"; */
+"wA8-ZT-mmz.text" = "Baths";
+
+/* Class = "IBUISearchBar"; placeholder = "Search"; ObjectID = "wlp-VN-bhI"; */
+"wlp-VN-bhI.placeholder" = "Search";
+
+/* Class = "IBUIButton"; normalTitle = "Contact Realtor"; ObjectID = "x6F-VY-o6x"; */
+"x6F-VY-o6x.normalTitle" = "Contact Realtor";

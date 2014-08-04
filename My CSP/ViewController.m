@@ -20,9 +20,6 @@
     
     self.emptyFilter = [[ListingFilter alloc] init];
     
-    NSString *directory = NSSearchPathForDirectoriesInDomains(NSDocumentDirectory, NSUserDomainMask, YES)[0];
-    NSString *saveFile = [directory stringByAppendingPathComponent:@"savedListings.txt"];
-    
     self.manager = [[CLLocationManager alloc] init];
     [self.manager setDelegate:self];
     self.manager.desiredAccuracy = kCLLocationAccuracyHundredMeters;
@@ -36,66 +33,126 @@
     [self.searchBar setDelegate:self];
     [[UITextField appearanceWhenContainedIn:[UISearchBar class], nil] setTextColor:[UIColor whiteColor]];
     
-    NSFileManager* fm = [NSFileManager defaultManager];
-    NSDictionary* attrs = [fm attributesOfItemAtPath:saveFile error:nil];
     
-    BOOL needReload = YES;
+//Determine if reload needed
+    NSFileManager* fm = [NSFileManager defaultManager];
+    
+    NSString *directory = NSSearchPathForDirectoriesInDomains(NSDocumentDirectory, NSUserDomainMask, YES)[0];
+    NSString *saveFile = [directory stringByAppendingPathComponent:@"savedListings.txt"];
+    NSDictionary* attrs = [fm attributesOfItemAtPath:saveFile error:nil];
     
     if (attrs != nil) {
         NSDate *date = (NSDate*)[attrs objectForKey: NSFileCreationDate];
-        NSLog(@"Date Created: %@", [date description]);
         
         NSDateFormatter *formatter = [[NSDateFormatter alloc] init];
         [formatter setDateFormat:@"yyyy MM dd"];
         
-        if ([[formatter stringFromDate:date] isEqualToString:[formatter stringFromDate:[NSDate date]]]){
-            needReload = NO;
-        } else {
+        if (![[formatter stringFromDate:date] isEqualToString:[formatter stringFromDate:[NSDate date]]]){
+            [formatter setDateFormat:@"yyyyMMdd"];
+            [[NSKeyedUnarchiver unarchiveObjectWithFile:saveFile] writeToFile:[directory stringByAppendingPathComponent:[NSString stringWithFormat:@"%@Listings.txt", [formatter stringFromDate:date]]] atomically:YES];
+            for (NSString *file in [fm contentsOfDirectoryAtPath:directory error:nil]){
+                if (![file isEqualToString:@"user.txt"] && ![file isEqualToString:@".DS_Store"] && ![file isEqualToString:@"allowBeacons"]){
+                    if ([(NSDate *)[[fm attributesOfItemAtPath:[directory stringByAppendingPathComponent:file] error:nil] objectForKey:NSFileCreationDate] timeIntervalSinceNow] > 172800){
+                        [fm removeItemAtPath:[directory stringByAppendingPathComponent:file] error:nil];
+                    }
+                }
+            }
             NSLog(@"Saved Before Today");
         }
     }
-    else {
-        NSLog(@"No attributes");
-    }
     
-    if (needReload){
-        [self.table setUserInteractionEnabled:NO];
-        [self.loadingView setHidden:NO];
-        [self.loadingView.layer setCornerRadius:10];
-        [self.loadingView setBackgroundColor:[UIColor colorWithRed:51/255.0 green:60/255.0 blue:77/255.0 alpha:.9]];
-        dispatch_queue_t downloadListingQueue = dispatch_queue_create("com.mycompany.myqueue", 0);
-        
-        dispatch_async(downloadListingQueue, ^{
-            self.listings = [[[ListingPull alloc] init] getListings];
-            dispatch_async(dispatch_get_main_queue(), ^{
-                [self.loadingView setHidden:YES];
-                [self.table setUserInteractionEnabled:YES];
-                NSData *data = [NSKeyedArchiver archivedDataWithRootObject:self.listings];
-                [data writeToFile:saveFile atomically:YES];
-            });
-        });
+//Create/Save User UUID
+    NSString *idFile = [directory stringByAppendingPathComponent:@"user.txt"];
+    NSString *userUUID;
+    if (![fm fileExistsAtPath:idFile]){
+        userUUID = [[NSUUID UUID] UUIDString];
+        if (![[[RESTfulInterface RESTAPI] addNewAnonUser:userUUID] isEqualToString:@"0"]){
+            NSData *userID = [NSKeyedArchiver archivedDataWithRootObject:userUUID];
+            [userID writeToFile:idFile atomically:YES];
+        }
     } else {
-        [self.loadingView setHidden:YES];
-        self.listings = [NSKeyedUnarchiver unarchiveObjectWithData:[NSData dataWithContentsOfFile:saveFile]];
+        userUUID = [NSKeyedUnarchiver unarchiveObjectWithFile:idFile];
     }
     
+    //needReload = YES;
+    //Reload Listing Data
+    [self.table setUserInteractionEnabled:NO];
+    [self.loadingView setHidden:NO];
+    [self.loadingView.layer setCornerRadius:10];
+    [self.loadingView setBackgroundColor:[UIColor colorWithRed:51/255.0 green:60/255.0 blue:77/255.0 alpha:.9]];
+    dispatch_queue_t downloadListingQueue = dispatch_queue_create("com.mycompany.myqueue", 0);
+    
+    dispatch_async(downloadListingQueue, ^{
+        self.listings = [[[ListingPull alloc] init] getListings];
+        BOOL new = YES;
+        if (self.listings.count == 0){
+            if ([fm fileExistsAtPath:saveFile isDirectory:NO]){
+                self.listings = [NSKeyedUnarchiver unarchiveObjectWithData:[NSData dataWithContentsOfFile:saveFile]];
+                new = NO;
+            }
+        }
+        NSArray *favorites = [self checkFavorites:[[RESTfulInterface RESTAPI] getUserFavorites:userUUID]];
+        if (favorites.count == 0){
+            favorites = [self checkFavorites:[NSKeyedUnarchiver unarchiveObjectWithFile:[directory stringByAppendingPathComponent:@"favs.txt"]]];
+            if (favorites.count != 0){
+                for (NSString *unitID in favorites){
+                    if ([[RESTfulInterface RESTAPI] addUserFavorite:userUUID :unitID]) NSLog(@"Saved");
+                }
+            }
+        }
+        [NSKeyedArchiver archiveRootObject:favorites toFile:[directory stringByAppendingPathComponent:@"favs.txt"]];
+        
+        dispatch_async(dispatch_get_main_queue(), ^{
+            [self.loadingView setHidden:YES];
+            [self.table setUserInteractionEnabled:YES];
+            if (new){
+                NSData *data =[NSKeyedArchiver archivedDataWithRootObject:self.listings];
+                [data writeToFile:saveFile atomically:YES];
+            }
+        });
+    });
+    
+//Image Rotation
     UIImage *imageA = [UIImage imageNamed:@"background.jpg"];
     UIImage *imageB = [UIImage imageNamed:@"scrollA.jpg"];
     UIImage *imageC = [UIImage imageNamed:@"scrollB.jpg"];
     UIImage *imageD = [UIImage imageNamed:@"scrollC.jpg"];
+    
     self.backgroundArray = [[NSMutableArray alloc] initWithObjects:imageA, imageB, imageC, imageD, nil];
     
     self.pos = 0;
     
-    NSTimer *timer = [NSTimer scheduledTimerWithTimeInterval:10.0 target:self selector:@selector(fadeImage:) userInfo:[NSNumber numberWithInt:self.pos] repeats:YES];
-    [timer fire];
-    self.pos++;
+    [self.backgroundImageView setImage:[UIImage imageNamed:@"background.jpg"]];
+    
+    if (self.backgroundArray.count != 0){
+        NSTimer *timer = [NSTimer scheduledTimerWithTimeInterval:10.0 target:self selector:@selector(fadeImage:) userInfo:[NSNumber numberWithInt:self.pos] repeats:YES];
+        [timer fire];
+        self.pos++;
+    }
+}
+
+-(NSArray *)checkFavorites:(NSArray *)favorites{
+    if (favorites.count > 0){
+        NSLog(@"%@", favorites[0]);
+        for (Listing *listing in self.listings){
+            NSLog(@"%@", listing.unitID.stringValue);
+            if ([favorites containsObject:listing.unitID.stringValue]){
+                if (!listing.favorite){
+                    [listing setFavorite:YES];
+                }
+            } else {
+                if (listing.favorite){
+                    [listing setFavorite:NO];
+                }
+            }
+        }
+    }
+    return favorites;
 }
 
 -(void)fadeImage:(NSTimer *)sender{
     int num = self.pos % self.backgroundArray.count;
     
-    NSLog(@"%d", num);
     UIImage *toImage = [self.backgroundArray objectAtIndex:num];
     [UIView transitionWithView:self.backgroundImageView
                       duration:2.5f
@@ -150,7 +207,7 @@
             [cell.iconImageView setImage:[UIImage imageNamed:@"Star"]];
             break;
         case 3:
-            cell.label.text = @"My Profile";
+            cell.label.text = @"Preferences";
             [cell.iconImageView setImage:[UIImage imageNamed:@"User"]];
             break;
         case 4:
@@ -181,7 +238,7 @@
         if ([self locationEnabled]){
             if (self.location){
                 self.filter = [[ListingFilter alloc] init];
-                [self.filter setCheckLocation:YES];
+                [self.filter setCheckLocation:[NSNumber numberWithBool:YES]];
                 [self.filter setLocation:self.location];
                 
                 self.source = @"Near";
@@ -196,7 +253,7 @@
             [error show];
         }
     } else if (indexPath.row == 1){
-        self.filter = [[ListingFilter alloc] init];
+        self.filter = [[ListingFilter alloc] initWithDefault];
         [self.filter setLocation:self.location];
         
         self.source = @"Search";
@@ -204,12 +261,14 @@
         [self performSegueWithIdentifier:@"showSearch" sender:self];
     } else if (indexPath.row == 2) {
         self.filter = [[ListingFilter alloc] init];
-        [self.filter setFavorite:YES];
+        [self.filter setFavorite:[NSNumber numberWithBool:YES]];
         [self.filter setLocation:self.location];
         
         self.source = @"Favorites";
         
         [self performSegueWithIdentifier:@"showListings" sender:self];
+    } else if (indexPath.row == 3){
+        [self performSegueWithIdentifier:@"preferences" sender:self];
     }
 }
 
@@ -250,7 +309,6 @@
 }
 
 -(void)searchBarSearchButtonClicked:(UISearchBar *)searchBar{
-    NSLog(@"Search");
     [searchBar resignFirstResponder];
     [searchBar setShowsCancelButton:NO animated:YES];
     

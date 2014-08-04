@@ -99,17 +99,8 @@ dispatch_queue_t imageQueue() {
         self.imageSrc = [[NSArray alloc] init];
     }
     
-    if (self.imageSrc.count > 0){
-        dispatch_async(imageQueue(), ^{
-            NSDate *methodStart = [NSDate date];
-            NSLog(@"%@",methodStart);
-            NSData *imageData = [[NSData alloc] initWithContentsOfURL:[[NSURL alloc] initWithString:[self.imageSrc objectAtIndex:0]]];
-            [self.imageArray addObject:[UIImage imageWithData:imageData]];
-            
-            NSDate *methodFinish = [NSDate date];
-            NSTimeInterval executionTime = [methodFinish timeIntervalSinceDate:methodStart];
-            NSLog(@"executionTime = %f", executionTime);
-        });
+    if (self.imageSrc.count > 0 && [self isDate:[[NSDate alloc] init] betweenDate:self.start andDate:self.stop]){
+        [self loadFirstImage:self.imageSrc[0]];
     }
     
     if ([infoIn[@"description"] isKindOfClass:[NSString class]]){
@@ -145,6 +136,12 @@ dispatch_queue_t imageQueue() {
     } else {
         self.buildiumID = [NSNumber numberWithInt:[infoIn[@"buildiumID"] intValue]];
     }
+    if ([infoIn[@"unitID"] isKindOfClass:[NSNull class]]){
+        self.unitID = [NSNumber numberWithInt:0];
+    } else {
+        self.unitID = [NSNumber numberWithInt:[infoIn[@"unitID"] intValue]];
+    }
+    
     
     self.heat = infoIn[@"heat"];
     
@@ -244,6 +241,7 @@ dispatch_queue_t imageQueue() {
     [listingDict setObject:self.rent forKey:@"rent"];
     [listingDict setObject:self.heat forKey:@"heat"];
     [listingDict setObject:self.buildiumID forKey:@"buildiumID"];
+    [listingDict setObject:self.unitID forKey:@"unitID"];
     [listingDict setObject:[NSNumber numberWithBool:self.airConditioning] forKey:@"airConditioning"];
     [listingDict setObject:[NSNumber numberWithBool:self.balcony] forKey:@"balcony"];
     [listingDict setObject:[NSNumber numberWithBool:self.cable] forKey:@"cable"];
@@ -296,6 +294,7 @@ dispatch_queue_t imageQueue() {
     [aCoder encodeObject:self.sqft forKey:@"sqft"];
     [aCoder encodeObject:self.rent forKey:@"rent"];
     [aCoder encodeObject:self.buildiumID forKey:@"buildiumID"];
+    [aCoder encodeObject:self.unitID forKey:@"unitID"];
     [aCoder encodeObject:self.descrip forKey:@"descrip"];
     [aCoder encodeObject:self.available forKey:@"available"];
     [aCoder encodeObject:self.imageArray forKey:@"imageArray"];
@@ -333,26 +332,23 @@ dispatch_queue_t imageQueue() {
     self.sqft = [aDecoder decodeObjectForKey:@"sqft"];
     self.rent = [aDecoder decodeObjectForKey:@"rent"];
     self.buildiumID = [aDecoder decodeObjectForKey:@"buildiumID"];
+    self.unitID = [aDecoder decodeObjectForKey:@"unitID"];
     self.descrip = [aDecoder decodeObjectForKey:@"descrip"];
     self.available = [aDecoder decodeObjectForKey:@"available"];
-    self.imageArray = [aDecoder decodeObjectForKey:@"imageArray"];
+    self.imageArray = [NSMutableArray arrayWithArray:[aDecoder decodeObjectForKey:@"imageArray"]];
     self.imageSrc = [aDecoder decodeObjectForKey:@"imageSrc"];
-    self.location = [aDecoder decodeObjectForKey:@"location"];
+    CLGeocoder *geocoder = [[CLGeocoder alloc] init];
+    [geocoder geocodeAddressString:[NSString stringWithFormat:@"%@, Ithaca, United States",self.address] completionHandler:^(NSArray* placemarks, NSError* error){
+        if (!error){
+            self.location = [(CLPlacemark *)[placemarks lastObject] location];
+        }
+    }];
     self.heat = [aDecoder decodeObjectForKey:@"heat"];
     self.start = [aDecoder decodeObjectForKey:@"start"];
     self.stop = [aDecoder decodeObjectForKey:@"stop"];
     
-    if (self.imageArray.count == 0 && self.imageSrc.count != 0){
-        dispatch_async(imageQueue(), ^{
-            NSDate *methodStart = [NSDate date];
-            NSLog(@"%@",methodStart);
-            NSData *imageData = [[NSData alloc] initWithContentsOfURL:[[NSURL alloc] initWithString:[self.imageSrc objectAtIndex:0]]];
-            [self.imageArray addObject:[UIImage imageWithData:imageData]];
-            
-            NSDate *methodFinish = [NSDate date];
-            NSTimeInterval executionTime = [methodFinish timeIntervalSinceDate:methodStart];
-            NSLog(@"executionTime = %f", executionTime);
-        });
+    if (self.imageArray.count == 0 && self.imageSrc.count != 0 && [self isDate:[[NSDate alloc] init] betweenDate:self.start andDate:self.stop]){
+        [self loadFirstImage:self.imageSrc[0]];
     }
     
     self.favorite = [aDecoder decodeBoolForKey:@"favorite"];
@@ -374,6 +370,28 @@ dispatch_queue_t imageQueue() {
     self.walkCloset = [aDecoder decodeBoolForKey:@"walkCloset"];
     
     return self;
+}
+
+-(void)loadFirstImage:(NSString *)srcIn{
+    dispatch_async(imageQueue(), ^{
+        NSData *imageData = [[NSData alloc] initWithContentsOfURL:[[NSURL alloc] initWithString:srcIn]];
+        if (imageData)[self.imageArray addObject:[UIImage imageWithData:imageData]];
+    });
+}
+
+- (BOOL)isDate:(NSDate *)first betweenDate:(NSDate *)earlierDate andDate:(NSDate *)laterDate
+{
+    // first check that we are later than the earlierDate.
+    if ([first compare:earlierDate] == NSOrderedDescending) {
+        
+        // next check that we are earlier than the laterData
+        if ( [first compare:laterDate] == NSOrderedAscending ) {
+            return YES;
+        }
+    }
+    
+    // otherwise we are not
+    return NO;
 }
 
 @end

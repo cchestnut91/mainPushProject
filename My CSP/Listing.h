@@ -18,11 +18,13 @@
 @property (strong, nonatomic) NSNumber *sqft;
 @property (strong, nonatomic) NSNumber *rent;
 @property (strong, nonatomic) NSNumber *buildiumID;
+@property (strong, nonatomic) NSNumber *unitID;
 @property (strong, nonatomic) NSString *descrip;
 @property (strong, nonatomic) NSDate *available;
 @property (strong, nonatomic) NSMutableArray *imageArray;
 @property (strong, nonatomic) NSArray *imageSrc;
 @property (strong, nonatomic) CLLocation *location;
+@property (strong, nonatomic) NSTimer *timeout;
 
 /*
  heat
@@ -65,5 +67,7 @@
 -(NSDictionary *)exportAsDictionary;
 
 -(NSDictionary *)features;
+
+- (BOOL)isDate:(NSDate *)first betweenDate:(NSDate *)earlierDate andDate:(NSDate *)laterDate;
 
 @end

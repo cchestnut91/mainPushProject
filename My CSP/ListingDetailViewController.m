@@ -40,6 +40,8 @@ dispatch_queue_t moreimages() {
         [favButton setImage:[UIImage imageNamed:@"Star"] forState:UIControlStateNormal];
     }
     [favButton addTarget:self action:@selector(toggleFavorite) forControlEvents:UIControlEventTouchUpInside];
+
+    
     if (self.listing.imageSrc.count == self.listing.imageArray.count && self.listing.imageSrc.count > 1){
         [self.pageIndicator setNumberOfPages:self.listing.imageArray.count];
         UISwipeGestureRecognizer *leftSwipe = [[UISwipeGestureRecognizer alloc] initWithTarget:self action:@selector(changeImage:)];
@@ -61,8 +63,16 @@ dispatch_queue_t moreimages() {
         [self.imageView setUserInteractionEnabled:NO];
         dispatch_async(moreimages(), ^{
             for (int i = 1; i < self.listing.imageSrc.count; i++){
-                NSData *imageData = [[NSData alloc] initWithContentsOfURL:[[NSURL alloc] initWithString:[self.listing.imageSrc objectAtIndex:i]]];
-                [self.listing.imageArray addObject:[UIImage imageWithData:imageData]];
+                NSURL *imgUrl = [[NSURL alloc] initWithString:[self.listing.imageSrc objectAtIndex:i]];
+                NSLog(@"%@", [[NSDate alloc] init]);
+                NSData *imageData = [[NSData alloc] initWithContentsOfURL:imgUrl];
+                NSLog(@"%@", [[NSDate alloc] init]);
+                if (imageData){
+                    [self.listing.imageArray addObject:[UIImage imageWithData:imageData]];
+                } else {
+                    [self.listing.imageArray addObject:[UIImage imageNamed:@"default.jpg"]];
+                }
+                
                 dispatch_async(dispatch_get_main_queue(), ^{
                     [self.pageIndicator setNumberOfPages:self.listing.imageArray.count];
                     if (self.listing.imageArray.count == self.listing.imageSrc.count){
@@ -89,8 +99,6 @@ dispatch_queue_t moreimages() {
     
     UIBarButtonItem *favBarButton = [[UIBarButtonItem alloc] initWithCustomView:favButton];
     [self.navigationItem setRightBarButtonItem:favBarButton];
-    
-    //NSLog(@"%f",self.dragView.bounds.origin.y + (self.dragView.bounds.size.height / 2.0));
     
     if (self.listing.imageArray.count > 0){
         [self.imageView setImage:[self.listing.imageArray objectAtIndex:0]];
@@ -135,8 +143,15 @@ dispatch_queue_t moreimages() {
     [self.availableLabel setText:[NSString stringWithFormat:@"Available %@",[formatter stringFromDate:self.listing.available]]];
     
     [self.detailText setText:self.listing.descrip];
-    [self.detailText setContentOffset:CGPointZero animated:YES];
+    self.detailText.preferredMaxLayoutWidth = 280;
+    //[self.detailText setContentOffset:CGPointZero animated:YES];
+    /*
+    [self.scrollView setContentSize:CGSizeMake(self.mapView.frame.size.width, 600)];
+    [self.infoView setBounds:CGRectMake(0, 0, self.mapView.frame.size.width, self.scrollView.contentSize.height)];
+    */
     
+    [self.infoView setBounds:CGRectMake(0, 0, self.scrollView.bounds.size.width, self.addressLabel.bounds.size.height + self.rentLabel.bounds.size.height + self.contactButton.bounds.size.height + 250 + 15 + 4 + 5)];
+     
     MKPointAnnotation *pin = [[MKPointAnnotation alloc] init];
     [pin setTitle:address];
     //[pin setSubtitle:self.listing.area];
@@ -166,6 +181,34 @@ dispatch_queue_t moreimages() {
     self.ceil = start + add;
     //self.floor = self.dragView.frame.origin.y;
     
+}
+
+-(void)viewWillDisappear:(BOOL)animated{
+    if ((self.wasFav && !self.listing.favorite) || (!self.wasFav && self.listing.favorite)){
+        NSString *directory = NSSearchPathForDirectoriesInDomains(NSDocumentDirectory, NSUserDomainMask, YES)[0];
+        NSString *idFile = [directory stringByAppendingPathComponent:@"user.txt"];
+        NSString *uuid = [NSKeyedUnarchiver unarchiveObjectWithFile:idFile];
+        NSMutableArray *favorites = [NSMutableArray arrayWithArray:[NSKeyedUnarchiver unarchiveObjectWithFile:[directory stringByAppendingPathComponent:@"favs.txt"]]];
+        if (self.listing.favorite){
+            if (![[RESTfulInterface RESTAPI] addUserFavorite:uuid :self.listing.buildiumID.stringValue]){
+                NSLog(@"Failed saving Favorite");
+            }
+            if (![favorites containsObject:self.listing.unitID.stringValue]){
+                [favorites addObject:self.listing.unitID.stringValue];
+                [NSKeyedArchiver archiveRootObject:favorites toFile:[directory stringByAppendingPathComponent:@"favs.txt"]];
+            }
+        } else {
+            if (![[RESTfulInterface RESTAPI] removeUserFavorite:uuid :self.listing.buildiumID.stringValue]){
+                NSLog(@"Failed removing Favorite");
+            }
+            if ([favorites containsObject:self.listing.unitID.stringValue]){
+                [favorites removeObject:self.listing.unitID.stringValue];
+                [NSKeyedArchiver archiveRootObject:favorites toFile:[directory stringByAppendingPathComponent:@"favs.txt"]];
+            }
+        }
+    }
+    
+    [super viewWillDisappear:animated];
 }
 
 -(NSInteger)numberOfSectionsInCollectionView:(UICollectionView *)collectionView{
@@ -244,6 +287,7 @@ dispatch_queue_t moreimages() {
     QLPreviewController *previewController=[[QLPreviewController alloc]init];
     previewController.delegate=self;
     previewController.dataSource=self;
+    [previewController setTitle:self.addressLabel.text];
     [self presentViewController:previewController animated:YES completion:nil];
     [previewController.navigationItem setRightBarButtonItem:nil];
 }
@@ -253,9 +297,10 @@ dispatch_queue_t moreimages() {
 }
 
 -(id <QLPreviewItem>)previewController:(QLPreviewController *)controller previewItemAtIndex:(NSInteger)index{
-    NSURL *imgURL = [[NSURL alloc] initWithString:[NSString stringWithFormat:@"%@.png", @"Property Image"] relativeToURL:[[NSBundle mainBundle] bundleURL]];
-    [UIImagePNGRepresentation([self.listing.imageArray objectAtIndex:index]) writeToURL:imgURL atomically:YES];
-    return imgURL;
+    NSString *imgURL = [NSString stringWithFormat:@"%@Test.png", [[NSBundle mainBundle] bundleURL]];
+    UIImage *imgSave = [self.listing.imageArray objectAtIndex:index];
+    [UIImagePNGRepresentation(imgSave) writeToURL:[NSURL URLWithString:imgURL] atomically:YES];
+    return [NSURL URLWithString:imgURL];
 }
 
 - (IBAction)changeImage:(UISwipeGestureRecognizer *)recognizer{
@@ -375,8 +420,8 @@ dispatch_queue_t moreimages() {
 */
 
 -(void)passListing:(Listing *)listingIn{
-    NSLog(@"Got Listing");
     self.listing = listingIn;
+    self.wasFav = self.listing.favorite;
 }
 
 - (IBAction)updateSubView:(id)sender {
@@ -384,17 +429,17 @@ dispatch_queue_t moreimages() {
         case 0:
             [self.mapView setHidden:YES];
             [self.featuresCollection setHidden:YES];
-            [self.infoView setHidden:NO];
+            [self.scrollView setHidden:NO];
             break;
         case 1:
             [self.mapView setHidden:YES];
             [self.featuresCollection setHidden:NO];
-            [self.infoView setHidden:YES];
+            [self.scrollView setHidden:YES];
             break;
         case 2:
             [self.mapView setHidden:NO];
             [self.featuresCollection setHidden:YES];
-            [self.infoView setHidden:YES];
+            [self.scrollView setHidden:YES];
             break;
         default:
             break;
