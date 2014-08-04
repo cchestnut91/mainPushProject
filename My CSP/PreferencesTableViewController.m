@@ -42,7 +42,10 @@
 
 - (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section {
     // Return the number of rows in the section.
+    /*
+     iOS 8
     if (section == 1 && UIApplicationOpenSettingsURLString != nil) return 2;
+    */
     return 1;
 }
 
@@ -103,7 +106,7 @@
 }
          
 -(IBAction)clearFavorites:(id)sender{
-    UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"Are you sure?" message:@"Deleting favorites cannot be undone" delegate:self cancelButtonTitle:@"Cancel" otherButtonTitles:@"I'm sure", nil];
+    UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"Are you sure?" message:@"Deleting favorites cannot be undone" delegate:self cancelButtonTitle:@"Cancel" otherButtonTitles:@"Confirm", nil];
     [alert show];
 }
 
@@ -115,25 +118,33 @@
 }
 
 -(void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath{
+    [tableView deselectRowAtIndexPath:indexPath animated:YES];
+    /*
+     iOS 8
     if (indexPath.section == 1 && indexPath.row == 1){
         [[UIApplication sharedApplication] openURL:[NSURL URLWithString:UIApplicationOpenSettingsURLString]];
     }
+     */
     if (indexPath.section == 0 && indexPath.row == 0){
         [self performSegueWithIdentifier:@"searchPreferences" sender:self];
     }
-    [tableView deselectRowAtIndexPath:indexPath animated:YES];
+    if (indexPath.section == 2){
+        UIAlertView *confirm = [[UIAlertView alloc] initWithTitle:@"Are you sure?" message:@"Deleting favorites cannot be undone" delegate:self cancelButtonTitle:@"Cancel" otherButtonTitles:@"Confirm", nil];
+        [confirm show];
+    }
 }
 
--(void)alertView:(UIAlertView *)alertView clickedButtonAtIndex:(NSInteger)buttonIndex{
+-(void)alertView:(UIAlertView *)alertView didDismissWithButtonIndex:(NSInteger)buttonIndex{
     if ([alertView.title isEqualToString:@"Are you sure?"]){
         if (buttonIndex != 0){
-            NSString *path = [NSSearchPathForDirectoriesInDomains(NSDocumentDirectory, NSUserDomainMask, YES)[0] stringByAppendingPathComponent:@"allowBeacons"];
+            NSString *path = [NSSearchPathForDirectoriesInDomains(NSDocumentDirectory, NSUserDomainMask, YES)[0] stringByAppendingPathComponent:@"favs.txt"];
             NSArray *favorites = [NSKeyedUnarchiver unarchiveObjectWithData:[NSData dataWithContentsOfFile:path]];
             [[NSFileManager defaultManager] removeItemAtPath:path error:nil];
-            NSString *userID = [NSKeyedUnarchiver unarchiveObjectWithData:[NSData dataWithContentsOfFile:[path stringByReplacingOccurrencesOfString:@"allowBeacons" withString:@"user.txt"]]];
+            NSString *userID = [NSKeyedUnarchiver unarchiveObjectWithData:[NSData dataWithContentsOfFile:[path stringByReplacingOccurrencesOfString:@"favs.txt" withString:@"user.txt"]]];
             for (NSString *favorite in favorites){
                 [[RESTfulInterface RESTAPI] removeUserFavorite:userID :favorite];
             }
+            [[NSNotificationCenter defaultCenter] postNotificationName:@"updateLocalListings" object:nil];
         }
     } else if ([alertView.title isEqualToString:@"Clear Preferences?"]){
         if (buttonIndex != 0) {

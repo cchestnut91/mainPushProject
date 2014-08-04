@@ -25,8 +25,6 @@
     
     [self.navigationController.navigationItem setHidesBackButton:YES];
     
-#warning changeNavButtons
-    
     self.optionsArray = [[NSArray alloc] initWithObjects:@"Near Me", @"Favorite", @"Includes Images", @"Cable", @"Hardwood Floors", @"Refrigerator", @"Laundry On Site", @"Oven", @"Air Conditioning", @"Balcony / Patio", @"Carport", @"Dishwasher", @"Fenced Yard", @"Fireplace", @"Garage", @"High Speed Internet", @"Microwave", @"Walk-In Closet", nil];
     [self.filter sing];
     NSLog(@"%@", [self.filter checkLocation]);

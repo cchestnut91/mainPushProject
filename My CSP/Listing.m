@@ -105,7 +105,11 @@ dispatch_queue_t imageQueue() {
     
     if ([infoIn[@"description"] isKindOfClass:[NSString class]]){
         self.descrip = infoIn[@"description"];
+        /*
+         iOS 8
         if ([self.descrip containsString:@"To view the virtual tour"]){
+         */
+        if ([self.descrip rangeOfString:@"To view the virtual tour"].location != NSNotFound){
             self.descrip = [NSString stringWithFormat:@"%@%@", [self.descrip componentsSeparatedByString:@"To view the virtual"][0], [self.descrip componentsSeparatedByString:@">"][2]];
         }
     } else {

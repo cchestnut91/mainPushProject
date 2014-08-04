@@ -33,6 +33,8 @@
     [self.searchBar setDelegate:self];
     [[UITextField appearanceWhenContainedIn:[UISearchBar class], nil] setTextColor:[UIColor whiteColor]];
     
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(updateFavorites:) name:@"updateLocalListings" object:nil];
+    
     
 //Determine if reload needed
     NSFileManager* fm = [NSFileManager defaultManager];
@@ -86,7 +88,7 @@
         self.listings = [[[ListingPull alloc] init] getListings];
         BOOL new = YES;
         if (self.listings.count == 0){
-            if ([fm fileExistsAtPath:saveFile isDirectory:NO]){
+            if ([fm fileExistsAtPath:saveFile]){
                 self.listings = [NSKeyedUnarchiver unarchiveObjectWithData:[NSData dataWithContentsOfFile:saveFile]];
                 new = NO;
             }
@@ -131,6 +133,21 @@
     }
 }
 
+-(void)updateFavorites:(NSNotification *)notification{
+    NSArray *favorites = [NSKeyedUnarchiver unarchiveObjectWithFile:[NSSearchPathForDirectoriesInDomains(NSDocumentDirectory, NSUserDomainMask, YES)[0] stringByAppendingPathComponent:@"favs.txt"]];
+    for (Listing *listing in self.listings){
+        if ([favorites containsObject:listing.unitID.stringValue]){
+            if (!listing.favorite){
+                [listing setFavorite:YES];
+            }
+        } else {
+            if (listing.favorite){
+                [listing setFavorite:NO];
+            }
+        }
+    }
+}
+
 -(NSArray *)checkFavorites:(NSArray *)favorites{
     if (favorites.count > 0){
         for (Listing *listing in self.listings){
@@ -169,10 +186,14 @@
 -(void)viewDidAppear:(BOOL)animated{
     [super viewDidAppear:animated];
     
+    
+    /*
+     iOS 8 + 7
     if ([CLLocationManager authorizationStatus] == kCLAuthorizationStatusNotDetermined && [[[UIDevice currentDevice] systemVersion] floatValue] >= 8){
         UIAlertView *authorizeBeacons = [[UIAlertView alloc] initWithTitle:@"Find Listings With Beacons" message:@"Would you like to allow My CSP to use low energy Bluetooth to find places around you that you may be interested in the background?" delegate:self cancelButtonTitle:@"Sure!" otherButtonTitles:@"No Thanks", nil];
         [authorizeBeacons show];
     }
+    */
     if ( [[[UIDevice currentDevice] systemVersion] floatValue] < 8  && [CLLocationManager authorizationStatus] == kCLAuthorizationStatusNotDetermined){
         UIAlertView *tryAgain = [[UIAlertView alloc] initWithTitle:@"Use Current Location" message:@"My CSP can use your location to show you listings closest to you. Would you like to allow this?" delegate:self cancelButtonTitle:@"No" otherButtonTitles:@"Ok!", nil];
         [tryAgain show];
@@ -273,7 +294,9 @@
 
 // AlertView Delegate
 
--(void)alertView:(UIAlertView *)alertView clickedButtonAtIndex:(NSInteger)buttonIndex{
+-(void)alertView:(UIAlertView *)alertView didDismissWithButtonIndex:(NSInteger)buttonIndex{
+    /* 
+     iOS 8
     if ([alertView.title isEqualToString:@"Find Listings With Beacons"]){
         if (buttonIndex == 0){
             [self.manager requestAlwaysAuthorization];
@@ -281,17 +304,23 @@
             UIAlertView *tryAgain = [[UIAlertView alloc] initWithTitle:@"Use Current Location" message:@"My CSP Can also use your location only within the app to show you places closest to you. Would you like to allow this?" delegate:self cancelButtonTitle:@"No" otherButtonTitles:@"Ok!", nil];
             [tryAgain show];
         }
-    } else if ([alertView.title isEqualToString:@"Use Current Location"]){
+    } else 
+     */
+    if ([alertView.title isEqualToString:@"Use Current Location"]){
         if (buttonIndex == 1){
+            /*
+             iOS 7
+             */
+            [self.manager startMonitoringSignificantLocationChanges];
+            
+            /*
+            iOS 8 & 7
             if ( [[[UIDevice currentDevice] systemVersion] floatValue] < 8 ){
                 [self.manager startMonitoringSignificantLocationChanges];
             } else {
                 [self.manager requestWhenInUseAuthorization];
             }
-        }
-    } else if ([alertView.title isEqualToString:@"Cannot Determine Location"]){
-        if (buttonIndex == 1){
-            [[UIApplication sharedApplication] openURL:[NSURL URLWithString:UIApplicationOpenSettingsURLString]];
+            */
         }
     }
 }
@@ -325,13 +354,26 @@
     if (status != kCLAuthorizationStatusNotDetermined){
         [manager startMonitoringSignificantLocationChanges];
     }
+    /*
+     iOS 8 + 7
     if (status == kCLAuthorizationStatusAuthorizedAlways){
 #warning Beacon Initialization and Monitoring goes here
+    }
+     */
+    if (status == kCLAuthorizationStatusAuthorized){
+#warning Beacon initialization and monitoring goes here
     }
 }
 
 -(BOOL)locationEnabled{
+    /*
+     iOS 8 + 7
     if ([CLLocationManager authorizationStatus] == kCLAuthorizationStatusAuthorized || [CLLocationManager authorizationStatus] == kCLAuthorizationStatusAuthorizedAlways || [CLLocationManager authorizationStatus] == kCLAuthorizationStatusAuthorizedWhenInUse){
+        return true;
+    }
+     */
+    
+    if ([CLLocationManager authorizationStatus] == kCLAuthorizationStatusAuthorized){
         return true;
     }
     

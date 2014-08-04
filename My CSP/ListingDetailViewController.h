@@ -11,8 +11,9 @@
 #import "ListingFeatureCollectionViewCell.h"
 #import <MapKit/MapKit.h>
 #import <QuickLook/QuickLook.h>
+#import <MessageUI/MFMailComposeViewController.h>
 
-@interface ListingDetailViewController : UIViewController <UIGestureRecognizerDelegate, UICollectionViewDataSource, UICollectionViewDelegate, QLPreviewControllerDataSource, QLPreviewControllerDelegate, UICollectionViewDelegateFlowLayout>
+@interface ListingDetailViewController : UIViewController <UIGestureRecognizerDelegate, UICollectionViewDataSource, UICollectionViewDelegate, QLPreviewControllerDataSource, QLPreviewControllerDelegate, UICollectionViewDelegateFlowLayout, UIActionSheetDelegate, MFMailComposeViewControllerDelegate>
 
 @property (strong, nonatomic) Listing *listing;
 @property (weak, nonatomic) IBOutlet UIImageView *imageView;

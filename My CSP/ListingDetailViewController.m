@@ -132,7 +132,11 @@ dispatch_queue_t moreimages() {
     [self.townLabel setText:[address componentsSeparatedByString:@","][1]];
     [self.townLabel setText:[self.townLabel.text stringByReplacingOccurrencesOfString:@" NY" withString:@", NY"]];
     address = [address componentsSeparatedByString:@","][0];
+    /*
+     iOS 8
     if (![address containsString:@"Apt"] && ![address containsString:@"Room"] && ![address containsString:@"Terrace"] && [address containsString:@"-"]){
+    */
+    if ([address rangeOfString:@"Apt"].location == NSNotFound && [address rangeOfString:@"Room"].location == NSNotFound && [address rangeOfString:@"Terrace"].location == NSNotFound && [address rangeOfString:@"-"].location != NSNotFound){
         address = [address stringByReplacingOccurrencesOfString:@"-" withString:@"- Unit"];
     }
     [self setTitle:[address componentsSeparatedByString:@"-"][0]];
@@ -163,10 +167,13 @@ dispatch_queue_t moreimages() {
     [self.mapView setRegion:adjustedRegion animated:YES];
     
     // Blur effect
+    /*
+     iOS 8
     UIBlurEffect *blurEffect = [UIBlurEffect effectWithStyle:UIBlurEffectStyleExtraLight];
     UIVisualEffectView *blurEffectView = [[UIVisualEffectView alloc] initWithEffect:blurEffect];
     [blurEffectView setFrame:self.view.bounds];
     [self.blurView addSubview:blurEffectView];
+    */
 }
 
 -(void)viewWillAppear:(BOOL)animated{
@@ -419,6 +426,33 @@ dispatch_queue_t moreimages() {
     
 }
 */
+- (IBAction)callCarol:(id)sender {
+    UIActionSheet *contactAction = [[UIActionSheet alloc] initWithTitle:@"Contact CSP" delegate:self cancelButtonTitle:@"Cancel" destructiveButtonTitle:nil otherButtonTitles:@"Call 607-277-6961", @"Email CSP Info", nil];
+    [contactAction showInView:self.view];
+}
+
+-(void)actionSheet:(UIActionSheet *)actionSheet didDismissWithButtonIndex:(NSInteger)buttonIndex{
+    if (buttonIndex == 0){
+        NSString *phoneURL = [@"telprompt://" stringByAppendingString:@"6072776961"];
+        [[UIApplication sharedApplication] openURL:[NSURL URLWithString:phoneURL]];
+    } else if (buttonIndex == 1){
+        if ([MFMailComposeViewController canSendMail]){
+            MFMailComposeViewController *mailView = [[MFMailComposeViewController alloc] init];
+            [mailView setMailComposeDelegate:self];
+            [mailView setSubject:[NSString stringWithFormat:@"Listing at %@", self.addressLabel.text]];
+            [mailView setToRecipients:@[@"info@cspmanagement.com"]];
+            [mailView setMessageBody:[NSString stringWithFormat:@"I'd like to speak to someone about this property.\nComments:\n\nProperty Details\nAddress: %@\n%@\nUnit ID: %@\nBuildium ID: %@\n\nFound with My CSP", self.listing.address, self.availableLabel.text, self.listing.unitID.stringValue, self.listing.buildiumID.stringValue] isHTML:NO];
+            [self presentViewController:mailView animated:NO completion:nil];
+        } else {
+            UIAlertView *noMail = [[UIAlertView alloc] initWithTitle:@"Cannot send mail" message:@"Your device is not configured with a mail account" delegate:self cancelButtonTitle:@"Ok" otherButtonTitles:nil, nil];
+            [noMail show];
+        }
+    }
+}
+
+-(void)mailComposeController:(MFMailComposeViewController *)controller didFinishWithResult:(MFMailComposeResult)result error:(NSError *)error{
+    [self dismissViewControllerAnimated:YES completion:nil];
+}
 
 -(void)passListing:(Listing *)listingIn{
     self.listing = listingIn;

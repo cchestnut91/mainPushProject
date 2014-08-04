@@ -19,6 +19,7 @@
 		AB3109E819869C5200F10A95 /* scrollC.jpg in Resources */ = {isa = PBXBuildFile; fileRef = AB3109E619869C5200F10A95 /* scrollC.jpg */; };
 		AB4174731975992A0086F1A6 /* SliderTableViewCell.m in Sources */ = {isa = PBXBuildFile; fileRef = AB4174721975992A0086F1A6 /* SliderTableViewCell.m */; };
 		AB4AA8BA198A012B00B16D50 /* RESTfulInterface.m in Sources */ = {isa = PBXBuildFile; fileRef = AB4AA8B9198A012B00B16D50 /* RESTfulInterface.m */; };
+		AB55670519901D3D00739AA4 /* iPhoneStoryboard.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = AB55670419901D3D00739AA4 /* iPhoneStoryboard.storyboard */; };
 		AB68B2C4198A6FE700CE549F /* PreferencesTableViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = AB68B2C3198A6FE700CE549F /* PreferencesTableViewController.m */; };
 		AB68B2C7198A766100CE549F /* ButtonTableViewCell.m in Sources */ = {isa = PBXBuildFile; fileRef = AB68B2C6198A766100CE549F /* ButtonTableViewCell.m */; };
 		AB7B8BD2196C63FA00EFFA8A /* ListingTableViewCell.m in Sources */ = {isa = PBXBuildFile; fileRef = AB7B8BD1196C63FA00EFFA8A /* ListingTableViewCell.m */; };
@@ -67,6 +68,7 @@
 		AB4174721975992A0086F1A6 /* SliderTableViewCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SliderTableViewCell.m; sourceTree = "<group>"; };
 		AB4AA8B8198A012B00B16D50 /* RESTfulInterface.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = RESTfulInterface.h; sourceTree = "<group>"; };
 		AB4AA8B9198A012B00B16D50 /* RESTfulInterface.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = RESTfulInterface.m; sourceTree = "<group>"; };
+		AB55670419901D3D00739AA4 /* iPhoneStoryboard.storyboard */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.storyboard; path = iPhoneStoryboard.storyboard; sourceTree = "<group>"; };
 		AB68B2C2198A6FE700CE549F /* PreferencesTableViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PreferencesTableViewController.h; sourceTree = "<group>"; };
 		AB68B2C3198A6FE700CE549F /* PreferencesTableViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = PreferencesTableViewController.m; sourceTree = "<group>"; };
 		AB68B2C5198A766100CE549F /* ButtonTableViewCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ButtonTableViewCell.h; sourceTree = "<group>"; };
@@ -184,6 +186,7 @@
 				AB3109E519869C5200F10A95 /* scrollB.jpg */,
 				AB3109E619869C5200F10A95 /* scrollC.jpg */,
 				ABE172251947884100B4953B /* Main.storyboard */,
+				AB55670419901D3D00739AA4 /* iPhoneStoryboard.storyboard */,
 				AB68B2C2198A6FE700CE549F /* PreferencesTableViewController.h */,
 				AB68B2C3198A6FE700CE549F /* PreferencesTableViewController.m */,
 				AB68B2C5198A766100CE549F /* ButtonTableViewCell.h */,
@@ -342,6 +345,7 @@
 				AB3109E719869C5200F10A95 /* scrollB.jpg in Resources */,
 				AB3109E819869C5200F10A95 /* scrollC.jpg in Resources */,
 				AB3109DA1986998700F10A95 /* Main.storyboard in Resources */,
+				AB55670519901D3D00739AA4 /* iPhoneStoryboard.storyboard in Resources */,
 				AB3109DE19869A6500F10A95 /* scrollA.jpg in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -502,6 +506,7 @@
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				PROVISIONING_PROFILE = "";
+				TARGETED_DEVICE_FAMILY = 1;
 			};
 			name = Debug;
 		};
@@ -517,6 +522,7 @@
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				PROVISIONING_PROFILE = "";
+				TARGETED_DEVICE_FAMILY = 1;
 			};
 			name = Release;
 		};
@@ -533,6 +539,7 @@
 					"$(inherited)",
 				);
 				INFOPLIST_FILE = "My CSPTests/Info.plist";
+				IPHONEOS_DEPLOYMENT_TARGET = 7.0;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
 				METAL_ENABLE_DEBUG_INFO = YES;
 				PRODUCT_NAME = "$(TARGET_NAME)";
@@ -549,6 +556,7 @@
 					"$(inherited)",
 				);
 				INFOPLIST_FILE = "My CSPTests/Info.plist";
+				IPHONEOS_DEPLOYMENT_TARGET = 7.0;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
 				METAL_ENABLE_DEBUG_INFO = NO;
 				PRODUCT_NAME = "$(TARGET_NAME)";

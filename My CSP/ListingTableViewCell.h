@@ -16,7 +16,6 @@
 @property (weak, nonatomic) IBOutlet UILabel *rentLabel;
 @property (weak, nonatomic) IBOutlet UILabel *addressLabel;
 @property (weak, nonatomic) IBOutlet UILabel *bedLabel;
-@property (strong, nonatomic) UIVisualEffectView *effectView;
 
 -(void)passListing:(Listing *)listingIn;
 
