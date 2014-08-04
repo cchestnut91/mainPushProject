@@ -133,7 +133,6 @@
 
 -(NSArray *)checkFavorites:(NSArray *)favorites{
     if (favorites.count > 0){
-        NSLog(@"%@", favorites[0]);
         for (Listing *listing in self.listings){
             NSLog(@"%@", listing.unitID.stringValue);
             if ([favorites containsObject:listing.unitID.stringValue]){

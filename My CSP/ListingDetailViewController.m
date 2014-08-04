@@ -190,7 +190,8 @@ dispatch_queue_t moreimages() {
         NSString *uuid = [NSKeyedUnarchiver unarchiveObjectWithFile:idFile];
         NSMutableArray *favorites = [NSMutableArray arrayWithArray:[NSKeyedUnarchiver unarchiveObjectWithFile:[directory stringByAppendingPathComponent:@"favs.txt"]]];
         if (self.listing.favorite){
-            if (![[RESTfulInterface RESTAPI] addUserFavorite:uuid :self.listing.buildiumID.stringValue]){
+            NSLog(@"UnitID: %@", self.listing.unitID.stringValue);
+            if (![[RESTfulInterface RESTAPI] addUserFavorite:uuid :self.listing.unitID.stringValue]){
                 NSLog(@"Failed saving Favorite");
             }
             if (![favorites containsObject:self.listing.unitID.stringValue]){
@@ -198,7 +199,7 @@ dispatch_queue_t moreimages() {
                 [NSKeyedArchiver archiveRootObject:favorites toFile:[directory stringByAppendingPathComponent:@"favs.txt"]];
             }
         } else {
-            if (![[RESTfulInterface RESTAPI] removeUserFavorite:uuid :self.listing.buildiumID.stringValue]){
+            if (![[RESTfulInterface RESTAPI] removeUserFavorite:uuid :self.listing.unitID.stringValue]){
                 NSLog(@"Failed removing Favorite");
             }
             if ([favorites containsObject:self.listing.unitID.stringValue]){

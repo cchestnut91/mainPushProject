@@ -43,8 +43,12 @@
     
     NSString *filterFile = [NSSearchPathForDirectoriesInDomains(NSDocumentDirectory, NSUserDomainMask, YES)[0] stringByAppendingPathComponent:@"savedFiler"];
     
-    
-    self = [NSKeyedUnarchiver unarchiveObjectWithData:[NSData dataWithContentsOfFile:filterFile]];
+    if ([[NSFileManager defaultManager] fileExistsAtPath:filterFile]){
+        
+        self = [NSKeyedUnarchiver unarchiveObjectWithData:[NSData dataWithContentsOfFile:filterFile]];
+    } else {
+        self = [self init];
+    }
     
     return self;
 }
