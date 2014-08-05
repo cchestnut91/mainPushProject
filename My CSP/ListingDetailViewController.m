@@ -174,6 +174,8 @@ dispatch_queue_t moreimages() {
     [blurEffectView setFrame:self.view.bounds];
     [self.blurView addSubview:blurEffectView];
     */
+    
+    [self.blurView setBackgroundColor:[UIColor whiteColor]];
 }
 
 -(void)viewWillAppear:(BOOL)animated{

@@ -136,10 +136,10 @@
             BOOL found = NO;
             for (int j = 0; j < self.keyWords.count; j++){
                 if (![[self.keyWords objectAtIndex:j] isEqualToString:@" "]){
-                    if ([check.address.lowercaseString containsString:[[self.keyWords objectAtIndex:j] lowercaseString]]){
+                    if ([check.address.lowercaseString rangeOfString:[[self.keyWords objectAtIndex:j] lowercaseString]].location != NSNotFound){
                         found = YES;
                         break;
-                    } else if ([check.descrip.lowercaseString containsString:[[self.keyWords objectAtIndex:j] lowercaseString]]){
+                    } else if ([check.descrip.lowercaseString rangeOfString:[[self.keyWords objectAtIndex:j] lowercaseString]].location != NSNotFound){
                         found = YES;
                         break;
                     }

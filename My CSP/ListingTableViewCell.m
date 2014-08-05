@@ -53,7 +53,11 @@
     address = [address stringByReplacingOccurrencesOfString:@"East" withString:@"E."];
     address = [address stringByReplacingOccurrencesOfString:@"West" withString:@"W."];
     address = [address componentsSeparatedByString:@","][0];
-    if (![address containsString:@"Apt"] && ![address containsString:@"Room"] && ![address containsString:@"Terrace"] && [address containsString:@"-"]){
+    /*
+     iOS 8
+     if (![address containsString:@"Apt"] && ![address containsString:@"Room"] && ![address containsString:@"Terrace"] && [address containsString:@"-"]){
+     */
+    if ([address rangeOfString:@"Apt"].location == NSNotFound && [address rangeOfString:@"Room"].location == NSNotFound && [address rangeOfString:@"Terrace"].location == NSNotFound && [address rangeOfString:@"-"].location != NSNotFound){
         address = [address stringByReplacingOccurrencesOfString:@"-" withString:@"- Unit"];
     }
     [self.addressLabel setText:address];

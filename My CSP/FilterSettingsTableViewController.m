@@ -221,9 +221,8 @@
 
 -(void)prepareForSegue:(UIStoryboardSegue *)segue sender:(id)sender{
     if ([[segue identifier] isEqualToString:@"listings"]){
-        [(ListingTableNavigationController *)[segue destinationViewController] setListing:[(ViewController *)self.presentingViewController listings]];
-        [(ListingTableNavigationController *)[segue destinationViewController] setFilter:self.filter];
-        [(ListingTableNavigationController *)[segue destinationViewController] setSource:@"Search"];
+        [(ListingTableViewController *)[segue destinationViewController] setListings:[(ViewController *)self.presentingViewController listings]];
+        [(ListingTableViewController *)[segue destinationViewController] setFilter:self.filter];
     }
 }
 

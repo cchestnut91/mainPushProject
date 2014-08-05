@@ -13,13 +13,14 @@
 		AB129EA4196D83E80007249C /* ListingFilter.m in Sources */ = {isa = PBXBuildFile; fileRef = AB129EA3196D83E80007249C /* ListingFilter.m */; };
 		AB129EA7196D8E250007249C /* ListingDetailViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = AB129EA6196D8E250007249C /* ListingDetailViewController.m */; };
 		AB3109DA1986998700F10A95 /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = ABE172251947884100B4953B /* Main.storyboard */; };
-		AB3109DE19869A6500F10A95 /* scrollA.jpg in Resources */ = {isa = PBXBuildFile; fileRef = AB3109DD19869A6500F10A95 /* scrollA.jpg */; };
-		AB3109E419869B2000F10A95 /* background.jpg in Resources */ = {isa = PBXBuildFile; fileRef = AB3109E319869B2000F10A95 /* background.jpg */; };
-		AB3109E719869C5200F10A95 /* scrollB.jpg in Resources */ = {isa = PBXBuildFile; fileRef = AB3109E519869C5200F10A95 /* scrollB.jpg */; };
-		AB3109E819869C5200F10A95 /* scrollC.jpg in Resources */ = {isa = PBXBuildFile; fileRef = AB3109E619869C5200F10A95 /* scrollC.jpg */; };
 		AB4174731975992A0086F1A6 /* SliderTableViewCell.m in Sources */ = {isa = PBXBuildFile; fileRef = AB4174721975992A0086F1A6 /* SliderTableViewCell.m */; };
 		AB4AA8BA198A012B00B16D50 /* RESTfulInterface.m in Sources */ = {isa = PBXBuildFile; fileRef = AB4AA8B9198A012B00B16D50 /* RESTfulInterface.m */; };
 		AB55670519901D3D00739AA4 /* iPhoneStoryboard.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = AB55670419901D3D00739AA4 /* iPhoneStoryboard.storyboard */; };
+		AB556707199025BB00739AA4 /* background.jpg in Resources */ = {isa = PBXBuildFile; fileRef = AB556706199025BB00739AA4 /* background.jpg */; };
+		AB556709199027B600739AA4 /* scrollA.jpg in Resources */ = {isa = PBXBuildFile; fileRef = AB556708199027B600739AA4 /* scrollA.jpg */; };
+		AB55670B199027C500739AA4 /* scrollB.jpg in Resources */ = {isa = PBXBuildFile; fileRef = AB55670A199027C500739AA4 /* scrollB.jpg */; };
+		AB55670D199027CE00739AA4 /* scrollC.jpg in Resources */ = {isa = PBXBuildFile; fileRef = AB55670C199027CE00739AA4 /* scrollC.jpg */; };
+		AB55670F19902D6000739AA4 /* default.jpg in Resources */ = {isa = PBXBuildFile; fileRef = AB55670E19902D6000739AA4 /* default.jpg */; };
 		AB68B2C4198A6FE700CE549F /* PreferencesTableViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = AB68B2C3198A6FE700CE549F /* PreferencesTableViewController.m */; };
 		AB68B2C7198A766100CE549F /* ButtonTableViewCell.m in Sources */ = {isa = PBXBuildFile; fileRef = AB68B2C6198A766100CE549F /* ButtonTableViewCell.m */; };
 		AB7B8BD2196C63FA00EFFA8A /* ListingTableViewCell.m in Sources */ = {isa = PBXBuildFile; fileRef = AB7B8BD1196C63FA00EFFA8A /* ListingTableViewCell.m */; };
@@ -60,15 +61,16 @@
 		AB129EA5196D8E250007249C /* ListingDetailViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ListingDetailViewController.h; sourceTree = "<group>"; };
 		AB129EA6196D8E250007249C /* ListingDetailViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ListingDetailViewController.m; sourceTree = "<group>"; };
 		AB3109DC198699ED00F10A95 /* en */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = en; path = en.lproj/Main.strings; sourceTree = "<group>"; };
-		AB3109DD19869A6500F10A95 /* scrollA.jpg */ = {isa = PBXFileReference; lastKnownFileType = image.jpeg; name = scrollA.jpg; path = "My CSP/Images.xcassets/scrollA.jpg.imageset/scrollA.jpg"; sourceTree = "<group>"; };
-		AB3109E319869B2000F10A95 /* background.jpg */ = {isa = PBXFileReference; lastKnownFileType = image.jpeg; name = background.jpg; path = Images.xcassets/background.jpg.imageset/background.jpg; sourceTree = "<group>"; };
-		AB3109E519869C5200F10A95 /* scrollB.jpg */ = {isa = PBXFileReference; lastKnownFileType = image.jpeg; path = scrollB.jpg; sourceTree = "<group>"; };
-		AB3109E619869C5200F10A95 /* scrollC.jpg */ = {isa = PBXFileReference; lastKnownFileType = image.jpeg; path = scrollC.jpg; sourceTree = "<group>"; };
 		AB4174711975992A0086F1A6 /* SliderTableViewCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SliderTableViewCell.h; sourceTree = "<group>"; };
 		AB4174721975992A0086F1A6 /* SliderTableViewCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SliderTableViewCell.m; sourceTree = "<group>"; };
 		AB4AA8B8198A012B00B16D50 /* RESTfulInterface.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = RESTfulInterface.h; sourceTree = "<group>"; };
 		AB4AA8B9198A012B00B16D50 /* RESTfulInterface.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = RESTfulInterface.m; sourceTree = "<group>"; };
 		AB55670419901D3D00739AA4 /* iPhoneStoryboard.storyboard */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.storyboard; path = iPhoneStoryboard.storyboard; sourceTree = "<group>"; };
+		AB556706199025BB00739AA4 /* background.jpg */ = {isa = PBXFileReference; lastKnownFileType = image.jpeg; path = background.jpg; sourceTree = "<group>"; };
+		AB556708199027B600739AA4 /* scrollA.jpg */ = {isa = PBXFileReference; lastKnownFileType = image.jpeg; path = scrollA.jpg; sourceTree = "<group>"; };
+		AB55670A199027C500739AA4 /* scrollB.jpg */ = {isa = PBXFileReference; lastKnownFileType = image.jpeg; path = scrollB.jpg; sourceTree = "<group>"; };
+		AB55670C199027CE00739AA4 /* scrollC.jpg */ = {isa = PBXFileReference; lastKnownFileType = image.jpeg; path = scrollC.jpg; sourceTree = "<group>"; };
+		AB55670E19902D6000739AA4 /* default.jpg */ = {isa = PBXFileReference; lastKnownFileType = image.jpeg; path = default.jpg; sourceTree = "<group>"; };
 		AB68B2C2198A6FE700CE549F /* PreferencesTableViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PreferencesTableViewController.h; sourceTree = "<group>"; };
 		AB68B2C3198A6FE700CE549F /* PreferencesTableViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = PreferencesTableViewController.m; sourceTree = "<group>"; };
 		AB68B2C5198A766100CE549F /* ButtonTableViewCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ButtonTableViewCell.h; sourceTree = "<group>"; };
@@ -125,7 +127,6 @@
 		ABE1720F1947884100B4953B = {
 			isa = PBXGroup;
 			children = (
-				AB3109DD19869A6500F10A95 /* scrollA.jpg */,
 				ABE1721A1947884100B4953B /* My CSP */,
 				ABE172311947884100B4953B /* My CSPTests */,
 				ABE172191947884100B4953B /* Products */,
@@ -182,9 +183,11 @@
 			isa = PBXGroup;
 			children = (
 				ABE172281947884100B4953B /* Images.xcassets */,
-				AB3109E319869B2000F10A95 /* background.jpg */,
-				AB3109E519869C5200F10A95 /* scrollB.jpg */,
-				AB3109E619869C5200F10A95 /* scrollC.jpg */,
+				AB55670E19902D6000739AA4 /* default.jpg */,
+				AB556708199027B600739AA4 /* scrollA.jpg */,
+				AB55670A199027C500739AA4 /* scrollB.jpg */,
+				AB55670C199027CE00739AA4 /* scrollC.jpg */,
+				AB556706199025BB00739AA4 /* background.jpg */,
 				ABE172251947884100B4953B /* Main.storyboard */,
 				AB55670419901D3D00739AA4 /* iPhoneStoryboard.storyboard */,
 				AB68B2C2198A6FE700CE549F /* PreferencesTableViewController.h */,
@@ -339,14 +342,15 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				AB556709199027B600739AA4 /* scrollA.jpg in Resources */,
+				AB55670B199027C500739AA4 /* scrollB.jpg in Resources */,
 				AB7B8BDF196C7C3500EFFA8A /* cspListings.csv in Resources */,
 				ABE172291947884100B4953B /* Images.xcassets in Resources */,
-				AB3109E419869B2000F10A95 /* background.jpg in Resources */,
-				AB3109E719869C5200F10A95 /* scrollB.jpg in Resources */,
-				AB3109E819869C5200F10A95 /* scrollC.jpg in Resources */,
+				AB55670D199027CE00739AA4 /* scrollC.jpg in Resources */,
+				AB55670F19902D6000739AA4 /* default.jpg in Resources */,
 				AB3109DA1986998700F10A95 /* Main.storyboard in Resources */,
+				AB556707199025BB00739AA4 /* background.jpg in Resources */,
 				AB55670519901D3D00739AA4 /* iPhoneStoryboard.storyboard in Resources */,
-				AB3109DE19869A6500F10A95 /* scrollA.jpg in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
