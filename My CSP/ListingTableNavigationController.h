@@ -8,6 +8,7 @@
 
 #import <UIKit/UIKit.h>
 #import "ListingFilter.h"
+#import "ListingDetailViewController.h"
 #import "ViewController.h"
 
 @interface ListingTableNavigationController : UINavigationController
@@ -15,5 +16,6 @@
 @property (strong, nonatomic) NSArray *listing;
 @property (strong, nonatomic) ListingFilter *filter;
 @property (strong, nonatomic) NSString *source;
+@property (strong, nonatomic) Listing *single;
 
 @end

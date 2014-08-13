@@ -10,9 +10,12 @@
 
 @implementation ListingFilter
 
+// Initializes an empty filter
 -(id)init{
     self = [super init];
     
+    // All values are set to default
+    // Bools are set to no
     self.favorite = [NSNumber numberWithBool:NO];
     self.images = [NSNumber numberWithBool:NO];
     self.checkLocation = [NSNumber numberWithBool:NO];
@@ -31,205 +34,292 @@
     self.internet = [NSNumber numberWithBool:NO];
     self.microwave = [NSNumber numberWithBool:NO];
     self.closet = [NSNumber numberWithBool:NO];
+    
+    // Near is 200 meters
     self.range = 200;
+    
+    // Beds and Baths are 0 or more
     self.beds = 0;
     self.baths = 0;
     
+    // Nothing set for month or year
+    self.month = nil;
+    self.year = nil;
+    
     return self;
 }
 
+// Attempts to load default filter from saved file
 -(id)initWithDefault{
     self = [super init];
     
+    // Default save location for Filter File
     NSString *filterFile = [NSSearchPathForDirectoriesInDomains(NSDocumentDirectory, NSUserDomainMask, YES)[0] stringByAppendingPathComponent:@"savedFiler"];
     
+    // If saved filter exits
     if ([[NSFileManager defaultManager] fileExistsAtPath:filterFile]){
         
+        // Unarchive that data using the NSCoding Init method below
         self = [NSKeyedUnarchiver unarchiveObjectWithData:[NSData dataWithContentsOfFile:filterFile]];
     } else {
+        
+        // Otherwise initialize empty filter
         self = [self init];
     }
     
+    
+    // Return self
     return self;
 }
 
--(NSArray *)filterListings:(NSArray *)listings{
+
+// Filters for a set of specific listings
+// self.unitIDS must be set or nothing will be returned
+-(NSArray *)getSpecific:(NSArray *)listings{
+    
+    // Creates array to return
     NSMutableArray *ret = [[NSMutableArray alloc] init];
-    for (int i = 0; i < listings.count; i++){
-        BOOL pass = YES;
-        Listing *check = [listings objectAtIndex:i];
-        NSDate *now = [[NSDate alloc] init];
-        if (pass && ![check isDate:now betweenDate:check.start andDate:check.stop]){
-            pass = NO;
+    
+    // Step through each listing
+    for (Listing *listing in listings){
+        
+        // Check to see if Listing unitID is in the list of IDS to be checked for
+        if ([self.unitIDS containsObject:listing.unitID.stringValue]){
+            
+            // If so, add that to the return array
+            [ret addObject:listing];
+            
+            // If as many Listings as needed have been found
+            if (ret.count == self.unitIDS.count){
+                
+                // Break out of the loop
+                break;
+            }
         }
+    }
+    
+    // Return Listings
+    return ret;
+}
+
+
+// Runs listings through a filter and returns array of Listings which have passed
+-(NSArray *)filterListings:(NSArray *)listings{
+    
+    // Creates array to be returned
+    NSMutableArray *ret = [[NSMutableArray alloc] init];
+    
+    // Step through each Listing in the array
+    for (Listing *check in listings){
+        
+        // Listings pass unless determined otherwise
+        BOOL pass = YES;
+        
+        // If current date is not between ListDate and StopListDate don't pass
+        if (pass && ![check isNowBetweenDate:check.start andDate:check.stop]){
+            pass = NO;
+            break;
+        }
+        
+        // Will not check other options if it has already failed to pass
+        // If filter by year is set
+        if (pass && self.year){
+            
+            NSDateFormatter *formatter = [[NSDateFormatter alloc] init];
+            [formatter setDateFormat:@"yyyy"];
+            // Year Listing goes available
+            NSString *y = [formatter stringFromDate:check.available];
+            
+            // If desired year is before the year listing goes available, don't pass
+            if (!(y.intValue <= self.year.intValue)){
+                pass = NO;
+                break;
+            }
+        }
+        
+        // if filter by month is set
+        if (pass && self.month){
+            
+            NSDateFormatter *formatter = [[NSDateFormatter alloc] init];
+            [formatter setDateFormat:@"M"];
+            
+            // Month listing goes available
+            NSString *m = [formatter stringFromDate:check.available];
+            
+            [formatter setDateFormat:@"yyyy"];
+            // Year Listing goes available
+            NSString *y = [formatter stringFromDate:check.available];
+            
+            // Only fails if desired month is not equal to the available month AND
+            // listing year is not before desired year
+            // Honestly, I'm not sure about this bool statement, but it seems to work!
+            if (![m isEqualToString:self.month] && !(y.intValue < self.year.intValue)){
+                pass = NO;
+                break;
+            }
+        }
+        
+        // If lowRent is set and Listing rent is not less than lowRent
         if (pass && self.lowRent != 0 && self.lowRent > check.rent.floatValue){
             pass = NO;
+            break;
         }
+        
+        // If highRent is set and Listing rent is not more than highRent
         if (pass && self.highRent != 0 && self.highRent < check.rent.floatValue){
             pass = NO;
+            break;
         }
-        if (pass && self.favorite.boolValue && !check.favorite){
-            pass = NO;
-        }
+        
+        // If filter should check for current location
         if (pass && self.checkLocation.boolValue){
+            
+            // If user's current location is not within range of Listing's location
             if ([self.location distanceFromLocation:check.location] > self.range){
                 pass = NO;
+                break;
             }
         }
+        
+        // If desired number of beds is more than Listing's num beds
         if (pass && self.beds.intValue > check.beds.intValue){
             pass = NO;
+            break;
         }
+        // If desired number of baths is more than Listing's num baths
         if (pass && check.baths.intValue < self.baths.intValue){
             pass = NO;
+            break;
         }
+        
+        // If filter should only return Listing's with Images
         if (pass && self.images.boolValue){
+            
+            // If Listing has no images
             if ([check imageSrc].count == 0){
                 pass = NO;
+                break;
             }
+        }
+        
+        // Simple Bool checks
+        if (pass && self.favorite.boolValue && !check.favorite){
+            pass = NO;
+            break;
         }
         if (pass && self.cable.boolValue && !check.cable){
             pass = NO;
+            break;
         }
         if (pass && self.hardWood.boolValue && !check.hardwood){
             pass = NO;
+            break;
         }
         if (pass && self.fridge.boolValue && !check.refrigerator){
             pass = NO;
+            break;
         }
         if (pass && self.laundry.boolValue && !check.laundry){
             pass = NO;
+            break;
         }
         if (pass && self.oven.boolValue && !check.oven){
             pass = NO;
+            break;
         }
         if (pass && self.air.boolValue && !check.airConditioning){
             pass = NO;
+            break;
         }
         if (pass && self.balcony.boolValue && !check.balcony){
             pass = NO;
+            break;
         }
         if (pass && self.carport.boolValue && !check.carport){
             pass = NO;
+            break;
         }
         if (pass && self.dish.boolValue && !check.dishwasher){
             pass = NO;
+            break;
         }
         if (pass && self.fence.boolValue && !check.fenced){
             pass = NO;
+            break;
         }
         if (pass && self.fire.boolValue && !check.fireplace){
             pass = NO;
+            break;
         }
         if (pass && self.garage.boolValue && !check.garage){
             pass = NO;
+            break;
         }
         if (pass && self.internet.boolValue && !check.internet){
             pass = NO;
+            break;
         }
         if (pass && self.microwave.boolValue && !check.microwave){
             pass = NO;
+            break;
         }
         if (pass && self.closet.boolValue && !check.walkCloset){
             pass = NO;
+            break;
         }
+        
+        // If array of Keywords is not null
+        // Will return true if ANY keywords are found in the Listing
         if (pass && self.keyWords){
+            
+            // Initial bool to be changed if keywords are found
             BOOL found = NO;
-            for (int j = 0; j < self.keyWords.count; j++){
-                if (![[self.keyWords objectAtIndex:j] isEqualToString:@" "]){
-                    if ([check.address.lowercaseString rangeOfString:[[self.keyWords objectAtIndex:j] lowercaseString]].location != NSNotFound){
+            
+            // For each keyword in the array
+            for (NSString *keyWord in self.keyWords){
+                
+                // If keyword is not an empty string
+                if (![keyWord isEqualToString:@" "]){
+                    
+                    // If the listing address contains any of the keywords
+                    if ([check.address.lowercaseString rangeOfString:[keyWord lowercaseString]].location != NSNotFound){
                         found = YES;
                         break;
-                    } else if ([check.descrip.lowercaseString rangeOfString:[[self.keyWords objectAtIndex:j] lowercaseString]].location != NSNotFound){
+                    }
+                    // Else if the listing description contains any of the keywords
+                    else if ([check.descrip.lowercaseString rangeOfString:[keyWord lowercaseString]].location != NSNotFound){
                         found = YES;
                         break;
                     }
                 }
             }
+            
+            // If no keywords were found do not pass filter
             if (!found){
                 pass = NO;
+                break;
             }
             
         }
+        
+        // If listing has passed through the filter, add to the ret array
         if (pass){
             [ret addObject:check];
         }
     }
     
-    return [NSArray arrayWithArray:ret];
-}
-
--(NSMutableArray *)getAmenities{
-    NSMutableArray *ret = [[NSMutableArray alloc] init];
-    //[ret addObject:self.favorite];
-    ret = [NSMutableArray arrayWithObjects:self.checkLocation, self.favorite, self.images, self.cable, self.hardWood, self.fridge, self.laundry, self.oven, self.air, self.balcony, self.carport, self.dish, self.fence, self.fire, self.garage, self.internet, self.microwave, self.closet, nil];
     return ret;
 }
 
--(void)sing{
-    if (self.favorite.boolValue){
-        NSLog(@"Favorite");
-    }
-    if (self.images.boolValue){
-        NSLog(@"Images");
-    }
-    if (self.checkLocation.boolValue){
-        NSLog(@"Location");
-    }
-    if (self.cable.boolValue){
-        NSLog(@"Cable");
-    }
-    if (self.laundry.boolValue){
-        NSLog(@"Laundry");
-    }
-    if (self.oven.boolValue){
-        NSLog(@"Oven");
-    }
-    if (self.air.boolValue){
-        NSLog(@"Air");
-    }
-    if (self.balcony.boolValue){
-        NSLog(@"Balcony");
-    }
-    if (self.carport.boolValue){
-        NSLog(@"Carport");
-    }
-    if (self.dish.boolValue){
-        NSLog(@"Dishwasher");
-    }
-    if (self.fence.boolValue){
-        NSLog(@"Fenced");
-    }
-    if (self.fire.boolValue){
-        NSLog(@"Fireplace");
-    }
-    if (self.garage.boolValue){
-        NSLog(@"Garage");
-    }
-    if (self.internet.boolValue){
-        NSLog(@"Internet");
-    }
-    if (self.hardWood.boolValue){
-        NSLog(@"Hardwood");
-    }
-    if (self.microwave.boolValue){
-        NSLog(@"Microwave");
-    }
-    if (self.closet.boolValue){
-        NSLog(@"Closet");
-    }
-    if (self.fridge.boolValue){
-        NSLog(@"Fridge");
-    }
-    NSLog(@"Low: %.0f", self.lowRent);
-    NSLog(@"High: %.0f", self.highRent);
-    NSLog(@"Beds: %d", self.beds.intValue);
-    NSLog(@"Bath: %d", self.baths.intValue);
+
+// Returns array of search preferences for amenities
+-(NSMutableArray *)getAmenities{
+    
+    return [NSMutableArray  arrayWithObjects:self.checkLocation, self.favorite, self.images, self.cable, self.hardWood, self.fridge, self.laundry, self.oven, self.air, self.balcony, self.carport, self.dish, self.fence, self.fire, self.garage, self.internet, self.microwave, self.closet, nil];
     
 }
 
-- (NSString *)description {
-    return @"MyCustomDescription";
-}
+#pragma mark-NSCoding methods
 
 -(void)encodeWithCoder:(NSCoder *)aCoder{
     [aCoder encodeObject:self.favorite forKey:@"favorites"];
@@ -252,6 +342,8 @@
     [aCoder encodeObject:self.closet forKey:@"closet"];
     [aCoder encodeObject:self.beds forKey:@"beds"];
     [aCoder encodeObject:self.baths forKey:@"baths"];
+    [aCoder encodeObject:self.month forKey:@"month"];
+    [aCoder encodeObject:self.year forKey:@"year"];
     [aCoder encodeObject:self.keyWords forKey:@"keywords"];
     [aCoder encodeObject:self.available forKey:@"available"];
     [aCoder encodeFloat:self.lowRent forKey:@"lowRent"];
@@ -284,6 +376,8 @@
     self.keyWords = [aDecoder decodeObjectForKey:@"keywords"];
     self.available = [aDecoder decodeObjectForKey:@"available"];
     self.balcony = [aDecoder decodeObjectForKey:@"balcony"];
+    self.month = [aDecoder decodeObjectForKey:@"month"];
+    self.year = [aDecoder decodeObjectForKey:@"year"];
     
     self.lowRent = [aDecoder decodeFloatForKey:@"lowRent"];
     self.highRent = [aDecoder decodeFloatForKey:@"highRent"];

@@ -12,33 +12,27 @@
 
 @interface Listing : NSObject <NSCoding>
 
+// Listing Info
 @property (strong, nonatomic) NSString *address;
+@property (strong, nonatomic) NSString *addressShort;
+@property (strong, nonatomic) NSString *town;
+@property (strong, nonatomic) NSString *tourURL;
+@property (strong, nonatomic) NSString *descrip;
+@property (strong, nonatomic) NSString *heat;
 @property (strong, nonatomic) NSNumber *beds;
 @property (strong, nonatomic) NSNumber *baths;
 @property (strong, nonatomic) NSNumber *sqft;
 @property (strong, nonatomic) NSNumber *rent;
 @property (strong, nonatomic) NSNumber *buildiumID;
 @property (strong, nonatomic) NSNumber *unitID;
-@property (strong, nonatomic) NSString *descrip;
 @property (strong, nonatomic) NSDate *available;
-@property (strong, nonatomic) NSMutableArray *imageArray;
 @property (strong, nonatomic) NSArray *imageSrc;
+@property (strong, nonatomic) NSMutableArray *imageArray;
 @property (strong, nonatomic) CLLocation *location;
-@property (strong, nonatomic) NSTimer *timeout;
-
-/*
- heat
- One of four values
- 0 - No Info
- 1 - Electric
- 2 - Gas
- 3 - Oil
- NSNumber or NSString?
- */
-@property (strong, nonatomic) NSString *heat;
 
 @property BOOL favorite;
 
+// Amenity Info
 @property BOOL cable;
 @property BOOL hardwood;
 @property BOOL refrigerator;
@@ -56,18 +50,24 @@
 @property BOOL microwave;
 @property BOOL walkCloset;
 
+// List dates
 @property (strong, nonatomic) NSDate *start;
 @property (strong, nonatomic) NSDate *stop;
 
+// Default Init
 -(id)initWithDictionary:(NSDictionary *)infoIn;
 
+// Allows Listings to be saved and loaded from local storage
 -(id)initWithCoder:(NSCoder *)aDecoder;
 -(void)encodeWithCoder:(NSCoder *)aCoder;
 
--(NSDictionary *)exportAsDictionary;
-
+// Returns amenities which this Property features as a dictionary
 -(NSDictionary *)features;
 
-- (BOOL)isDate:(NSDate *)first betweenDate:(NSDate *)earlierDate andDate:(NSDate *)laterDate;
+// Takes in an ImageURL and loads the image
+-(void)loadFirstImage:(NSString *)srcIn;
+
+// Determines if the Listing should be displayed using the ListDate and EndListDate
+- (BOOL)isNowBetweenDate:(NSDate *)earlierDate andDate:(NSDate *)laterDate;
 
 @end

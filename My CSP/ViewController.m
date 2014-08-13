@@ -12,135 +12,331 @@
 
 @end
 
-@implementation ViewController
-            
+@implementation ViewController{
+    
+    // Current position in array of background images to be displayed
+    int pos;
+}
+
+#pragma mark-ViewLoading & Appearing
+
 - (void)viewDidLoad {
     [super viewDidLoad];
-    // Do any additional setup after loading the view, typically from a nib.
     
-    self.emptyFilter = [[ListingFilter alloc] init];
-    
+    // Initializes the LocationManager
     self.manager = [[CLLocationManager alloc] init];
+    
+    // Sets necessary delegates and data sources
+    [self.table setDataSource:self];
+    [self.table setDelegate:self];
+    [self.searchBar setDelegate:self];
     [self.manager setDelegate:self];
+    
+    
     self.manager.desiredAccuracy = kCLLocationAccuracyHundredMeters;
+    
+    // If status has been determined (approve or rejected on iOS 7)
     if ([CLLocationManager authorizationStatus] != kCLAuthorizationStatusNotDetermined){
+        
+        // Start monitoring for significant changes
+        // Could be more specific with a loss to battery life
         [self.manager startMonitoringSignificantLocationChanges];
     }
     
-    [self.table setDataSource:self];
-    [self.table setDelegate:self];
     
-    [self.searchBar setDelegate:self];
-    [[UITextField appearanceWhenContainedIn:[UISearchBar class], nil] setTextColor:[UIColor whiteColor]];
+    // Start notification observers
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(openURLListings:) name:@"openURLListings" object:nil];
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(forceRemoveFavorites:) name:@"updateLocalListings" object:nil];
     
-    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(updateFavorites:) name:@"updateLocalListings" object:nil];
-    
-    
-//Determine if reload needed
+    // Creates a file manager to check Documents Directory
     NSFileManager* fm = [NSFileManager defaultManager];
     
+    // Locates default documents directory
     NSString *directory = NSSearchPathForDirectoriesInDomains(NSDocumentDirectory, NSUserDomainMask, YES)[0];
+    
+    // Define files for saving data
     NSString *saveFile = [directory stringByAppendingPathComponent:@"savedListings.txt"];
-    NSDictionary* attrs = [fm attributesOfItemAtPath:saveFile error:nil];
-    
-    if (attrs != nil) {
-        NSDate *date = (NSDate*)[attrs objectForKey: NSFileCreationDate];
-        
-        NSDateFormatter *formatter = [[NSDateFormatter alloc] init];
-        [formatter setDateFormat:@"yyyy MM dd"];
-        
-        if (![[formatter stringFromDate:date] isEqualToString:[formatter stringFromDate:[NSDate date]]]){
-            [formatter setDateFormat:@"yyyyMMdd"];
-            [[NSKeyedUnarchiver unarchiveObjectWithFile:saveFile] writeToFile:[directory stringByAppendingPathComponent:[NSString stringWithFormat:@"%@Listings.txt", [formatter stringFromDate:date]]] atomically:YES];
-            for (NSString *file in [fm contentsOfDirectoryAtPath:directory error:nil]){
-                if (![file isEqualToString:@"user.txt"] && ![file isEqualToString:@".DS_Store"] && ![file isEqualToString:@"allowBeacons"]){
-                    if ([(NSDate *)[[fm attributesOfItemAtPath:[directory stringByAppendingPathComponent:file] error:nil] objectForKey:NSFileCreationDate] timeIntervalSinceNow] > 172800){
-                        [fm removeItemAtPath:[directory stringByAppendingPathComponent:file] error:nil];
-                    }
-                }
-            }
-            NSLog(@"Saved Before Today");
-        }
-    }
-    
-//Create/Save User UUID
     NSString *idFile = [directory stringByAppendingPathComponent:@"user.txt"];
+    NSString *favFile = [directory stringByAppendingPathComponent:@"favs.txt"];
+    
+    // String to hold UserID
     NSString *userUUID;
+    
+    // If userID File does not exist
     if (![fm fileExistsAtPath:idFile]){
+        
+        // Create a new UUID and save the string as the UserID
         userUUID = [[NSUUID UUID] UUIDString];
+        
+        // Attempt to send userID to server via RESTAPI
+        // If it does not fail
         if (![[[RESTfulInterface RESTAPI] addNewAnonUser:userUUID] isEqualToString:@"0"]){
+            
+            // Save the ID as NSData and write to UserID file location
             NSData *userID = [NSKeyedArchiver archivedDataWithRootObject:userUUID];
             [userID writeToFile:idFile atomically:YES];
         }
+        
+        // If RESTAPI failed to save data it will create a new UUID on next Load. No favorites will be saved
+        
     } else {
+        
+        // If file exists read the UserID from there
         userUUID = [NSKeyedUnarchiver unarchiveObjectWithFile:idFile];
     }
+
     
-    //needReload = YES;
-    //Reload Listing Data
+    // Disable UI elements on MainMenu during load
     [self.table setUserInteractionEnabled:NO];
+    
+    // Show Loading Indicator and set preferences
     [self.loadingView setHidden:NO];
     [self.loadingView.layer setCornerRadius:10];
     [self.loadingView setBackgroundColor:[UIColor colorWithRed:51/255.0 green:60/255.0 blue:77/255.0 alpha:.9]];
-    dispatch_queue_t downloadListingQueue = dispatch_queue_create("com.mycompany.myqueue", 0);
     
+    // Create download queue for GCD
+    dispatch_queue_t downloadListingQueue = dispatch_queue_create("com.Push.CSPListingDownload", 0);
+    
+    // Move to Listing Download Queue
     dispatch_async(downloadListingQueue, ^{
+        
+        // Get listings as array from ListingPull class
         self.listings = [[[ListingPull alloc] init] getListings];
+        
+        // Initialize bool saying that data is new
         BOOL new = YES;
+        
+        // If no listings were returned from ListingPull
         if (self.listings.count == 0){
+            
+            // If a previous save of the data is available
             if ([fm fileExistsAtPath:saveFile]){
+                
+                // Load the listings from that data
                 self.listings = [NSKeyedUnarchiver unarchiveObjectWithData:[NSData dataWithContentsOfFile:saveFile]];
+                
+                // This is not new data
                 new = NO;
             }
         }
-        NSArray *favorites = [self checkFavorites:[[RESTfulInterface RESTAPI] getUserFavorites:userUUID]];
+        
+        // If data is new
+        if (new){
+            
+            // Save backup to local file
+            NSData *data =[NSKeyedArchiver archivedDataWithRootObject:self.listings];
+            [data writeToFile:saveFile atomically:YES];
+        }
+        
+        // Get favorites from server using UserID and RESTAPI
+        NSArray *favorites = [[RESTfulInterface RESTAPI] getUserFavorites:userUUID];
+        
+        // If no favorites were returned from RESTAPI call
         if (favorites.count == 0){
-            favorites = [self checkFavorites:[NSKeyedUnarchiver unarchiveObjectWithFile:[directory stringByAppendingPathComponent:@"favs.txt"]]];
+            
+            // Read favorites from save file
+            favorites = [NSKeyedUnarchiver unarchiveObjectWithFile:favFile];
+            // Make sure favorites match local listings favorites values
+            [self checkFavorites:favorites];
+            
+            // If there are favorites saved that weren't accounted for in the server
             if (favorites.count != 0){
+                
+                // For each favorite
                 for (NSString *unitID in favorites){
+                    
+                    // Attempt to save on the server database
                     if ([[RESTfulInterface RESTAPI] addUserFavorite:userUUID :unitID]) NSLog(@"Saved");
                 }
             }
         }
-        [NSKeyedArchiver archiveRootObject:favorites toFile:[directory stringByAppendingPathComponent:@"favs.txt"]];
+        // If favorites were pulled from server sucessfully
+        else {
+            
+            // Make sure they match with local listings
+            [self checkFavorites:favorites];
+        }
         
+        // Save favorites to local file as backup
+        [NSKeyedArchiver archiveRootObject:favorites toFile:favFile];
+        
+        // Return to the main queue for UI updates
         dispatch_async(dispatch_get_main_queue(), ^{
+            
+            // Hide Loading Indicator
             [self.loadingView setHidden:YES];
+            
+            // Allow user to interact with UI
             [self.table setUserInteractionEnabled:YES];
-            if (new){
-                NSData *data =[NSKeyedArchiver archivedDataWithRootObject:self.listings];
-                [data writeToFile:saveFile atomically:YES];
-            }
+            
+            // Alert AppDelegate that listings have been loaded
+            [[NSNotificationCenter defaultCenter] postNotificationName:@"finishLoadingListings" object:nil];
         });
     });
     
-//Image Rotation
+}
+
+// Forces statusBarStyle
+-(UIStatusBarStyle)preferredStatusBarStyle{
+    return UIStatusBarStyleLightContent;
+}
+
+- (void)viewWillAppear:(BOOL)animated {
+    [super viewWillAppear:animated];
+    
+    // Makes sure navigation bar is hidden within this particular view
+    [self.navigationController setNavigationBarHidden:YES animated:animated];
+    
+    // Adjusts appearance of Search bar text field
+    [[UITextField appearanceWhenContainedIn:[UISearchBar class], nil] setTextColor:[UIColor whiteColor]];
+    
+    // Define images to place in rotating backgound view
     UIImage *imageA = [UIImage imageNamed:@"background.jpg"];
     UIImage *imageB = [UIImage imageNamed:@"scrollA.jpg"];
     UIImage *imageC = [UIImage imageNamed:@"scrollB.jpg"];
     UIImage *imageD = [UIImage imageNamed:@"scrollC.jpg"];
     
-    self.backgroundArray = [[NSMutableArray alloc] initWithObjects:imageA, imageB, imageC, imageD, nil];
+    // Create background array
+    self.backgroundArray = [[NSMutableArray alloc] initWithObjects:imageA, imageC, imageB, imageD, nil];
     
-    self.pos = 0;
+    // Initialize the position to zero
+    pos = 0;
     
-    [self.backgroundImageView setImage:[UIImage imageNamed:@"background.jpg"]];
+    // Set the backgound view to the initial image
+    [self.backgroundImageView setImage:self.backgroundArray[pos]];
     
+    // If images were properly loaded from the bundle
     if (self.backgroundArray.count != 0){
-        NSTimer *timer = [NSTimer scheduledTimerWithTimeInterval:10.0 target:self selector:@selector(fadeImage:) userInfo:[NSNumber numberWithInt:self.pos] repeats:YES];
+        
+        // Initialize a timer that will fire every 10 seconds
+        // On fire it will run fadeImage and pass pos as an NSNumber
+        NSTimer *timer = [NSTimer scheduledTimerWithTimeInterval:10.0 target:self selector:@selector(fadeImage:) userInfo:[NSNumber numberWithInt:pos] repeats:YES];
         [timer fire];
-        self.pos++;
     }
 }
 
--(void)updateFavorites:(NSNotification *)notification{
-    NSArray *favorites = [NSKeyedUnarchiver unarchiveObjectWithFile:[NSSearchPathForDirectoriesInDomains(NSDocumentDirectory, NSUserDomainMask, YES)[0] stringByAppendingPathComponent:@"favs.txt"]];
+-(void)viewDidAppear:(BOOL)animated{
+    [super viewDidAppear:animated];
+    
+    // Method for iOS to allowAlwaysAuthorization. Requires iOS 8. Uncomment and refactor when iOS 8 reaches GM
+    /*
+     iOS 8 + 7
+     if ([CLLocationManager authorizationStatus] == kCLAuthorizationStatusNotDetermined && [[[UIDevice currentDevice] systemVersion] floatValue] >= 8){
+     UIAlertView *authorizeBeacons = [[UIAlertView alloc] initWithTitle:@"Find Listings With Beacons" message:@"Would you like to allow My CSP to use low energy Bluetooth to find places around you that you may be interested in the background?" delegate:self cancelButtonTitle:@"Sure!" otherButtonTitles:@"No Thanks", nil];
+     [authorizeBeacons show];
+     }
+     */
+    
+    // If Device is not running iOS 8 AND authorizationStatus for LoactionManager has not been determined
+    if ( [[[UIDevice currentDevice] systemVersion] floatValue] < 8  && [CLLocationManager authorizationStatus] == kCLAuthorizationStatusNotDetermined){
+        
+        // Ask if the User would like to allow Location Services
+        // AlertView Delegate method handles the rest
+        UIAlertView *tryAgain = [[UIAlertView alloc] initWithTitle:@"Use Current Location" message:@"My CSP can use your location to show you listings closest to you. Would you like to allow this?" delegate:self cancelButtonTitle:@"No" otherButtonTitles:@"Ok!", nil];
+        [tryAgain show];
+    }
+    
+}
+
+#pragma mark-Prepare to show Listing from URL
+
+// Creates Views necessary to show Listings from URL link
+// Called from posted notification
+-(void)openURLListings:(NSNotification *)notification{
+    
+    // Gets URL Parameters as a NSDictionary from the notification
+    NSDictionary *params = (NSDictionary *)notification.object;
+    
+    // Gets unitIDs for desired listings and saves as NSArray
+    NSArray *listings = [[params objectForKey:@"listings"] componentsSeparatedByString:@","];
+    
+    // If only one listing needs to be shown
+    if (listings.count == 1){
+        
+        // Step through each saved listing
+        for (Listing *listing in self.listings){
+            
+            // Get Listing's unitID as a string
+            NSString *unitID = listing.unitID.stringValue;
+            
+            // Check if equal to the desired unitID
+            if ([unitID isEqualToString:listings[0]]){
+                
+                // Action triggered is a URL with single Listing
+                self.source = @"single";
+                
+                // Grab needed navigation controller from the storyboard
+                ListingTableNavigationController *nav = [self.storyboard instantiateViewControllerWithIdentifier:@"SingleNav"];
+                
+                // set navigation source
+                nav.source = self.source;
+                
+                // Set navigation controller's Single listing object to current Listing
+                nav.single = listing;
+                
+                
+                // Request app delegate
+                AppDelegate *delegate = [UIApplication sharedApplication].delegate;
+                
+                // Instruct app delegate to display navigationController modally from currently visible ViewController
+                [delegate presentViewControllerFromVisibleViewController:nav];
+                
+                
+                // Breaks from the loop
+                break;
+            }
+        }
+    }
+    
+    // If more than one listing is being requested
+    else if (listings.count > 1) {
+        
+        // Create a new empty filter
+        self.filter = [[ListingFilter alloc] init];
+        
+        // Set filter's unitIDs value
+        [self.filter setUnitIDS:listings];
+        
+        // set source to indicate showing particular unitIDS
+        self.source = @"showUnits";
+        
+        // Get listingResults navigation controller form Storyboard
+        ListingTableNavigationController *nav = [self.storyboard instantiateViewControllerWithIdentifier:@"listingResults"];
+        
+        // Set necessary values
+        nav.source = self.source;
+        nav.filter = self.filter;
+        nav.listing = self.listings;
+        
+        // Request App delegate
+        AppDelegate *delegate = [UIApplication sharedApplication].delegate;
+        
+        // Instruct app delegate to display navigationController modally from currently visible ViewController
+        [delegate presentViewControllerFromVisibleViewController:nav];
+        
+    }
+}
+
+// Forces local listings to match expected favorite values
+-(void)checkFavorites:(NSArray *)favorites{
+    
+    // For each Listing
     for (Listing *listing in self.listings){
+
+        // If favorites array contains the unitID
+        // (expected favorite
         if ([favorites containsObject:listing.unitID.stringValue]){
+            
+            // If not favorited
             if (!listing.favorite){
+                
+                // set favorite
                 [listing setFavorite:YES];
             }
-        } else {
+        }
+        // If array doesn't contain unitID
+        // Expected unfavorite
+        else {
             if (listing.favorite){
                 [listing setFavorite:NO];
             }
@@ -148,59 +344,38 @@
     }
 }
 
--(NSArray *)checkFavorites:(NSArray *)favorites{
-    if (favorites.count > 0){
-        for (Listing *listing in self.listings){
-            NSLog(@"%@", listing.unitID.stringValue);
-            if ([favorites containsObject:listing.unitID.stringValue]){
-                if (!listing.favorite){
-                    [listing setFavorite:YES];
-                }
-            } else {
-                if (listing.favorite){
-                    [listing setFavorite:NO];
-                }
-            }
-        }
-    }
-    return favorites;
+// Creates an empty array of favorites and 'checks' them, effectively marking all Listings as unfavorited
+// Called from notification when User confirms 'erase all favorites' from preferences
+-(void)forceRemoveFavorites:(NSNotification *)notification{
+    NSArray *favorites = [[NSArray alloc] init];
+    [self checkFavorites:favorites];
 }
 
+
+// fades imageView to the next image in the background array
 -(void)fadeImage:(NSTimer *)sender{
-    int num = self.pos % self.backgroundArray.count;
     
-    UIImage *toImage = [self.backgroundArray objectAtIndex:num];
+    // Increment position of image
+    pos++;
+    
+    // Reset to beginning of array at end
+    if (pos == self.backgroundArray.count) pos = 0;
+    
+    // Defines the next image to be displayed
+    UIImage *toImage = [self.backgroundArray objectAtIndex:pos];
+    
+    // Performs transition animation
     [UIView transitionWithView:self.backgroundImageView
                       duration:2.5f
                        options:UIViewAnimationOptionTransitionCrossDissolve
                     animations:^{
+                        
+                        // Defines actual change to the view to be made
                         self.backgroundImageView.image = toImage;
                     } completion:nil];
-    self.pos++;
 }
 
--(UIStatusBarStyle)preferredStatusBarStyle{
-    return UIStatusBarStyleLightContent;
-}
-
--(void)viewDidAppear:(BOOL)animated{
-    [super viewDidAppear:animated];
-    
-    
-    /*
-     iOS 8 + 7
-    if ([CLLocationManager authorizationStatus] == kCLAuthorizationStatusNotDetermined && [[[UIDevice currentDevice] systemVersion] floatValue] >= 8){
-        UIAlertView *authorizeBeacons = [[UIAlertView alloc] initWithTitle:@"Find Listings With Beacons" message:@"Would you like to allow My CSP to use low energy Bluetooth to find places around you that you may be interested in the background?" delegate:self cancelButtonTitle:@"Sure!" otherButtonTitles:@"No Thanks", nil];
-        [authorizeBeacons show];
-    }
-    */
-    if ( [[[UIDevice currentDevice] systemVersion] floatValue] < 8  && [CLLocationManager authorizationStatus] == kCLAuthorizationStatusNotDetermined){
-        UIAlertView *tryAgain = [[UIAlertView alloc] initWithTitle:@"Use Current Location" message:@"My CSP can use your location to show you listings closest to you. Would you like to allow this?" delegate:self cancelButtonTitle:@"No" otherButtonTitles:@"Ok!", nil];
-        [tryAgain show];
-    }
-}
-
-// TableView Data Source
+#pragma mark-TableView DataSource
 
 -(NSInteger)numberOfSectionsInTableView:(UITableView *)tableView{
     return 1;
@@ -210,7 +385,9 @@
     return 5;
 }
 
+// Returns cell for each row in the table with the expected icon and text
 -(UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath{
+    
     MainMenuTableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:@"menuCell"];
     
     switch (indexPath.row) {
@@ -231,7 +408,7 @@
             [cell.iconImageView setImage:[UIImage imageNamed:@"User"]];
             break;
         case 4:
-            cell.label.text = @"Quick Tips";
+            cell.label.text = @"Tenent Info";
             [cell.iconImageView setImage:[UIImage imageNamed:@"Bulb"]];
             break;
             
@@ -242,59 +419,123 @@
     return cell;
 }
 
+// Determines height for each row
 -(CGFloat)tableView:(UITableView *)tableView heightForRowAtIndexPath:(NSIndexPath *)indexPath{
+    
+    // Default value at 1/5 full size
     if (indexPath.row != 4){
         return (self.table.bounds.size.height / 5);
     }
+    
+    // Extra pixel to remove bottom border
     return self.table.rowHeight + 1;
 
 }
 
-// TableView Delegate
+#pragma mark-TableViewDelegate
 
+
+// Called when user selects a row of a tableView
 -(void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath{
+    
+    // Animate deselection
     [tableView deselectRowAtIndexPath:indexPath animated:YES];
+    
+    // Pressed near me
     if (indexPath.row == 0){
+        
+        // If locationServices have been enabled
         if ([self locationEnabled]){
+            
+            // If current location has been determined.
             if (self.location){
+                
+                // Initialize an empty filter
                 self.filter = [[ListingFilter alloc] init];
+                
+                // Set filter to check by location
                 [self.filter setCheckLocation:[NSNumber numberWithBool:YES]];
+                
+                // Pass filter the user's current location
                 [self.filter setLocation:self.location];
                 
+                // User selected "near me"
                 self.source = @"Near";
                 
+                // start segue to listing results page
                 [self performSegueWithIdentifier:@"showListings" sender:self];
-            } else {
+                
+            }
+            // if current location unknown
+            else {
+                
+                // Alert user to try again later
                 UIAlertView *locating = [[UIAlertView alloc] initWithTitle:@"Cannot determine location" message:@"Still trying to locate you. Try again in a minute or two." delegate:self cancelButtonTitle:@"Ok" otherButtonTitles:nil, nil];
                 [locating show];
             }
-        } else {
-            UIAlertView *error = [[UIAlertView alloc] initWithTitle:@"Cannot Determine Location" message:@"You need to authorize My CSP to use your location. Would you like to open Location Settings?" delegate:self cancelButtonTitle:@"No" otherButtonTitles:@"Yes", nil];
+        }
+        // If location services not enabled
+        else {
+            
+            // Alert user to adjust privacy settings
+            UIAlertView *error = [[UIAlertView alloc] initWithTitle:@"Cannot Determine Location" message:@"You need to authorize My CSP to use your location. You can do this in your device Privacy Settings" delegate:self cancelButtonTitle:@"Ok" otherButtonTitles:nil, nil];
             [error show];
         }
-    } else if (indexPath.row == 1){
+    }
+    // User selected Advanced Search
+    else if (indexPath.row == 1){
+        
+        // Attempt to create filter with preferred settings
         self.filter = [[ListingFilter alloc] initWithDefault];
+        
+        // pass filter user's current location
         [self.filter setLocation:self.location];
         
+        // User clicked Search
         self.source = @"Search";
         
+        // Begin segue to search preferences page
         [self performSegueWithIdentifier:@"showSearch" sender:self];
-    } else if (indexPath.row == 2) {
+    }
+    // User selected favorites
+    else if (indexPath.row == 2) {
+        
+        // Create empty filter
         self.filter = [[ListingFilter alloc] init];
+        
+        // Set filter by favorites
         [self.filter setFavorite:[NSNumber numberWithBool:YES]];
+        
+        // Pass user's location
         [self.filter setLocation:self.location];
         
+        // User click favorites
         self.source = @"Favorites";
         
+        // Begin segue to listings results page
         [self performSegueWithIdentifier:@"showListings" sender:self];
-    } else if (indexPath.row == 3){
+        
+    }
+    // User clicked preferences
+    else if (indexPath.row == 3){
+        
+        // Begin segug to Preferences page
         [self performSegueWithIdentifier:@"preferences" sender:self];
+    }
+    // User clicked info
+    else if (indexPath.row == 4){
+        
+        // Begin segue to Info page
+        [self performSegueWithIdentifier:@"showInfo" sender:self];
     }
 }
 
-// AlertView Delegate
+#pragma mark-AlertView Delegate
 
 -(void)alertView:(UIAlertView *)alertView didDismissWithButtonIndex:(NSInteger)buttonIndex{
+    
+    // Respond to request for AlwaysAuthroization
+    // iOS 8 only
     /* 
      iOS 8
     if ([alertView.title isEqualToString:@"Find Listings With Beacons"]){
@@ -306,11 +547,16 @@
         }
     } else 
      */
+    
+    // Check alert title to see if it is the Use Current Location request
     if ([alertView.title isEqualToString:@"Use Current Location"]){
+        
+        // If user did not click "No"
         if (buttonIndex == 1){
             /*
              iOS 7
              */
+            // Automatically asks user for permission a second time
             [self.manager startMonitoringSignificantLocationChanges];
             
             /*
@@ -325,34 +571,55 @@
     }
 }
 
-// SearchBar Delegate
+#pragma mark-UISearchBar Delegate
 
--(void)searchBarCancelButtonClicked:(UISearchBar *)searchBar{
-    [searchBar resignFirstResponder];
-    [searchBar setShowsCancelButton:NO animated:YES];
-}
-
+// Activated when user clicks search bar
 -(void)searchBarTextDidBeginEditing:(UISearchBar *)searchBar{
+    // Animate in the cancel button
     [searchBar setShowsCancelButton:YES animated:YES];
 }
 
--(void)searchBarSearchButtonClicked:(UISearchBar *)searchBar{
+// Handle user clicking cancel on Search Bar
+-(void)searchBarCancelButtonClicked:(UISearchBar *)searchBar{
+    
+    // Hide cancel button and resign first responder
     [searchBar resignFirstResponder];
     [searchBar setShowsCancelButton:NO animated:YES];
+}
+
+// Perform search
+-(void)searchBarSearchButtonClicked:(UISearchBar *)searchBar{
     
+    // resign first responder and hide the cancel button
+    [searchBar resignFirstResponder];
+    [searchBar setShowsCancelButton:NO animated:YES];
+
+    // creates an empty filter
     self.filter = [[ListingFilter alloc] init];
+    
+    // set filter keywords to the contents of the searchBar
+    // Seperate searchbar contents into an array of keywords
     [self.filter setKeyWords:[searchBar.text componentsSeparatedByString:@" "]];
     
+    // User clicked keywords
     self.source = @"Keywords";
     
+    // Start segue to listing results
     [self performSegueWithIdentifier:@"showListings" sender:self];
 }
 
-// LocationManager Delegate
+#pragma mark-LocationManager Delegate
 
+// Called when authorizationStatus updates
 -(void)locationManager:(CLLocationManager *)manager didChangeAuthorizationStatus:(CLAuthorizationStatus)status{
+    
+    // If non-default status
     if (status != kCLAuthorizationStatusNotDetermined){
+        
+        // Attempt to start monitoring location
         [manager startMonitoringSignificantLocationChanges];
+        
+        // Will do nothing if not authorized
     }
     /*
      iOS 8 + 7
@@ -360,11 +627,17 @@
 #warning Beacon Initialization and Monitoring goes here
     }
      */
+    
+    // If alwaysAuthorized enabled
     if (status == kCLAuthorizationStatusAuthorized){
+        
+        // Load beacon info from REST API call and begin monitoring for Beacons
 #warning Beacon initialization and monitoring goes here
     }
 }
 
+
+// Determines if location services are enabled
 -(BOOL)locationEnabled{
     /*
      iOS 8 + 7
@@ -373,6 +646,7 @@
     }
      */
     
+    // If locationServices authorized
     if ([CLLocationManager authorizationStatus] == kCLAuthorizationStatusAuthorized){
         return true;
     }
@@ -380,22 +654,37 @@
     return false;
 }
 
+// Called when locationManager updates Location
 -(void)locationManager:(CLLocationManager *)manager didUpdateLocations:(NSArray *)locations{
+    
+    // set current location to the user's last known location
     self.location = locations.lastObject;
+    
+    // update current location in filter object as well
     self.filter.location = self.location;
 }
 
+
+#pragma mark-Segue preperation
+
+
+// Called when view will use Segue to transition
 -(void)prepareForSegue:(UIStoryboardSegue *)segue sender:(id)sender{
-    if ([segue.identifier isEqualToString:@"showListings"]){
+    // If moving to Listing Results view or Search view
+    if ([segue.identifier isEqualToString:@"showListings"] || [segue.identifier isEqualToString:@"showSearch"]){
+        
+        // Pass necessary information to new NavigationController
         [(ListingTableNavigationController *)[segue destinationViewController] setListing:self.listings];
         [(ListingTableNavigationController *)[segue destinationViewController] setFilter:self.filter];
         [(ListingTableNavigationController *)[segue destinationViewController] setSource:self.source];
     }
-    if ([segue.identifier isEqualToString:@"showSearch"]){
-        [(ListingTableNavigationController *)[segue destinationViewController] setListing:self.listings];
-        [(ListingTableNavigationController *)[segue destinationViewController] setFilter:self.filter];
-        [(ListingTableNavigationController *)[segue destinationViewController] setSource:self.source];
-    }
+}
+
+#pragma mark-General
+
+// View will work only in portrait mode
+-(BOOL)shouldAutorotate{
+    return NO;
 }
 
 - (void)didReceiveMemoryWarning {

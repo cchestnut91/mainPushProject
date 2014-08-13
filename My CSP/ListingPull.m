@@ -10,16 +10,27 @@
 
 @implementation ListingPull
 
+// Performs REST call to get Listings for CSP and returns those in an array
 -(NSArray *)getListings{
 
+    // Initializes  new mutable array
     NSMutableArray *listings = [[NSMutableArray alloc] init];
+    
+    // Gets Listing data as an array of JSON Dictionaries from a syncronous REST call
     NSArray *data = [[RESTfulInterface RESTAPI]getAllListings];
-    for (int i = 0; i < data.count; i++){
-        Listing *new = [[Listing alloc] initWithDictionary:[data objectAtIndex:i]];
+    
+    // Steps through each JSON Dictionary
+    for (NSDictionary *dict in data){
+        
+        // Passes the Dictionary to a new Listing object
+        Listing *new = [[Listing alloc] initWithDictionary:dict];
+        
+        // Adds the Listing object to the array to be returned
         [listings addObject:new];
     }
 
-    return [NSArray arrayWithArray:listings];
+    // Returns the array of Listings
+    return listings;
 }
 
 @end

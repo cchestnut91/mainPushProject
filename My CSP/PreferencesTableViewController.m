@@ -7,10 +7,6 @@
 //
 
 #import "PreferencesTableViewController.h"
-#import "ToggleTableViewCell.h"
-#import "ButtonTableViewCell.h"
-#import "ListingTableNavigationController.h"
-#import "ListingFilter.h"
 
 @interface PreferencesTableViewController ()
 
@@ -154,11 +150,19 @@
     }
 }
 
+-(CGFloat)tableView:(UITableView *)tableView heightForRowAtIndexPath:(NSIndexPath *)indexPath{
+    return tableView.rowHeight;
+}
+
 -(void)prepareForSegue:(UIStoryboardSegue *)segue sender:(id)sender{
     if ([segue.identifier isEqualToString:@"searchPreferences"]){
         [(ListingTableNavigationController *)[segue destinationViewController] setFilter:[[ListingFilter alloc] initWithDefault]];
         [(ListingTableNavigationController *)[segue destinationViewController] setSource:@"settings"];
     }
+}
+
+-(BOOL)shouldAutorotate{
+    return NO;
 }
 
 @end

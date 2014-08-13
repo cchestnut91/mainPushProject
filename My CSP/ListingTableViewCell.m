@@ -27,7 +27,7 @@
     if (listingIn.imageArray.count > 0){
         [self.backgroundImageView setImage:[[listingIn imageArray] objectAtIndex:0]];
     } else {
-        [self.backgroundImageView setImage:[UIImage imageNamed:@"default.jpg"]];
+        [self.backgroundImageView setImage:[UIImage imageNamed:@"defaultWide.png"]];
     }
     if (listingIn.beds == NULL){
         [self.bedLabel setText:@"No Info"];

@@ -13,13 +13,97 @@
 
 @end
 
-@implementation AppDelegate
-            
+@implementation AppDelegate {
+    
+    // Used to hold URL while app loads Listings
+    NSURL *holdURL;
+}
 
+// Called when application launches with options
 - (BOOL)application:(UIApplication *)application didFinishLaunchingWithOptions:(NSDictionary *)launchOptions {
-    // Override point for customization after application launch.
+    
+    // Checks to see if app opened with a URL
+    if ([launchOptions objectForKey:UIApplicationLaunchOptionsURLKey]) {
+        
+        // Saves this URL to the class to come back to when Listings have loaded
+        holdURL = [launchOptions objectForKey:UIApplicationLaunchOptionsURLKey];
+        
+        // Creates notification observer which will open the URL when called
+        [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(attemptOpenURL:) name:@"finishLoadingListings" object:nil];
+        
+    }
+    
+    // Allows app delegate to progress normally
     return YES;
 }
+
+// Selector for finishLoadingListings
+// Tells application to attempt to open the URL
+// Removes Notification observer
+-(void)attemptOpenURL:(NSURL *)url{
+    
+    [self application:[UIApplication sharedApplication] openURL:holdURL sourceApplication:nil annotation:nil];
+    [[NSNotificationCenter defaultCenter] removeObserver:self name:@"finishLoadingListings" object:nil];
+}
+
+// Called when URL opened
+-(BOOL)application:(UIApplication *)application openURL:(NSURL *)url sourceApplication:(NSString *)sourceApplication annotation:(id)annotation{
+    
+    // Passes URL query and receives a dictionary of URL parameters
+    NSDictionary *params = [self parseQueryString:[url query]];
+    
+    // Sends notification with URL parameters to mainMenuViewController
+    [[NSNotificationCenter defaultCenter] postNotificationName:@"attemptDisplayListings" object:params];
+    
+    // Allows app delegate to progress normally
+    return YES;
+}
+
+// Allows application to open the URL
+-(BOOL)application:(UIApplication *)application handleOpenURL:(NSURL *)url{
+    
+    return YES;
+}
+
+// Takes in a URL query with format keyA=valueA&keyB=valueB
+// Returns NSDictionary of key-value pairs
+- (NSDictionary *)parseQueryString:(NSString *)query {
+    
+    // Creates new MutableDictionary
+    NSMutableDictionary *dict = [[NSMutableDictionary alloc] init];
+    
+    // Seperates query into key-value pairs, formatted as an Array of Strings
+    NSArray *pairs = [query componentsSeparatedByString:@"&"];
+    
+    // For each string pair
+    for (NSString *pair in pairs) {
+        
+        // Split the pair into key and value
+        NSArray *elements = [pair componentsSeparatedByString:@"="];
+        NSString *key = [[elements objectAtIndex:0] stringByReplacingPercentEscapesUsingEncoding:NSUTF8StringEncoding];
+        NSString *val = [[elements objectAtIndex:1] stringByReplacingPercentEscapesUsingEncoding:NSUTF8StringEncoding];
+        
+        // Add key-value pair to Dictionary
+        [dict setObject:val forKey:key];
+    }
+    
+    // Return Dictionary
+    return dict;
+}
+
+// Displays listings from URL modally from whichever ViewController is currently visible
+// Takes desired ViewController to be presented as a paramter
+-(void)presentViewControllerFromVisibleViewController:(UIViewController *)toPresent{
+    
+    // Determines the currently visible ViewController
+    UIViewController *vc = [(UINavigationController *)self.window.rootViewController visibleViewController];
+    
+    // Present desired ViewController modally from currently visible ViewController
+    [vc presentViewController:toPresent animated:YES completion:nil];
+}
+
+
+// Untouched AppDelegate Methods
 
 - (void)applicationWillResignActive:(UIApplication *)application {
     // Sent when the application is about to move from active to inactive state. This can occur for certain types of temporary interruptions (such as an incoming phone call or SMS message) or when the user quits the application and it begins the transition to the background state.

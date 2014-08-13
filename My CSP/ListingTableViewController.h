@@ -9,6 +9,7 @@
 #import <UIKit/UIKit.h>
 #import "ListingTableNavigationController.h"
 #import "ListingTableViewCell.h"
+#import "ListingDetailViewController.h"
 
 @interface ListingTableViewController : UITableViewController
 

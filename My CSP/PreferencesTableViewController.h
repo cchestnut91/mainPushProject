@@ -7,6 +7,10 @@
 //
 
 #import <UIKit/UIKit.h>
+#import "ToggleTableViewCell.h"
+#import "ButtonTableViewCell.h"
+#import "ListingTableNavigationController.h"
+#import "ListingFilter.h"
 
 @interface PreferencesTableViewController : UITableViewController <UIAlertViewDelegate>
 

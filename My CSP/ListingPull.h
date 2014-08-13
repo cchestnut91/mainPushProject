@@ -12,6 +12,7 @@
 
 @interface ListingPull : NSObject
 
+// Returns array of all listings
 -(NSArray *)getListings;
 
 @end

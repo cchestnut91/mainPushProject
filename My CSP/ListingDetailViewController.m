@@ -26,20 +26,46 @@ dispatch_queue_t moreimages() {
 - (void)viewDidLoad {
     [super viewDidLoad];
     
+    if (!self.listing){
+        [self passListing:[(ListingTableNavigationController*)self.navigationController single]];
+        [self.navigationItem setLeftBarButtonItem:[[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemDone target:self action:@selector(close:)]];
+    }
+    
     [self.featuresCollection setDataSource:self];
     [self.featuresCollection setDelegate:self];
     // Do any additional setup after loading the view.
     
     [self setTitle:@"C.S.P. Managment"];
     self.imgPos = 0;
+    self.previews = [[NSMutableArray alloc] init];
     
     UIButton *favButton = [[UIButton alloc] initWithFrame:CGRectMake(0, 0, 25, 25)];
     if (self.listing.favorite){
-        [favButton setImage:[UIImage imageNamed:@"starDark"] forState:UIControlStateNormal];
+        [favButton setImage:[UIImage imageNamed:@"blueStar"] forState:UIControlStateNormal];
     } else {
-        [favButton setImage:[UIImage imageNamed:@"Star"] forState:UIControlStateNormal];
+        [favButton setImage:[UIImage imageNamed:@"blueStarEmpty"] forState:UIControlStateNormal];
     }
     [favButton addTarget:self action:@selector(toggleFavorite) forControlEvents:UIControlEventTouchUpInside];
+    
+    BOOL isDir;
+    NSError *saveError;
+    NSString *directory = NSSearchPathForDirectoriesInDomains(NSDocumentDirectory, NSUserDomainMask, YES)[0];
+    NSString *imgDir = [directory stringByAppendingPathComponent:@"PropImages"];
+    if ([[NSFileManager defaultManager] fileExistsAtPath:imgDir isDirectory:&isDir]){
+        if (!isDir){
+            [[NSFileManager defaultManager] removeItemAtPath:imgDir error:nil];
+            [[NSFileManager defaultManager] createDirectoryAtPath:imgDir withIntermediateDirectories:NO attributes:nil error:nil];
+        }
+        NSArray *listOfFiles = [[NSFileManager defaultManager] contentsOfDirectoryAtPath:imgDir error:nil];
+        if (listOfFiles.count != 0){
+            for (NSString *file in listOfFiles){
+                [[NSFileManager defaultManager] removeItemAtPath:[imgDir stringByAppendingPathComponent:file] error:&saveError];
+                NSLog(@"Attempted");
+            }
+        }
+    } else {
+        [[NSFileManager defaultManager] createDirectoryAtPath:imgDir withIntermediateDirectories:NO attributes:nil error:nil];
+    }
 
     
     if (self.listing.imageSrc.count == self.listing.imageArray.count && self.listing.imageSrc.count > 1){
@@ -54,6 +80,14 @@ dispatch_queue_t moreimages() {
         [self.imageView addGestureRecognizer:rightSwipe];
         [self.imageView addGestureRecognizer:leftSwipe];
         [self.imageView setUserInteractionEnabled:YES];
+        for (UIImage *image in self.listing.imageArray){
+            NSString *imgURL = [[[NSUUID UUID] UUIDString] stringByAppendingPathExtension:@"png"];
+            [UIImagePNGRepresentation(image) writeToFile:[imgDir stringByAppendingPathComponent:imgURL] atomically:YES];
+            ListingPreview *preview = [[ListingPreview alloc] init];
+            NSString *filePath = [imgDir stringByAppendingPathComponent:imgURL];
+            preview.previewItemURL = [NSURL fileURLWithPath:filePath];
+            [self.previews addObject:preview];
+        }
     } else if (self.listing.imageSrc.count > 1){
         [self.pageIndicator setNumberOfPages:self.listing.imageArray.count];
         [self.activity setHidden:NO];
@@ -61,17 +95,32 @@ dispatch_queue_t moreimages() {
         [self.loadingView.layer setCornerRadius:10];
         [self.loadingView setClipsToBounds:YES];
         [self.imageView setUserInteractionEnabled:NO];
+        NSString *imgURLString = [[[NSUUID UUID] UUIDString] stringByAppendingPathExtension:@"png"];
+        [UIImagePNGRepresentation(self.listing.imageArray[0]) writeToFile:[imgDir stringByAppendingPathComponent:imgURLString] atomically:YES];
+        ListingPreview *preview = [[ListingPreview alloc] init];
+        NSString *filePath = [imgDir stringByAppendingPathComponent:imgURLString];
+        preview.previewItemURL = [NSURL fileURLWithPath:filePath];
+        [self.previews addObject:preview];
         dispatch_async(moreimages(), ^{
             for (int i = 1; i < self.listing.imageSrc.count; i++){
                 NSURL *imgUrl = [[NSURL alloc] initWithString:[self.listing.imageSrc objectAtIndex:i]];
                 NSLog(@"%@", [[NSDate alloc] init]);
                 NSData *imageData = [[NSData alloc] initWithContentsOfURL:imgUrl];
                 NSLog(@"%@", [[NSDate alloc] init]);
+                UIImage *newImage;
                 if (imageData){
-                    [self.listing.imageArray addObject:[UIImage imageWithData:imageData]];
+                    newImage = [UIImage imageWithData:imageData];
                 } else {
-                    [self.listing.imageArray addObject:[UIImage imageNamed:@"default.jpg"]];
+                    newImage = [UIImage imageNamed:@"default.png"];
                 }
+                [self.listing.imageArray addObject:newImage];
+                NSString *imgURLString = [[[NSUUID UUID] UUIDString] stringByAppendingPathExtension:@"png"];
+                [UIImagePNGRepresentation(newImage) writeToFile:[imgDir stringByAppendingPathComponent:imgURLString] atomically:YES];
+                ListingPreview *preview = [[ListingPreview alloc] init];
+                NSString *filePath = [imgDir stringByAppendingPathComponent:imgURLString];
+                preview.previewItemURL = [NSURL fileURLWithPath:filePath];
+                [self.previews addObject:preview];
+                
                 
                 dispatch_async(dispatch_get_main_queue(), ^{
                     [self.pageIndicator setNumberOfPages:self.listing.imageArray.count];
@@ -95,6 +144,16 @@ dispatch_queue_t moreimages() {
     } else {
         [self.pageIndicator setHidden:YES];
         [self.imageView setUserInteractionEnabled:YES];
+        if (self.listing.imageSrc.count != 0){
+            NSString *imgURL = [[[NSUUID UUID] UUIDString] stringByAppendingPathExtension:@"png"];
+            if (self.listing.imageArray.count != 0){
+                [UIImagePNGRepresentation(self.listing.imageArray[0]) writeToFile:[imgDir stringByAppendingPathComponent:imgURL] atomically:YES];
+                ListingPreview *preview = [[ListingPreview alloc] init];
+                NSString *filePath = [imgDir stringByAppendingPathComponent:imgURL];
+                preview.previewItemURL = [NSURL fileURLWithPath:filePath];
+                [self.previews addObject:preview];
+            }
+        }
     }
     
     UIBarButtonItem *favBarButton = [[UIBarButtonItem alloc] initWithCustomView:favButton];
@@ -103,15 +162,15 @@ dispatch_queue_t moreimages() {
     if (self.listing.imageArray.count > 0){
         [self.imageView setImage:[self.listing.imageArray objectAtIndex:0]];
     } else {
-        [self.imageView setImage:[UIImage imageNamed:@"default.jpg"]];
+        [self.imageView setImage:[UIImage imageNamed:@"default.png"]];
     }
     [self.bottomImage setImage:[UIImage imageWithCGImage:self.imageView.image.CGImage scale:self.imageView.image.scale orientation:UIImageOrientationDownMirrored]];
     [self.imageView setClipsToBounds:YES];
     
-    UITapGestureRecognizer *tapImage = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(previewImage:)];
-    [self.imageView addGestureRecognizer:tapImage];
-    
-    [self.selector.layer setCornerRadius:0];
+    if (self.listing.imageSrc.count != 0){
+        UITapGestureRecognizer *tapImage = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(previewImage:)];
+        [self.imageView addGestureRecognizer:tapImage];
+    }
     
     [self.view layoutIfNeeded];
 
@@ -141,6 +200,15 @@ dispatch_queue_t moreimages() {
     }
     [self setTitle:[address componentsSeparatedByString:@"-"][0]];
     [self.addressLabel setText:address];
+    MarqueeLabel *scrollLabel = [[MarqueeLabel alloc] initWithFrame:self.addressLabel.frame rate:20 andFadeLength:10];
+    [scrollLabel setMarqueeType:MLContinuous];
+    [scrollLabel setAnimationDelay:2];
+    [scrollLabel setText:self.addressLabel.text];
+    scrollLabel.font = self.addressLabel.font;
+    scrollLabel.textColor = self.addressLabel.textColor;
+    scrollLabel.continuousMarqueeExtraBuffer = 40;
+    [self.infoView addSubview:scrollLabel];
+    [self.addressLabel setHidden:YES];
     [self.rentLabel setText:[NSString stringWithFormat:@"$%@", self.listing.rent]];
     NSDateFormatter *formatter = [[NSDateFormatter alloc] init];
     [formatter setDateFormat:@"MMM. d YYYY"];
@@ -155,16 +223,39 @@ dispatch_queue_t moreimages() {
     */
     
     [self.infoView setBounds:CGRectMake(0, 0, self.scrollView.bounds.size.width, self.addressLabel.bounds.size.height + self.rentLabel.bounds.size.height + self.contactButton.bounds.size.height + 250 + 15 + 4 + 5)];
-     
-    MKPointAnnotation *pin = [[MKPointAnnotation alloc] init];
-    [pin setTitle:address];
-    //[pin setSubtitle:self.listing.area];
-    [pin setCoordinate:self.listing.location.coordinate];
-    [self.mapView addAnnotation:pin];
     
-    MKCoordinateRegion viewRegion = MKCoordinateRegionMakeWithDistance(self.listing.location.coordinate, 750, 750);
-    MKCoordinateRegion adjustedRegion = [self.mapView regionThatFits:viewRegion];
-    [self.mapView setRegion:adjustedRegion animated:YES];
+    if (self.listing.location == nil){
+        CLGeocoder *geocoder = [[CLGeocoder alloc] init];
+        [geocoder geocodeAddressString:[NSString stringWithFormat:@"%@",self.listing.address] completionHandler:^(NSArray* placemarks, NSError* error){
+            if (!error){
+                self.listing.location = [(CLPlacemark *)[placemarks lastObject] location];
+                
+                [self.mapView setDelegate:self];
+                MKPointAnnotation *pin = [[MKPointAnnotation alloc] init];
+                [pin setTitle:address];
+                //[pin setSubtitle:self.listing.area];
+                [pin setCoordinate:self.listing.location.coordinate];
+                [self.mapView addAnnotation:pin];
+                MKCoordinateRegion viewRegion = MKCoordinateRegionMakeWithDistance(self.listing.location.coordinate, 750, 750);
+                MKCoordinateRegion adjustedRegion = [self.mapView regionThatFits:viewRegion];
+                [self.mapView setRegion:adjustedRegion animated:YES];
+            } else {
+                NSLog(@"%@",self.listing.address);
+                [self.selector setEnabled:noErr forSegmentAtIndex:2];
+            }
+        }];
+    } else {
+        [self.mapView setDelegate:self];
+        MKPointAnnotation *pin = [[MKPointAnnotation alloc] init];
+        [pin setTitle:address];
+        //[pin setSubtitle:self.listing.area];
+        [pin setCoordinate:self.listing.location.coordinate];
+        [self.mapView addAnnotation:pin];
+        MKCoordinateRegion viewRegion = MKCoordinateRegionMakeWithDistance(self.listing.location.coordinate, 750, 750);
+        MKCoordinateRegion adjustedRegion = [self.mapView regionThatFits:viewRegion];
+        [self.mapView setRegion:adjustedRegion animated:YES];
+    }
+    
     
     // Blur effect
     /*
@@ -184,10 +275,6 @@ dispatch_queue_t moreimages() {
 
 -(void)viewDidAppear:(BOOL)animated{
     [super viewDidAppear:animated];
-    
-    CGFloat start = [UIApplication sharedApplication].statusBarFrame.size.height;
-    CGFloat add = self.navigationController.navigationBar.frame.size.height;
-    self.ceil = start + add;
     //self.floor = self.dragView.frame.origin.y;
     
 }
@@ -216,6 +303,10 @@ dispatch_queue_t moreimages() {
                 [NSKeyedArchiver archiveRootObject:favorites toFile:[directory stringByAppendingPathComponent:@"favs.txt"]];
             }
         }
+    }
+    
+    if ([[NSFileManager defaultManager] fileExistsAtPath:[NSString stringWithFormat:@"%@/currentImage.png", NSSearchPathForDirectoriesInDomains(NSDocumentDirectory, NSUserDomainMask, YES)[0]]]){
+        [[NSFileManager defaultManager] removeItemAtPath:[NSString stringWithFormat:@"%@/currentImage.png", NSSearchPathForDirectoriesInDomains(NSDocumentDirectory, NSUserDomainMask, YES)[0]] error:nil];
     }
     
     [super viewWillDisappear:animated];
@@ -292,25 +383,57 @@ dispatch_queue_t moreimages() {
     
     return ret;
 }
+- (IBAction)close:(id)sender {
+    [self.navigationController dismissViewControllerAnimated:YES completion:nil];
+}
+
+- (MKAnnotationView *)mapView:(MKMapView *)mapView viewForAnnotation:(id <MKAnnotation>)annotation {
+    
+    if ([annotation isKindOfClass:[MKUserLocation class]]) return nil;
+    MKPinAnnotationView *annotationView = [[MKPinAnnotationView alloc] initWithAnnotation:annotation reuseIdentifier:@"String"];
+    UIButton *button = [[UIButton alloc] initWithFrame:CGRectMake(0, 0, 40, 40)];
+    [button setImage:[UIImage imageNamed:@"carport"] forState:UIControlStateNormal];
+    annotationView.leftCalloutAccessoryView = button;
+    annotationView.enabled = YES;
+    annotationView.annotation = annotation;
+    annotationView.canShowCallout = YES;
+    return annotationView;
+}
+
+-(void)mapView:(MKMapView *)mapView annotationView:(MKAnnotationView *)view calloutAccessoryControlTapped:(UIControl *)control{
+    // Create an MKMapItem to pass to the Maps app
+    CLLocationCoordinate2D coordinate =
+    CLLocationCoordinate2DMake(self.listing.location.coordinate.latitude, self.listing.location.coordinate.longitude);
+    MKPlacemark *placemark = [[MKPlacemark alloc] initWithCoordinate:coordinate
+                                                   addressDictionary:nil];
+    MKMapItem *mapItem = [[MKMapItem alloc] initWithPlacemark:placemark];
+    [mapItem setName:self.addressLabel.text];
+    [mapItem openInMapsWithLaunchOptions:nil];
+}
 
 - (IBAction)previewImage:(id)sender{
-    QLPreviewController *previewController=[[QLPreviewController alloc]init];
-    previewController.delegate=self;
-    previewController.dataSource=self;
-    [previewController setTitle:self.addressLabel.text];
-    [self presentViewController:previewController animated:YES completion:nil];
-    [previewController.navigationItem setRightBarButtonItem:nil];
+    if (self.listing.imageSrc.count != 0){
+        RotatingPreviewController *previewController=[[RotatingPreviewController alloc]init];
+        previewController.delegate=self;
+        previewController.dataSource=self;
+        
+        [previewController setCurrentPreviewItemIndex:self.imgPos];
+        [self presentViewController:previewController animated:YES completion:nil];
+        //[self.navigationController pushViewController:previewController animated:YES];
+
+    }
 }
 
 -(NSInteger)numberOfPreviewItemsInPreviewController:(QLPreviewController *)controller{
-    return self.listing.imageArray.count;
+    return self.previews.count;
 }
 
 -(id <QLPreviewItem>)previewController:(QLPreviewController *)controller previewItemAtIndex:(NSInteger)index{
-    NSString *imgURL = [NSString stringWithFormat:@"%@Test.png", [[NSBundle mainBundle] bundleURL]];
-    UIImage *imgSave = [self.listing.imageArray objectAtIndex:index];
-    [UIImagePNGRepresentation(imgSave) writeToURL:[NSURL URLWithString:imgURL] atomically:YES];
-    return [NSURL URLWithString:imgURL];
+
+    [(ListingPreview *)[self.previews objectAtIndex:index] setPreviewItemTitle:[self.addressLabel.text stringByAppendingString:[NSString stringWithFormat:@" Img %d", (int)index + 1]]];
+    
+    return self.previews[index];
+    
 }
 
 - (IBAction)changeImage:(UISwipeGestureRecognizer *)recognizer{
@@ -372,62 +495,6 @@ dispatch_queue_t moreimages() {
     [self.pageIndicator setCurrentPage:self.imgPos];
     //[self.imageView setImage:[self.listing.imageArray objectAtIndex:self.imgPos]];
 }
-
-/*
-- (IBAction)detectPan:(UIPanGestureRecognizer *)recognizer {
-    if (recognizer.state == UIGestureRecognizerStateEnded){
-        if (self.deltaY < 0){
-            NSLog(@"Map Height: %f", self.mapView.bounds.size.height);
-            [UIView animateWithDuration:0.3 animations:^{
-                self.dragView.frame = CGRectMake(recognizer.view.frame.origin.x, self.ceil, recognizer.view.frame.size.width, [[UIScreen mainScreen] bounds].size.height - self.ceil);
-            } completion:^(BOOL finished){
-                [UIView animateWithDuration:0.1 animations:^{
-                    self.mapView.frame = CGRectMake(0, self.selector.frame.size.height, recognizer.view.frame.size.width, recognizer.view.frame.size.height - self.selector.frame.size.height);
-                    self.infoView.frame = CGRectMake(0, self.selector.frame.size.height, self.infoView.frame.size.width, self.dragView.frame.size.height - self.selector.frame.size.height);
-                } completion:^(BOOL finished){
-                    [UIView animateWithDuration:0.1 animations:^{
-                        self.featuresCollection.bounds = CGRectMake(self.featuresCollection.bounds.origin.x, self.featuresCollection.bounds.origin.y, self.featuresCollection.bounds.size.width, self.infoView.bounds.size.height - self.featuresCollection.frame.origin.y);
-                        self.featuresCollection.frame = CGRectMake(self.featuresCollection.frame.origin.x, self.detailText.frame.origin.y + self.detailText.frame.size.height + 8, self.featuresCollection.bounds.size.width, self.featuresCollection.bounds.size.height);
-                    }];
-                }];
-            }];
-            [self.featuresCollection setScrollEnabled:YES];
-        } else {
-            [self.featuresCollection scrollToItemAtIndexPath:[NSIndexPath indexPathForRow:0 inSection:0] atScrollPosition:UICollectionViewScrollPositionTop animated:YES];
-            [UIView animateWithDuration:0.3 animations:^{
-                self.dragView.frame = CGRectMake(recognizer.view.frame.origin.x, self.floor, recognizer.view.frame.size.width, [[UIScreen mainScreen] bounds].size.height - self.floor);
-            } completion:^(BOOL finished){
-                [UIView animateWithDuration:0.1 animations:^{
-                    self.mapView.frame = CGRectMake(0, self.selector.frame.size.height, recognizer.view.frame.size.width, recognizer.view.frame.size.height - self.selector.frame.size.height);
-                    self.emailView.frame = CGRectMake(0, self.selector.frame.size.height, self.emailView.frame.size.width, self.dragView.frame.size.height - self.selector.frame.size.height);
-                    self.infoView.frame = CGRectMake(0, self.selector.frame.size.height, self.infoView.frame.size.width, self.dragView.frame.size.height - self.selector.frame.size.height);
-                } completion:^(BOOL finished){
-                    [UIView animateWithDuration:0.1 animations:^{
-                        self.featuresCollection.bounds = CGRectMake(self.featuresCollection.bounds.origin.x, self.featuresCollection.bounds.origin.y, self.featuresCollection.bounds.size.width, self.infoView.bounds.size.height - self.featuresCollection.frame.origin.y);
-                        self.featuresCollection.frame = CGRectMake(self.featuresCollection.frame.origin.x, self.detailText.frame.origin.y + self.detailText.frame.size.height + 8, self.featuresCollection.bounds.size.width, self.featuresCollection.bounds.size.height);
-                    }];
-                }];
-            }];
-            [self.featuresCollection setScrollEnabled:NO];
-            
-        }
-    } else {
-        CGPoint translation = [recognizer translationInView:self.dragView];
-        self.deltaY = translation.y;
-        if (self.deltaY != 0){
-            
-            if (recognizer.view.frame.origin.y + translation.y <= self.ceil){
-                self.dragView.frame = CGRectMake(recognizer.view.frame.origin.x, self.ceil, recognizer.view.frame.size.width, [[UIScreen mainScreen] bounds].size.height - self.ceil);
-            } else if (recognizer.view.frame.origin.y + translation.y >= self.floor){
-                self.dragView.frame = CGRectMake(recognizer.view.frame.origin.x, self.floor, recognizer.view.frame.size.width, [[UIScreen mainScreen] bounds].size.height - self.floor);
-            } else {
-                self.dragView.frame = CGRectMake(recognizer.view.frame.origin.x, recognizer.view.frame.origin.y + translation.y, recognizer.view.frame.size.width, recognizer.view.frame.size.height - translation.y);
-            }
-        }
-    }
-    
-}
-*/
 - (IBAction)callCarol:(id)sender {
     UIActionSheet *contactAction = [[UIActionSheet alloc] initWithTitle:@"Contact CSP" delegate:self cancelButtonTitle:@"Cancel" destructiveButtonTitle:nil otherButtonTitles:@"Call 607-277-6961", @"Email CSP Info", nil];
     [contactAction showInView:self.view];
@@ -485,14 +552,14 @@ dispatch_queue_t moreimages() {
 -(void)toggleFavorite{
     if (self.listing.favorite){
         UIButton *favButton = [[UIButton alloc] initWithFrame:CGRectMake(0, 0, 25, 25)];
-        [favButton setImage:[UIImage imageNamed:@"Star"] forState:UIControlStateNormal];
+        [favButton setImage:[UIImage imageNamed:@"blueStarEmpty"] forState:UIControlStateNormal];
         [favButton addTarget:self action:@selector(toggleFavorite) forControlEvents:UIControlEventTouchUpInside];
         
         UIBarButtonItem *favBarButton = [[UIBarButtonItem alloc] initWithCustomView:favButton];
         [self.navigationItem setRightBarButtonItem:favBarButton];
     } else {
         UIButton *favButton = [[UIButton alloc] initWithFrame:CGRectMake(0, 0, 25, 25)];
-        [favButton setImage:[UIImage imageNamed:@"starDark"] forState:UIControlStateNormal];
+        [favButton setImage:[UIImage imageNamed:@"blueStar"] forState:UIControlStateNormal];
         [favButton addTarget:self action:@selector(toggleFavorite) forControlEvents:UIControlEventTouchUpInside];
         
         UIBarButtonItem *favBarButton = [[UIBarButtonItem alloc] initWithCustomView:favButton];
@@ -505,5 +572,65 @@ dispatch_queue_t moreimages() {
     [super didReceiveMemoryWarning];
     // Dispose of any resources that can be recreated.
 }
+
+-(BOOL)shouldAutorotate{
+    return NO;
+}
+
+/*
+ - (IBAction)detectPan:(UIPanGestureRecognizer *)recognizer {
+ if (recognizer.state == UIGestureRecognizerStateEnded){
+ if (self.deltaY < 0){
+ NSLog(@"Map Height: %f", self.mapView.bounds.size.height);
+ [UIView animateWithDuration:0.3 animations:^{
+ self.dragView.frame = CGRectMake(recognizer.view.frame.origin.x, self.ceil, recognizer.view.frame.size.width, [[UIScreen mainScreen] bounds].size.height - self.ceil);
+ } completion:^(BOOL finished){
+ [UIView animateWithDuration:0.1 animations:^{
+ self.mapView.frame = CGRectMake(0, self.selector.frame.size.height, recognizer.view.frame.size.width, recognizer.view.frame.size.height - self.selector.frame.size.height);
+ self.infoView.frame = CGRectMake(0, self.selector.frame.size.height, self.infoView.frame.size.width, self.dragView.frame.size.height - self.selector.frame.size.height);
+ } completion:^(BOOL finished){
+ [UIView animateWithDuration:0.1 animations:^{
+ self.featuresCollection.bounds = CGRectMake(self.featuresCollection.bounds.origin.x, self.featuresCollection.bounds.origin.y, self.featuresCollection.bounds.size.width, self.infoView.bounds.size.height - self.featuresCollection.frame.origin.y);
+ self.featuresCollection.frame = CGRectMake(self.featuresCollection.frame.origin.x, self.detailText.frame.origin.y + self.detailText.frame.size.height + 8, self.featuresCollection.bounds.size.width, self.featuresCollection.bounds.size.height);
+ }];
+ }];
+ }];
+ [self.featuresCollection setScrollEnabled:YES];
+ } else {
+ [self.featuresCollection scrollToItemAtIndexPath:[NSIndexPath indexPathForRow:0 inSection:0] atScrollPosition:UICollectionViewScrollPositionTop animated:YES];
+ [UIView animateWithDuration:0.3 animations:^{
+ self.dragView.frame = CGRectMake(recognizer.view.frame.origin.x, self.floor, recognizer.view.frame.size.width, [[UIScreen mainScreen] bounds].size.height - self.floor);
+ } completion:^(BOOL finished){
+ [UIView animateWithDuration:0.1 animations:^{
+ self.mapView.frame = CGRectMake(0, self.selector.frame.size.height, recognizer.view.frame.size.width, recognizer.view.frame.size.height - self.selector.frame.size.height);
+ self.emailView.frame = CGRectMake(0, self.selector.frame.size.height, self.emailView.frame.size.width, self.dragView.frame.size.height - self.selector.frame.size.height);
+ self.infoView.frame = CGRectMake(0, self.selector.frame.size.height, self.infoView.frame.size.width, self.dragView.frame.size.height - self.selector.frame.size.height);
+ } completion:^(BOOL finished){
+ [UIView animateWithDuration:0.1 animations:^{
+ self.featuresCollection.bounds = CGRectMake(self.featuresCollection.bounds.origin.x, self.featuresCollection.bounds.origin.y, self.featuresCollection.bounds.size.width, self.infoView.bounds.size.height - self.featuresCollection.frame.origin.y);
+ self.featuresCollection.frame = CGRectMake(self.featuresCollection.frame.origin.x, self.detailText.frame.origin.y + self.detailText.frame.size.height + 8, self.featuresCollection.bounds.size.width, self.featuresCollection.bounds.size.height);
+ }];
+ }];
+ }];
+ [self.featuresCollection setScrollEnabled:NO];
+ 
+ }
+ } else {
+ CGPoint translation = [recognizer translationInView:self.dragView];
+ self.deltaY = translation.y;
+ if (self.deltaY != 0){
+ 
+ if (recognizer.view.frame.origin.y + translation.y <= self.ceil){
+ self.dragView.frame = CGRectMake(recognizer.view.frame.origin.x, self.ceil, recognizer.view.frame.size.width, [[UIScreen mainScreen] bounds].size.height - self.ceil);
+ } else if (recognizer.view.frame.origin.y + translation.y >= self.floor){
+ self.dragView.frame = CGRectMake(recognizer.view.frame.origin.x, self.floor, recognizer.view.frame.size.width, [[UIScreen mainScreen] bounds].size.height - self.floor);
+ } else {
+ self.dragView.frame = CGRectMake(recognizer.view.frame.origin.x, recognizer.view.frame.origin.y + translation.y, recognizer.view.frame.size.width, recognizer.view.frame.size.height - translation.y);
+ }
+ }
+ }
+ 
+ }
+ */
 
 @end

@@ -2,12 +2,16 @@
   "images" : [
     {
       "idiom" : "universal",
-      "scale" : "1x",
+      "scale" : "1x"
+    },
+    {
+      "idiom" : "universal",
+      "scale" : "2x",
       "filename" : "Lightbulb.png"
     },
     {
       "idiom" : "universal",
-      "scale" : "2x"
+      "unassigned" : true
     }
   ],
   "info" : {

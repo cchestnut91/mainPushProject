@@ -12,6 +12,9 @@
 
 @property (strong, nonatomic) UIWindow *window;
 
+// Displays listings from URL modally from whichever ViewController is currently visible
+// Takes desired ViewController to be presented as a paramter
+-(void)presentViewControllerFromVisibleViewController:(UIViewController *)toPresent;
 
 @end
 

@@ -7,13 +7,15 @@
 //
 
 #import <UIKit/UIKit.h>
+#import <MapKit/MapKit.h>
+#import <MessageUI/MFMailComposeViewController.h>
 #import "ListingTableViewController.h"
 #import "ListingFeatureCollectionViewCell.h"
-#import <MapKit/MapKit.h>
-#import <QuickLook/QuickLook.h>
-#import <MessageUI/MFMailComposeViewController.h>
+#import "ListingPreview.h"
+#import "MarqueeLabel.h"
+#import "RotatingPreviewController.h"
 
-@interface ListingDetailViewController : UIViewController <UIGestureRecognizerDelegate, UICollectionViewDataSource, UICollectionViewDelegate, QLPreviewControllerDataSource, QLPreviewControllerDelegate, UICollectionViewDelegateFlowLayout, UIActionSheetDelegate, MFMailComposeViewControllerDelegate>
+@interface ListingDetailViewController : UIViewController <UIGestureRecognizerDelegate, UICollectionViewDataSource, UICollectionViewDelegate, QLPreviewControllerDataSource, QLPreviewControllerDelegate, UICollectionViewDelegateFlowLayout, UIActionSheetDelegate, MFMailComposeViewControllerDelegate, MKMapViewDelegate>
 
 @property (strong, nonatomic) Listing *listing;
 @property (weak, nonatomic) IBOutlet UIImageView *imageView;
@@ -32,15 +34,18 @@
 
 @property (weak, nonatomic) IBOutlet UILabel *detailText;
 @property (strong, nonatomic) NSDictionary *features;
+@property (strong, nonatomic) NSMutableArray *previews;
 
 @property (weak, nonatomic) IBOutlet UIPageControl *pageIndicator;
 @property (weak, nonatomic) IBOutlet UIActivityIndicatorView *activity;
 @property (weak, nonatomic) IBOutlet UIView *loadingView;
 
 @property BOOL wasFav;
-@property CGFloat deltaY;
-@property CGFloat ceil;
-@property CGFloat floor;
+
+//@property CGFloat deltaY;
+//@property CGFloat ceil;
+//@property CGFloat floor;
+
 @property int imgPos;
 
 -(void)passListing:(Listing *)listingIn;

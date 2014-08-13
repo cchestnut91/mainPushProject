@@ -7,7 +7,6 @@
 //
 
 #import "ListingTableViewController.h"
-#import "ListingDetailViewController.h"
 
 @interface ListingTableViewController ()
 
@@ -47,10 +46,19 @@
     }
     */
     
-    [self.filter sing];
-    
-    [self filterListings];
-    [self.tableView reloadData];
+    if ([[(ListingTableNavigationController *)self.parentViewController source] isEqualToString:@"showUnits"]){
+        
+        self.filteredListings = [self.filter getSpecific:self.listings];
+        [self.tableView reloadData];
+        
+        [self.navigationItem setRightBarButtonItem:nil];
+        [self.navigationItem setLeftBarButtonItem:[[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemDone target:self action:@selector(closeParent)]];
+        
+    } else {
+        
+        [self filterListings];
+        [self.tableView reloadData];
+    }
 }
 
 -(void)viewDidAppear:(BOOL)animated{
@@ -128,8 +136,11 @@
         [(ListingDetailViewController *)segue.destinationViewController passListing:self.selected];
     } else if ([[segue identifier] isEqualToString:@"showSearch"]){
         [(ListingTableNavigationController *)segue.destinationViewController setFilter:self.filter];
-        [self.filter sing];
     }
+}
+
+-(BOOL)shouldAutorotate{
+    return NO;
 }
 
 @end
