@@ -272,7 +272,7 @@
                 nav.source = self.source;
                 
                 // Set navigation controller's Single listing object to current Listing
-                nav.single = listing;
+                nav.listings = [NSArray arrayWithObject:listing];
                 
                 
                 // Request app delegate
@@ -306,7 +306,7 @@
         // Set necessary values
         nav.source = self.source;
         nav.filter = self.filter;
-        nav.listing = self.listings;
+        nav.listings = self.listings;
         
         // Request App delegate
         AppDelegate *delegate = [UIApplication sharedApplication].delegate;
@@ -355,9 +355,6 @@
 // fades imageView to the next image in the background array
 -(void)fadeImage:(NSTimer *)sender{
     
-    // Increment position of image
-    pos++;
-    
     // Reset to beginning of array at end
     if (pos == self.backgroundArray.count) pos = 0;
     
@@ -372,7 +369,9 @@
                         
                         // Defines actual change to the view to be made
                         self.backgroundImageView.image = toImage;
-                    } completion:nil];
+                    } completion:^(BOOL completed){
+                        pos++;
+                    }];
 }
 
 #pragma mark-TableView DataSource
@@ -674,7 +673,7 @@
     if ([segue.identifier isEqualToString:@"showListings"] || [segue.identifier isEqualToString:@"showSearch"]){
         
         // Pass necessary information to new NavigationController
-        [(ListingTableNavigationController *)[segue destinationViewController] setListing:self.listings];
+        [(ListingTableNavigationController *)[segue destinationViewController] setListings:self.listings];
         [(ListingTableNavigationController *)[segue destinationViewController] setFilter:self.filter];
         [(ListingTableNavigationController *)[segue destinationViewController] setSource:self.source];
     }

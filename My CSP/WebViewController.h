@@ -8,10 +8,21 @@
 
 #import <UIKit/UIKit.h>
 
-@interface WebViewController : UIViewController <UIActionSheetDelegate, UIWebViewDelegate>
+@interface WebViewController : UIViewController <
+    UIActionSheetDelegate,
+    UIWebViewDelegate
+>
+
+// Actual webview part
 @property (weak, nonatomic) IBOutlet UIWebView *webView;
+
+// Holds the URL request
 @property (strong, nonatomic) NSURLRequest *request;
-- (IBAction)showActionSheet:(id)sender;
+
+// Action button used as an anchor for the ActionSheet
 @property (weak, nonatomic) IBOutlet UIBarButtonItem *actionButton;
+
+// Displays a confirmation action sheet to open in safari
+- (IBAction)showActionSheet:(id)sender;
 
 @end

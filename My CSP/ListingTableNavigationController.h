@@ -11,11 +11,18 @@
 #import "ListingDetailViewController.h"
 #import "ViewController.h"
 
+// Navigation controllers hold and pass values between modal views and their presenting views
+#warning Rename this class to CSPNavigationController when Xcode gets the stick out of it's ass
 @interface ListingTableNavigationController : UINavigationController
 
-@property (strong, nonatomic) NSArray *listing;
+
+// Array holding all listings before filtering
+@property (strong, nonatomic) NSArray *listings;
+
+// The current filter being used
 @property (strong, nonatomic) ListingFilter *filter;
+
+// Used to determine where the modal view was presented from
 @property (strong, nonatomic) NSString *source;
-@property (strong, nonatomic) Listing *single;
 
 @end

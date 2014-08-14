@@ -13,13 +13,17 @@
 
 @interface ListingTableViewController : UITableViewController
 
+// Initial array of Listing objects
 @property (strong, nonatomic) NSArray *listings;
-@property (strong, nonatomic) Listing *selected;
+
+// Array of listings which passed through the filter and will be displayed
 @property (strong, nonatomic) NSArray *filteredListings;
+
+// Filter passed form the previous view, either the main menu or the searchPreferences view
 @property (strong, nonatomic) ListingFilter *filter;
 
--(void)filterListings;
--(void)closeParent;
+
+// closes the containing navigation controller
 - (IBAction)pressMenu:(id)sender;
 
 @end

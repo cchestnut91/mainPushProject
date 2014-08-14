@@ -12,7 +12,9 @@
 // Used to hold URLs to Local Image Files for QuickLook to display
 // Conforms to QLPreviewItem predicate
 
-@interface ListingPreview : NSObject <QLPreviewItem>
+@interface ListingPreview : NSObject <
+    QLPreviewItem
+>
 
 @property (atomic, retain) NSURL *previewItemURL;
 @property (atomic, retain) NSString *previewItemTitle;

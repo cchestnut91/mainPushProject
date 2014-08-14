@@ -15,41 +15,70 @@
 #import "MarqueeLabel.h"
 #import "RotatingPreviewController.h"
 
-@interface ListingDetailViewController : UIViewController <UIGestureRecognizerDelegate, UICollectionViewDataSource, UICollectionViewDelegate, QLPreviewControllerDataSource, QLPreviewControllerDelegate, UICollectionViewDelegateFlowLayout, UIActionSheetDelegate, MFMailComposeViewControllerDelegate, MKMapViewDelegate>
+@interface ListingDetailViewController : UIViewController <
+    UIGestureRecognizerDelegate,
+    UICollectionViewDataSource,
+    UICollectionViewDelegate,
+    UICollectionViewDelegateFlowLayout,
+    QLPreviewControllerDataSource,
+    QLPreviewControllerDelegate,
+    UIActionSheetDelegate,
+    MFMailComposeViewControllerDelegate,
+    MKMapViewDelegate
+>
 
-@property (strong, nonatomic) Listing *listing;
+// IBOutlets for UIElements
 @property (weak, nonatomic) IBOutlet UIImageView *imageView;
+@property (weak, nonatomic) IBOutlet UIPageControl *pageIndicator;
 @property (weak, nonatomic) IBOutlet UIView *blurView;
 @property (weak, nonatomic) IBOutlet UIImageView *bottomImage;
 @property (weak, nonatomic) IBOutlet UISegmentedControl *selector;
+
+// InfoView & Elements
 @property (weak, nonatomic) IBOutlet UIView *infoView;
 @property (weak, nonatomic) IBOutlet UIScrollView *scrollView;
-@property (weak, nonatomic) IBOutlet MKMapView *mapView;
-@property (weak, nonatomic) IBOutlet UICollectionView *featuresCollection;
 @property (weak, nonatomic) IBOutlet UILabel *addressLabel;
 @property (weak, nonatomic) IBOutlet UILabel *townLabel;
 @property (weak, nonatomic) IBOutlet UILabel *rentLabel;
 @property (weak, nonatomic) IBOutlet UILabel *availableLabel;
 @property (weak, nonatomic) IBOutlet UIButton *contactButton;
-
 @property (weak, nonatomic) IBOutlet UILabel *detailText;
-@property (strong, nonatomic) NSDictionary *features;
-@property (strong, nonatomic) NSMutableArray *previews;
 
-@property (weak, nonatomic) IBOutlet UIPageControl *pageIndicator;
+// MapView
+@property (weak, nonatomic) IBOutlet MKMapView *mapView;
+
+// Amenities View
+@property (weak, nonatomic) IBOutlet UICollectionView *featuresCollection;
+
+// Loading View
 @property (weak, nonatomic) IBOutlet UIActivityIndicatorView *activity;
 @property (weak, nonatomic) IBOutlet UIView *loadingView;
 
-@property BOOL wasFav;
-
-//@property CGFloat deltaY;
-//@property CGFloat ceil;
-//@property CGFloat floor;
-
-@property int imgPos;
-
--(void)passListing:(Listing *)listingIn;
+// Handles switching the subview when SegmentedControl is changed
 - (IBAction)updateSubView:(id)sender;
+
+// Loads the listing
+-(void)passListing:(Listing *)listingIn;
+
+// Changes the favorite value of the listing
 -(void)toggleFavorite;
+
+// Determines appropriate string to label an amenity with
+-(NSString *)stringForKey:(NSString *)key;
+
+// Dismisses the containing NavigationController
+- (IBAction)close:(id)sender;
+
+// Attempts to open a new QLPreviewController
+- (IBAction)previewImage:(id)sender;
+
+// Swipe responder to change the displayed image in the ImageView and animate
+- (IBAction)changeImage:(UISwipeGestureRecognizer *)recognizer;
+
+// Contact realtor. may not be Carol
+- (IBAction)callCarol:(id)sender;
+
+// Initializes gesture recognizers and adds them to imageView
+-(void)addGestures;
 
 @end

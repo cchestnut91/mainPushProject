@@ -12,7 +12,9 @@
 
 // Object used to filter through an array of Listings using search preferences
 // Conforms to NSCoding protocol
-@interface ListingFilter : NSObject <NSCoding>
+@interface ListingFilter : NSObject <
+    NSCoding
+>
 
 
 // Stores Bools as NSNumbers

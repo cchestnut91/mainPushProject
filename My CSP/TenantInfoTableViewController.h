@@ -9,8 +9,7 @@
 #import <UIKit/UIKit.h>
 #import "WebViewController.h"
 
+// This View Gives information and to CSP Tenants for utilities, maintenance, and police
 @interface TenantInfoTableViewController : UITableViewController
-
-@property (strong, nonatomic) NSString *selectedURL;
 
 @end

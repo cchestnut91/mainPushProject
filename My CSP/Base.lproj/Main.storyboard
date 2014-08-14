@@ -496,7 +496,7 @@
                                     <action selector="updateSubView:" destination="y3S-Cj-6E9" eventType="valueChanged" id="7sA-3s-i8Z"/>
                                 </connections>
                             </segmentedControl>
-                            <view hidden="YES" contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="mdU-j0-cv6">
+                            <view hidden="YES" contentMode="scaleToFill" misplaced="YES" translatesAutoresizingMaskIntoConstraints="NO" id="mdU-j0-cv6">
                                 <rect key="frame" x="110" y="100" width="100" height="100"/>
                                 <subviews>
                                     <activityIndicatorView opaque="NO" contentMode="scaleToFill" horizontalHuggingPriority="750" verticalHuggingPriority="750" hidesWhenStopped="YES" animating="YES" style="whiteLarge" translatesAutoresizingMaskIntoConstraints="NO" id="g7Q-eM-h60">
@@ -572,7 +572,7 @@
                                     <view contentMode="scaleToFill" horizontalHuggingPriority="1000" verticalHuggingPriority="1000" horizontalCompressionResistancePriority="1000" verticalCompressionResistancePriority="1000" translatesAutoresizingMaskIntoConstraints="NO" id="7f7-gq-XI9">
                                         <rect key="frame" x="0.0" y="0.0" width="320" height="288"/>
                                         <subviews>
-                                            <label opaque="NO" clipsSubviews="YES" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="700 Stewart Ave" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="CjB-Lh-098">
+                                            <label hidden="YES" opaque="NO" clipsSubviews="YES" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="700 Stewart Ave" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="CjB-Lh-098">
                                                 <rect key="frame" x="10" y="4" width="171" height="21"/>
                                                 <constraints>
                                                     <constraint firstAttribute="height" constant="21" id="UJZ-zr-5te"/>
@@ -853,7 +853,7 @@
                                     <view contentMode="scaleToFill" horizontalHuggingPriority="1000" verticalHuggingPriority="1000" horizontalCompressionResistancePriority="1000" verticalCompressionResistancePriority="1000" translatesAutoresizingMaskIntoConstraints="NO" id="pOi-XI-B3a">
                                         <rect key="frame" x="0.0" y="0.0" width="320" height="288"/>
                                         <subviews>
-                                            <label opaque="NO" clipsSubviews="YES" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="700 Stewart Ave" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="Gkg-52-6ZF">
+                                            <label hidden="YES" opaque="NO" clipsSubviews="YES" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="700 Stewart Ave" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="Gkg-52-6ZF">
                                                 <rect key="frame" x="10" y="4" width="171" height="21"/>
                                                 <constraints>
                                                     <constraint firstAttribute="height" constant="21" id="91e-DV-Wkb"/>
@@ -1674,7 +1674,7 @@
         <simulatedScreenMetrics key="destination" type="retina4"/>
     </simulatedMetricsContainer>
     <inferredMetricsTieBreakers>
-        <segue reference="Xbh-O6-6ZB"/>
-        <segue reference="6uH-h1-I4A"/>
+        <segue reference="nGs-wG-eqf"/>
+        <segue reference="R9I-il-CaE"/>
     </inferredMetricsTieBreakers>
 </document>

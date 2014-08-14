@@ -12,7 +12,10 @@
 
 @end
 
+
+// Allows the QLPreviewController to be rotated into Landscape without any other view rotating into Landscape
 @implementation RotatingPreviewController {
+    // Bool to allow view to rotate
     BOOL rotate;
 }
 
@@ -29,35 +32,33 @@
 {
     [super viewDidLoad];
     
+    // Forces view to initialize in Portrait to avoid errors
     rotate = NO;
-    // Do any additional setup after loading the view.
 }
 
 -(void)viewDidAppear:(BOOL)animated{
     [super viewDidAppear:animated];
     
+    // Once view has loaded allow rotating
     rotate = YES;
 }
 
-- (void)didReceiveMemoryWarning
+// Allow rotation or not from here
+-(BOOL)shouldAutorotate
 {
-    [super didReceiveMemoryWarning];
-    // Dispose of any resources that can be recreated.
+    return rotate;
 }
 
+// Allow any orientation other than upside down
 - (BOOL)shouldAutorotateToInterfaceOrientation:(UIInterfaceOrientation)interfaceOrientation
 {
     return (interfaceOrientation != UIInterfaceOrientationPortraitUpsideDown);
 }
 
+// Allow any orientation other than upside down
 -(NSUInteger)supportedInterfaceOrientations
 {
     return UIInterfaceOrientationMaskAllButUpsideDown;
-}
-
--(BOOL)shouldAutorotate
-{
-    return rotate;
 }
 
 @end

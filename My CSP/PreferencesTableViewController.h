@@ -12,6 +12,12 @@
 #import "ListingTableNavigationController.h"
 #import "ListingFilter.h"
 
-@interface PreferencesTableViewController : UITableViewController <UIAlertViewDelegate>
+@interface PreferencesTableViewController : UITableViewController <
+    UIAlertViewDelegate
+>
 
+-(IBAction)clearSearch:(id)sender;
+-(IBAction)clearFavorites:(id)sender;
+-(IBAction)toggleBeacons:(id)sender;
+-(IBAction)close:(id)sender;
 @end

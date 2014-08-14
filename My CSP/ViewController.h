@@ -16,7 +16,13 @@
 
 // Delegates for TableView, SearchBar, AlertView, and LocationManager
 // DataSource for TableView
-@interface ViewController : UIViewController <UITableViewDataSource, UITableViewDelegate, UISearchBarDelegate, UIAlertViewDelegate, CLLocationManagerDelegate>
+@interface ViewController : UIViewController <
+    UITableViewDataSource,
+    UITableViewDelegate,
+    UISearchBarDelegate,
+    UIAlertViewDelegate,
+    CLLocationManagerDelegate
+>
 
 // Outlets for UI Elements
 @property (weak, nonatomic) IBOutlet UILabel *cspLabel;

@@ -28,23 +28,26 @@
     [super viewDidLoad];
     // Do any additional setup after loading the view.
     
+    
+    // Initialize webview
     [self.webView setDelegate:self];
+    
+    // Load request passed from the previous view
     [self.webView loadRequest:self.request];
 }
 
-- (void)didReceiveMemoryWarning
-{
-    [super didReceiveMemoryWarning];
-    // Dispose of any resources that can be recreated.
-}
-
+// Creates and displays an action sheet asking if the user wants to open the current page in the browser
 - (IBAction)showActionSheet:(id)sender {
     UIActionSheet *action = [[UIActionSheet alloc] initWithTitle:@"Open page in Safari?" delegate:self cancelButtonTitle:@"Cancel" destructiveButtonTitle:nil otherButtonTitles:@"Confirm", nil];
     [action showFromBarButtonItem:self.actionButton animated:YES];
 }
 
+// Responds to action sheet selection
 -(void)actionSheet:(UIActionSheet *)actionSheet didDismissWithButtonIndex:(NSInteger)buttonIndex{
+    // If user clicked YES
     if (buttonIndex == 0){
+        
+        // Open the URL in Safari
         [[UIApplication sharedApplication] openURL:self.webView.request.URL];
     }
 }

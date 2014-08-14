@@ -8,7 +8,10 @@
 
 #import <UIKit/UIKit.h>
 
+#warning rename to AmenityCollectionViewCell when Xcode gets the stick out of its ass
 @interface ListingFeatureCollectionViewCell : UICollectionViewCell
+
+// Collection view for amenities with an image and a label
 @property (weak, nonatomic) IBOutlet UIImageView *imageView;
 @property (weak, nonatomic) IBOutlet UILabel *label;
 

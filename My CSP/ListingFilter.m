@@ -54,7 +54,7 @@
     self = [super init];
     
     // Default save location for Filter File
-    NSString *filterFile = [NSSearchPathForDirectoriesInDomains(NSDocumentDirectory, NSUserDomainMask, YES)[0] stringByAppendingPathComponent:@"savedFiler"];
+    NSString *filterFile = [NSSearchPathForDirectoriesInDomains(NSDocumentDirectory, NSUserDomainMask, YES)[0] stringByAppendingPathComponent:@"savedFilter"];
     
     // If saved filter exits
     if ([[NSFileManager defaultManager] fileExistsAtPath:filterFile]){
@@ -118,7 +118,7 @@
         // If current date is not between ListDate and StopListDate don't pass
         if (pass && ![check isNowBetweenDate:check.start andDate:check.stop]){
             pass = NO;
-            break;
+            continue;
         }
         
         // Will not check other options if it has already failed to pass
@@ -133,7 +133,7 @@
             // If desired year is before the year listing goes available, don't pass
             if (!(y.intValue <= self.year.intValue)){
                 pass = NO;
-                break;
+                continue;
             }
         }
         
@@ -155,20 +155,20 @@
             // Honestly, I'm not sure about this bool statement, but it seems to work!
             if (![m isEqualToString:self.month] && !(y.intValue < self.year.intValue)){
                 pass = NO;
-                break;
+                continue;
             }
         }
         
         // If lowRent is set and Listing rent is not less than lowRent
         if (pass && self.lowRent != 0 && self.lowRent > check.rent.floatValue){
             pass = NO;
-            break;
+            continue;
         }
         
         // If highRent is set and Listing rent is not more than highRent
         if (pass && self.highRent != 0 && self.highRent < check.rent.floatValue){
             pass = NO;
-            break;
+            continue;
         }
         
         // If filter should check for current location
@@ -177,19 +177,19 @@
             // If user's current location is not within range of Listing's location
             if ([self.location distanceFromLocation:check.location] > self.range){
                 pass = NO;
-                break;
+                continue;
             }
         }
         
         // If desired number of beds is more than Listing's num beds
         if (pass && self.beds.intValue > check.beds.intValue){
             pass = NO;
-            break;
+            continue;
         }
         // If desired number of baths is more than Listing's num baths
         if (pass && check.baths.intValue < self.baths.intValue){
             pass = NO;
-            break;
+            continue;
         }
         
         // If filter should only return Listing's with Images
@@ -198,74 +198,74 @@
             // If Listing has no images
             if ([check imageSrc].count == 0){
                 pass = NO;
-                break;
+                continue;
             }
         }
         
         // Simple Bool checks
         if (pass && self.favorite.boolValue && !check.favorite){
             pass = NO;
-            break;
+            continue;
         }
         if (pass && self.cable.boolValue && !check.cable){
             pass = NO;
-            break;
+            continue;
         }
         if (pass && self.hardWood.boolValue && !check.hardwood){
             pass = NO;
-            break;
+            continue;
         }
         if (pass && self.fridge.boolValue && !check.refrigerator){
             pass = NO;
-            break;
+            continue;
         }
         if (pass && self.laundry.boolValue && !check.laundry){
             pass = NO;
-            break;
+            continue;
         }
         if (pass && self.oven.boolValue && !check.oven){
             pass = NO;
-            break;
+            continue;
         }
         if (pass && self.air.boolValue && !check.airConditioning){
             pass = NO;
-            break;
+            continue;
         }
         if (pass && self.balcony.boolValue && !check.balcony){
             pass = NO;
-            break;
+            continue;
         }
         if (pass && self.carport.boolValue && !check.carport){
             pass = NO;
-            break;
+            continue;
         }
         if (pass && self.dish.boolValue && !check.dishwasher){
             pass = NO;
-            break;
+            continue;
         }
         if (pass && self.fence.boolValue && !check.fenced){
             pass = NO;
-            break;
+            continue;
         }
         if (pass && self.fire.boolValue && !check.fireplace){
             pass = NO;
-            break;
+            continue;
         }
         if (pass && self.garage.boolValue && !check.garage){
             pass = NO;
-            break;
+            continue;
         }
         if (pass && self.internet.boolValue && !check.internet){
             pass = NO;
-            break;
+            continue;
         }
         if (pass && self.microwave.boolValue && !check.microwave){
             pass = NO;
-            break;
+            continue;
         }
         if (pass && self.closet.boolValue && !check.walkCloset){
             pass = NO;
-            break;
+            continue;
         }
         
         // If array of Keywords is not null
@@ -284,7 +284,7 @@
                     // If the listing address contains any of the keywords
                     if ([check.address.lowercaseString rangeOfString:[keyWord lowercaseString]].location != NSNotFound){
                         found = YES;
-                        break;
+                        
                     }
                     // Else if the listing description contains any of the keywords
                     else if ([check.descrip.lowercaseString rangeOfString:[keyWord lowercaseString]].location != NSNotFound){
@@ -297,7 +297,7 @@
             // If no keywords were found do not pass filter
             if (!found){
                 pass = NO;
-                break;
+                continue;
             }
             
         }

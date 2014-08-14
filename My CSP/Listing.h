@@ -10,7 +10,9 @@
 #import <CoreLocation/CoreLocation.h>
 #import <UIKit/UIKit.h>
 
-@interface Listing : NSObject <NSCoding>
+@interface Listing : NSObject <
+    NSCoding
+>
 
 // Listing Info
 @property (strong, nonatomic) NSString *address;
