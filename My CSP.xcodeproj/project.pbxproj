@@ -19,7 +19,7 @@
 		AB44FA4B1999449D005BC223 /* TenantInfoTableViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = AB44FA4A1999449D005BC223 /* TenantInfoTableViewController.m */; };
 		AB44FA58199968E3005BC223 /* background.jpg in Resources */ = {isa = PBXBuildFile; fileRef = AB44FA54199968E3005BC223 /* background.jpg */; };
 		AB44FA59199968E3005BC223 /* scrollA.jpg in Resources */ = {isa = PBXBuildFile; fileRef = AB44FA55199968E3005BC223 /* scrollA.jpg */; };
-		AB44FA5A199968E3005BC223 /* scrollB.JPG in Resources */ = {isa = PBXBuildFile; fileRef = AB44FA56199968E3005BC223 /* scrollB.JPG */; };
+		AB44FA5A199968E3005BC223 /* scrollB.jpg in Resources */ = {isa = PBXBuildFile; fileRef = AB44FA56199968E3005BC223 /* scrollB.jpg */; };
 		AB44FA5B199968E3005BC223 /* scrollC.jpg in Resources */ = {isa = PBXBuildFile; fileRef = AB44FA57199968E3005BC223 /* scrollC.jpg */; };
 		AB44FA5E199A5412005BC223 /* RotatingPreviewController.m in Sources */ = {isa = PBXBuildFile; fileRef = AB44FA5D199A5412005BC223 /* RotatingPreviewController.m */; };
 		AB44FA61199A8515005BC223 /* ListingPreview.m in Sources */ = {isa = PBXBuildFile; fileRef = AB44FA60199A8515005BC223 /* ListingPreview.m */; };
@@ -77,7 +77,7 @@
 		AB44FA4A1999449D005BC223 /* TenantInfoTableViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = TenantInfoTableViewController.m; sourceTree = "<group>"; };
 		AB44FA54199968E3005BC223 /* background.jpg */ = {isa = PBXFileReference; lastKnownFileType = image.jpeg; path = background.jpg; sourceTree = "<group>"; };
 		AB44FA55199968E3005BC223 /* scrollA.jpg */ = {isa = PBXFileReference; lastKnownFileType = image.jpeg; path = scrollA.jpg; sourceTree = "<group>"; };
-		AB44FA56199968E3005BC223 /* scrollB.JPG */ = {isa = PBXFileReference; lastKnownFileType = image.jpeg; path = scrollB.JPG; sourceTree = "<group>"; };
+		AB44FA56199968E3005BC223 /* scrollB.jpg */ = {isa = PBXFileReference; lastKnownFileType = image.jpeg; path = scrollB.jpg; sourceTree = "<group>"; };
 		AB44FA57199968E3005BC223 /* scrollC.jpg */ = {isa = PBXFileReference; lastKnownFileType = image.jpeg; path = scrollC.jpg; sourceTree = "<group>"; };
 		AB44FA5C199A5412005BC223 /* RotatingPreviewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = RotatingPreviewController.h; sourceTree = "<group>"; };
 		AB44FA5D199A5412005BC223 /* RotatingPreviewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = RotatingPreviewController.m; sourceTree = "<group>"; };
@@ -160,7 +160,7 @@
 				ABE172281947884100B4953B /* Images.xcassets */,
 				AB44FA54199968E3005BC223 /* background.jpg */,
 				AB44FA55199968E3005BC223 /* scrollA.jpg */,
-				AB44FA56199968E3005BC223 /* scrollB.JPG */,
+				AB44FA56199968E3005BC223 /* scrollB.jpg */,
 				AB44FA57199968E3005BC223 /* scrollC.jpg */,
 				AB44FA64199A9649005BC223 /* defaultWide.png */,
 				AB44FA65199A9649005BC223 /* default.png */,
@@ -507,7 +507,7 @@
 				AB44FA58199968E3005BC223 /* background.jpg in Resources */,
 				ABE172291947884100B4953B /* Images.xcassets in Resources */,
 				AB44FA5B199968E3005BC223 /* scrollC.jpg in Resources */,
-				AB44FA5A199968E3005BC223 /* scrollB.JPG in Resources */,
+				AB44FA5A199968E3005BC223 /* scrollB.jpg in Resources */,
 				AB3109DA1986998700F10A95 /* Main.storyboard in Resources */,
 				AB44FA67199A9649005BC223 /* default.png in Resources */,
 			);

@@ -16,6 +16,9 @@
     
     // Current position in array of background images to be displayed
     int pos;
+    
+    // Timer to handle image fade transitions
+    NSTimer *timer;
 }
 
 #pragma mark-ViewLoading & Appearing
@@ -93,6 +96,10 @@
     [self.loadingView setHidden:NO];
     [self.loadingView.layer setCornerRadius:10];
     [self.loadingView setBackgroundColor:[UIColor colorWithRed:51/255.0 green:60/255.0 blue:77/255.0 alpha:.9]];
+    
+    
+   
+    
     
     // Create download queue for GCD
     dispatch_queue_t downloadListingQueue = dispatch_queue_create("com.Push.CSPListingDownload", 0);
@@ -184,12 +191,6 @@
 - (void)viewWillAppear:(BOOL)animated {
     [super viewWillAppear:animated];
     
-    // Makes sure navigation bar is hidden within this particular view
-    [self.navigationController setNavigationBarHidden:YES animated:animated];
-    
-    // Adjusts appearance of Search bar text field
-    [[UITextField appearanceWhenContainedIn:[UISearchBar class], nil] setTextColor:[UIColor whiteColor]];
-    
     // Define images to place in rotating backgound view
     UIImage *imageA = [UIImage imageNamed:@"background.jpg"];
     UIImage *imageB = [UIImage imageNamed:@"scrollA.jpg"];
@@ -199,20 +200,14 @@
     // Create background array
     self.backgroundArray = [[NSMutableArray alloc] initWithObjects:imageA, imageC, imageB, imageD, nil];
     
-    // Initialize the position to zero
-    pos = 0;
-    
     // Set the backgound view to the initial image
     [self.backgroundImageView setImage:self.backgroundArray[pos]];
     
-    // If images were properly loaded from the bundle
-    if (self.backgroundArray.count != 0){
-        
-        // Initialize a timer that will fire every 10 seconds
-        // On fire it will run fadeImage and pass pos as an NSNumber
-        NSTimer *timer = [NSTimer scheduledTimerWithTimeInterval:10.0 target:self selector:@selector(fadeImage:) userInfo:[NSNumber numberWithInt:pos] repeats:YES];
-        [timer fire];
-    }
+    // Makes sure navigation bar is hidden within this particular view
+    [self.navigationController setNavigationBarHidden:YES animated:animated];
+    
+    // Adjusts appearance of Search bar text field
+    [[UITextField appearanceWhenContainedIn:[UISearchBar class], nil] setTextColor:[UIColor whiteColor]];
 }
 
 -(void)viewDidAppear:(BOOL)animated{
@@ -236,6 +231,26 @@
         [tryAgain show];
     }
     
+    // Initialize the position to zero
+    pos = 0;
+    
+    // If images were properly loaded from the bundle
+    if (self.backgroundArray.count != 0){
+        
+        // Initialize a timer that will fire every 10 seconds
+        // On fire it will run fadeImage and pass pos as an NSNumber
+        timer = [NSTimer scheduledTimerWithTimeInterval:10.0 target:self selector:@selector(fadeImage:) userInfo:[NSNumber numberWithInt:pos] repeats:YES];
+        [timer fire];
+    }
+    
+}
+
+-(void)viewWillDisappear:(BOOL)animated{
+    [super viewWillDisappear:animated];
+    
+    [timer invalidate];
+    
+    self.backgroundArray = nil;
 }
 
 #pragma mark-Prepare to show Listing from URL
@@ -355,11 +370,10 @@
 // fades imageView to the next image in the background array
 -(void)fadeImage:(NSTimer *)sender{
     
-    // Reset to beginning of array at end
-    if (pos == self.backgroundArray.count) pos = 0;
+    pos = pos % self.backgroundArray.count;
     
     // Defines the next image to be displayed
-    UIImage *toImage = [self.backgroundArray objectAtIndex:pos];
+    UIImage *toImage = [self.backgroundArray objectAtIndex:pos % self.backgroundArray.count];
     
     // Performs transition animation
     [UIView transitionWithView:self.backgroundImageView
@@ -367,9 +381,13 @@
                        options:UIViewAnimationOptionTransitionCrossDissolve
                     animations:^{
                         
+                        NSLog(@"Running animation");
+                        
                         // Defines actual change to the view to be made
                         self.backgroundImageView.image = toImage;
                     } completion:^(BOOL completed){
+                        
+                        NSLog(@"Animation complete: %d", pos);
                         pos++;
                     }];
 }
@@ -689,6 +707,9 @@
 - (void)didReceiveMemoryWarning {
     [super didReceiveMemoryWarning];
     // Dispose of any resources that can be recreated.
+    
+    self.backgroundArray = nil;
+    [timer invalidate];
 }
 
 @end

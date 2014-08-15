@@ -88,7 +88,7 @@
                                     <outlet property="delegate" destination="vXZ-lx-hvc" id="K1I-vB-smV"/>
                                 </connections>
                             </searchBar>
-                            <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="pgY-SR-MlC">
+                            <view hidden="YES" contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="pgY-SR-MlC">
                                 <rect key="frame" x="85" y="209" width="150" height="150"/>
                                 <subviews>
                                     <activityIndicatorView opaque="NO" contentMode="scaleToFill" horizontalHuggingPriority="750" verticalHuggingPriority="750" hidesWhenStopped="YES" animating="YES" style="whiteLarge" translatesAutoresizingMaskIntoConstraints="NO" id="hS6-pj-Q3c">
@@ -496,7 +496,7 @@
                                     <action selector="updateSubView:" destination="y3S-Cj-6E9" eventType="valueChanged" id="7sA-3s-i8Z"/>
                                 </connections>
                             </segmentedControl>
-                            <view hidden="YES" contentMode="scaleToFill" misplaced="YES" translatesAutoresizingMaskIntoConstraints="NO" id="mdU-j0-cv6">
+                            <view hidden="YES" contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="mdU-j0-cv6">
                                 <rect key="frame" x="110" y="100" width="100" height="100"/>
                                 <subviews>
                                     <activityIndicatorView opaque="NO" contentMode="scaleToFill" horizontalHuggingPriority="750" verticalHuggingPriority="750" hidesWhenStopped="YES" animating="YES" style="whiteLarge" translatesAutoresizingMaskIntoConstraints="NO" id="g7Q-eM-h60">
@@ -1674,7 +1674,7 @@
         <simulatedScreenMetrics key="destination" type="retina4"/>
     </simulatedMetricsContainer>
     <inferredMetricsTieBreakers>
-        <segue reference="nGs-wG-eqf"/>
         <segue reference="R9I-il-CaE"/>
+        <segue reference="Xbh-O6-6ZB"/>
     </inferredMetricsTieBreakers>
 </document>

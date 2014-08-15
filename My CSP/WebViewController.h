@@ -17,7 +17,7 @@
 @property (weak, nonatomic) IBOutlet UIWebView *webView;
 
 // Holds the URL request
-@property (strong, nonatomic) NSURLRequest *request;
+@property (weak, nonatomic) NSURLRequest *request;
 
 // Action button used as an anchor for the ActionSheet
 @property (weak, nonatomic) IBOutlet UIBarButtonItem *actionButton;
