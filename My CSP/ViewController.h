@@ -50,6 +50,8 @@
 // Array of images to fade through in the background imageView
 @property (strong, nonatomic) NSMutableArray *backgroundArray;
 
+@property (weak, nonatomic) UIImage *toImage;
+
 // Returns true if User has elected to allow location services
 -(BOOL)locationEnabled;
 

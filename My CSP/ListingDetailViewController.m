@@ -14,9 +14,6 @@
 
 @implementation ListingDetailViewController {
     
-    // Listing in question
-    Listing *listing;
-    
     // Dictionary with amenities of Listing
     NSDictionary *features;
     
@@ -29,6 +26,8 @@
     // Current image to be displayed in the imageView
     int imgPos;
 }
+
+@synthesize listing;
 
 // dispatch queue to download remaining images
 // Only created once
@@ -54,9 +53,6 @@ dispatch_queue_t moreimages() {
         // Navigation Controller should have only one listing
         [self passListing:[(ListingTableNavigationController*)self.navigationController listings][0]];
         
-        // Add a close button to the Navigation Bar
-#warning Not sure if necessary
-        [self.navigationItem setLeftBarButtonItem:[[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemDone target:self action:@selector(close:)]];
     }
     
     
@@ -109,7 +105,6 @@ dispatch_queue_t moreimages() {
         if (listOfFiles.count != 0){
             for (NSString *file in listOfFiles){
                 [[NSFileManager defaultManager] removeItemAtPath:[imgDir stringByAppendingPathComponent:file] error:&saveError];
-                NSLog(@"Attempted");
             }
         }
         
@@ -117,6 +112,13 @@ dispatch_queue_t moreimages() {
         [[NSFileManager defaultManager] createDirectoryAtPath:imgDir withIntermediateDirectories:NO attributes:nil error:nil];
     }
 
+    if (listing.property.firstImage && listing.imageArray.count == 0){
+        [listing.imageArray insertObject:listing.property.firstImage atIndex:0];
+    }
+    
+    if (listing.imageArray.count != 0){
+        [self.imageView setImage:listing.imageArray[0]];
+    }
     
     // This block handles three possible states of the imageArray
     
@@ -127,7 +129,7 @@ dispatch_queue_t moreimages() {
         [self.pageIndicator setNumberOfPages:listing.imageArray.count];
         
         // Set the initial image
-        [self.imageView setImage:[listing.imageArray objectAtIndex:0]];
+        [self.imageView setImage:listing.imageArray[0]];
         
         // Add gesture recognizers to imageView
         [self addGestures];
@@ -163,9 +165,6 @@ dispatch_queue_t moreimages() {
         // set Page indicator count to number of images currently downloaded
         [self.pageIndicator setNumberOfPages:listing.imageArray.count];
         
-        // Set the initial image
-        [self.imageView setImage:[listing.imageArray objectAtIndex:0]];
-        
         // Display Loading view
         [self.activity setHidden:NO];
         [self.loadingView setHidden:NO];
@@ -180,7 +179,7 @@ dispatch_queue_t moreimages() {
         NSString *imgURLString = [[[NSUUID UUID] UUIDString] stringByAppendingPathExtension:@"png"];
         
         // Write image as PNG data to the Image URL within the imageDirectory
-        [UIImagePNGRepresentation(listing.imageArray[0]) writeToFile:[imgDir stringByAppendingPathComponent:imgURLString] atomically:YES];
+        [UIImagePNGRepresentation(listing.property.firstImage) writeToFile:[imgDir stringByAppendingPathComponent:imgURLString] atomically:YES];
         
         
         // Creates a preview item for the first image
@@ -196,7 +195,11 @@ dispatch_queue_t moreimages() {
         dispatch_async(moreimages(), ^{
             
             // For each imageURL after the first one
-            for (int i = 1; i < listing.imageSrc.count; i++){
+            for (int i = 0; i < listing.imageSrc.count; i++){
+                
+                if (i == 0 && self.listing.imageArray.count != 0){
+                    continue;
+                }
                 
                 // Gets the imageURL
                 NSURL *imgUrl = [[NSURL alloc] initWithString:[listing.imageSrc objectAtIndex:i]];
@@ -230,9 +233,10 @@ dispatch_queue_t moreimages() {
                 
                 [previews addObject:preview];
                 
-                
                 // Move to main queue for UI updates
                 dispatch_async(dispatch_get_main_queue(), ^{
+                    
+                    [self.imageView setImage:[self.listing.property firstImage]];
                     
                     // Update number of pages to show downloading progress
                     // Could potentially have better indicator of progress
@@ -288,17 +292,17 @@ dispatch_queue_t moreimages() {
                 
                 [previews addObject:preview];
             }
+        }
+        
+        // If no images saved
+        else {
             
-            // If no images saved
-            else {
-                
-                // Set default image
-                [self.imageView setImage:[UIImage imageNamed:@"default.png"]];
-                
-                // Deny user interaction of image
-                [self.imageView setUserInteractionEnabled:NO];
-
-            }
+            // Set default image
+            [self.imageView setImage:[UIImage imageNamed:@"default.png"]];
+            
+            // Deny user interaction of image
+            [self.imageView setUserInteractionEnabled:NO];
+            
         }
     }
     
@@ -308,9 +312,6 @@ dispatch_queue_t moreimages() {
     // Make sure imageView doesn't display image beyond forders
     [self.imageView setClipsToBounds:YES];
     
-    
-#warning Remove if there's a crash. Not sure if necessary
-    //[self.view layoutIfNeeded];
 
     [self.townLabel setText:listing.town];
     
@@ -356,8 +357,6 @@ dispatch_queue_t moreimages() {
     self.detailText.preferredMaxLayoutWidth = 280;
     
     
-#warning remove if there's an error. Not sure if necessary
-    //[self.infoView setBounds:CGRectMake(0, 0, self.scrollView.bounds.size.width, self.addressLabel.bounds.size.height + self.rentLabel.bounds.size.height + self.contactButton.bounds.size.height + 250 + 15 + 4 + 5)];
     
     // If listing location hasn't been properly set
     if (listing.location == nil){
@@ -561,6 +560,7 @@ dispatch_queue_t moreimages() {
         
         previewController.delegate=self;
         previewController.dataSource=self;
+        previewController.listing = self.listing;
         
         // Set current image to the same image displayed in the imageView
         [previewController setCurrentPreviewItemIndex:imgPos];
@@ -831,7 +831,7 @@ dispatch_queue_t moreimages() {
             // Initialize subject, recipient, and message body
             [mailView setSubject:[NSString stringWithFormat:@"Listing at %@", self.addressLabel.text]];
             [mailView setToRecipients:@[@"info@cspmanagement.com"]];
-            [mailView setMessageBody:[NSString stringWithFormat:@"I'd like to speak to someone about this property.\nComments:\n\nProperty Details\nAddress: %@\n%@\nUnit ID: %@\nBuildium ID: %@\n\nFound with My CSP", listing.address, self.availableLabel.text, listing.unitID.stringValue, listing.buildiumID.stringValue] isHTML:NO];
+            [mailView setMessageBody:[NSString stringWithFormat:@"I'd like to speak to someone about this property.\nComments:\n\nProperty Details\nAddress: %@\n%@\nUnit ID: %@\nBuildium ID: %@\n\nFound with My CSP", listing.address, self.availableLabel.text, listing.unitID.stringValue, listing.property.buildiumID.stringValue] isHTML:NO];
             
             // Present message for aproval/action
             [self presentViewController:mailView animated:NO completion:nil];

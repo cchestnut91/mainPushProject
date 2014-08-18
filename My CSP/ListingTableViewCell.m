@@ -31,10 +31,10 @@
     [self.backgroundImageView setClipsToBounds:YES];
     
     // If Listing has loaded images to display
-    if (listingIn.imageArray.count > 0){
+    if ([listingIn.property firstImage]){
         
         // Display the first one in the background view
-        [self.backgroundImageView setImage:[[listingIn imageArray] objectAtIndex:0]];
+        [self.backgroundImageView setImage:[[listingIn property] firstImage]];
     } else {
         
         // Display the default "No Images" image formatted for the cell

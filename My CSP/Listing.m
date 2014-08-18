@@ -8,7 +8,9 @@
 
 #import "Listing.h"
 
-@implementation Listing
+@implementation Listing {
+    UIImage *firstImage;
+}
 
 // Creates a new dispatch queue to use for imageLoading if one does not already exist
 dispatch_queue_t imageQueue() {
@@ -24,6 +26,8 @@ dispatch_queue_t imageQueue() {
 -(id)initWithDictionary:(NSDictionary *)infoIn{
     
     self = [super init];
+    
+    //firstImage = [[UIImage alloc] init];
     
     self.address = infoIn[@"address"];
     
@@ -76,26 +80,6 @@ dispatch_queue_t imageQueue() {
     date = [infoIn[@"unavailable"] componentsSeparatedByString:@"T"][0];
     self.stop = [formatter dateFromString:date];
     
-    // Initializes the array of images
-    self.imageArray = [[NSMutableArray alloc] init];
-    
-    // If infoIn has valid ImageSrc
-    if (![infoIn[@"listingsImage"] isKindOfClass:[NSNull class]]){
-        // Array of Image Sources is pulled from infoIn
-        self.imageSrc = [[NSArray alloc] initWithArray:infoIn[@"listingsImage"]];
-    } else {
-        // Else imageSrc is an empty array
-        self.imageSrc = [[NSArray alloc] init];
-    }
-    
-    // If there is a valid imageSrc available
-    // Only passes if Listing should be displayed, to avoid unnesesssary download times
-    if (self.imageSrc.count > 0 && [self isNowBetweenDate:self.start andDate:self.stop]){
-        
-        // Load the first image to display in Search Results
-        [self loadFirstImage:self.imageSrc[0]];
-    }
-    
     // If info Contains a valid description
     if ([infoIn[@"description"] isKindOfClass:[NSString class]]){
         
@@ -105,7 +89,7 @@ dispatch_queue_t imageQueue() {
         
         /*
          iOS 8
-        if ([self.descrip containsString:@"To view the virtual tour"]){
+         if ([self.descrip containsString:@"To view the virtual tour"]){
          */
         
         // Checks if the description contains a link to a virtual tour
@@ -148,12 +132,6 @@ dispatch_queue_t imageQueue() {
         self.rent = [NSNumber numberWithInt:[infoIn[@"rent"] intValue]];
     }
     
-    if ([infoIn[@"buildiumID"] isKindOfClass:[NSNull class]]){
-        self.buildiumID = [NSNumber numberWithInt:0];
-    } else {
-        self.buildiumID = [NSNumber numberWithInt:[infoIn[@"buildiumID"] intValue]];
-    }
-    
     if ([infoIn[@"unitID"] isKindOfClass:[NSNull class]]){
         self.unitID = [NSNumber numberWithInt:0];
     } else {
@@ -164,6 +142,43 @@ dispatch_queue_t imageQueue() {
         self.heat = nil;
     } else {
         self.heat = infoIn[@"heat"];
+    }
+    
+    // Initializes the array of images
+    self.imageArray = [[NSMutableArray alloc] init];
+    
+    // If infoIn has valid ImageSrc
+    if (![infoIn[@"listingsImage"] isKindOfClass:[NSNull class]]){
+        // Array of Image Sources is pulled from infoIn
+        self.imageSrc = [[NSArray alloc] initWithArray:infoIn[@"listingsImage"]];
+    } else {
+        // Else imageSrc is an empty array
+        self.imageSrc = [[NSArray alloc] init];
+    }
+    
+    
+    if ([infoIn[@"buildiumID"] isKindOfClass:[NSNull class]]){
+        self.property = [[Property alloc] initWithID:[NSNumber numberWithInt:0]];
+        [infoIn[@"properties"] setObject:self.property forKey:self.property.buildiumID];
+    } else {
+        if ([infoIn[@"buildiumID"] isEqualToString:@"28391"]){
+            NSLog(@"Stop");
+        }
+        if ([infoIn[@"properties"] objectForKey:[NSNumber numberWithInt:[infoIn[@"buildiumID"] intValue]]]){
+            self.property = [infoIn[@"properties"] objectForKey:[NSNumber numberWithInt:[infoIn[@"buildiumID"] intValue]]];
+            if (!self.property.firstImage && self.imageSrc.count != 0 && [self isNowBetweenDate:self.start andDate:self.stop]){
+                [self loadFirstImage:self.imageSrc[0]];
+            } else if (self.property.firstImage && self.imageSrc.count != 0 && [self isNowBetweenDate:self.start andDate:self.stop]){
+                [self.imageArray addObject:self.property.firstImage];
+            }
+        } else {
+            self.property = [[Property alloc] initWithID:[NSNumber numberWithInt:[infoIn[@"buildiumID"] intValue]]];
+            if (self.imageSrc.count > 0 && [self isNowBetweenDate:self.start andDate:self.stop]){
+                [self loadFirstImage:self.imageSrc[0]];
+            }
+            [infoIn[@"properties"] setObject:self.property forKey:self.property.buildiumID];
+        }
+
     }
     
     
@@ -308,7 +323,10 @@ dispatch_queue_t imageQueue() {
         
         // If data is not empty create an image and store it to ImageArray
         if (imageData)
-            [self.imageArray addObject:[UIImage imageWithData:imageData]];
+            firstImage = [UIImage imageWithData:imageData];
+            [self.imageArray addObject:firstImage];
+            [self.property setFirstImage:firstImage];
+            NSLog(@"Loaded Listing Image: %lu KB", (unsigned long)imageData.length / 1024);
     });
 }
 
@@ -316,6 +334,7 @@ dispatch_queue_t imageQueue() {
 // Checks to see if current is within start and end date
 - (BOOL)isNowBetweenDate:(NSDate *)earlierDate andDate:(NSDate *)laterDate
 {
+    
     // Determines current date
     NSDate *first = [[NSDate alloc] init];
     
@@ -345,7 +364,7 @@ dispatch_queue_t imageQueue() {
     [aCoder encodeObject:self.baths forKey:@"baths"];
     [aCoder encodeObject:self.sqft forKey:@"sqft"];
     [aCoder encodeObject:self.rent forKey:@"rent"];
-    [aCoder encodeObject:self.buildiumID forKey:@"buildiumID"];
+    [aCoder encodeObject:self.property forKey:@"property"];
     [aCoder encodeObject:self.unitID forKey:@"unitID"];
     [aCoder encodeObject:self.descrip forKey:@"descrip"];
     [aCoder encodeObject:self.available forKey:@"available"];
@@ -390,7 +409,7 @@ dispatch_queue_t imageQueue() {
     self.baths = [aDecoder decodeObjectForKey:@"baths"];
     self.sqft = [aDecoder decodeObjectForKey:@"sqft"];
     self.rent = [aDecoder decodeObjectForKey:@"rent"];
-    self.buildiumID = [aDecoder decodeObjectForKey:@"buildiumID"];
+    self.property = [aDecoder decodeObjectForKey:@"property"];
     self.unitID = [aDecoder decodeObjectForKey:@"unitID"];
     self.descrip = [aDecoder decodeObjectForKey:@"descrip"];
     self.available = [aDecoder decodeObjectForKey:@"available"];

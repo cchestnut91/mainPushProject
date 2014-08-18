@@ -54,6 +54,9 @@
 @property (weak, nonatomic) IBOutlet UIActivityIndicatorView *activity;
 @property (weak, nonatomic) IBOutlet UIView *loadingView;
 
+// Listing in question
+@property (strong, nonatomic) Listing *listing;
+
 // Handles switching the subview when SegmentedControl is changed
 - (IBAction)updateSubView:(id)sender;
 

@@ -48,7 +48,7 @@
     
     
     // Start notification observers
-    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(openURLListings:) name:@"openURLListings" object:nil];
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(openURLListings:) name:@"attemptDisplayListings" object:nil];
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(forceRemoveFavorites:) name:@"updateLocalListings" object:nil];
     
     // Creates a file manager to check Documents Directory
@@ -191,17 +191,11 @@
 - (void)viewWillAppear:(BOOL)animated {
     [super viewWillAppear:animated];
     
-    // Define images to place in rotating backgound view
-    UIImage *imageA = [UIImage imageNamed:@"background.jpg"];
-    UIImage *imageB = [UIImage imageNamed:@"scrollA.jpg"];
-    UIImage *imageC = [UIImage imageNamed:@"scrollB.jpg"];
-    UIImage *imageD = [UIImage imageNamed:@"scrollC.jpg"];
-    
     // Create background array
-    self.backgroundArray = [[NSMutableArray alloc] initWithObjects:imageA, imageC, imageB, imageD, nil];
+    self.backgroundArray = [[NSMutableArray alloc] initWithObjects:@"background.jpg", @"scrollB.jpg", @"scrollA.jpg", @"scrollC.jpg", nil];
     
     // Set the backgound view to the initial image
-    [self.backgroundImageView setImage:self.backgroundArray[pos]];
+    [self.backgroundImageView setImage:[UIImage imageNamed:self.backgroundArray[0]]];
     
     // Makes sure navigation bar is hidden within this particular view
     [self.navigationController setNavigationBarHidden:YES animated:animated];
@@ -373,7 +367,8 @@
     pos = pos % self.backgroundArray.count;
     
     // Defines the next image to be displayed
-    UIImage *toImage = [self.backgroundArray objectAtIndex:pos % self.backgroundArray.count];
+    self.toImage = nil;
+    self.toImage = [UIImage imageNamed:[self.backgroundArray objectAtIndex:pos % self.backgroundArray.count]];
     
     // Performs transition animation
     [UIView transitionWithView:self.backgroundImageView
@@ -382,9 +377,9 @@
                     animations:^{
                         
                         NSLog(@"Running animation");
-                        
+                        NSLog(@"Image added to heap: %lu KB", CGImageGetBytesPerRow(self.toImage.CGImage) * CGImageGetHeight(self.toImage.CGImage) / 1024);
                         // Defines actual change to the view to be made
-                        self.backgroundImageView.image = toImage;
+                        self.backgroundImageView.image = self.toImage;
                     } completion:^(BOOL completed){
                         
                         NSLog(@"Animation complete: %d", pos);

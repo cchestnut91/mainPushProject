@@ -19,8 +19,12 @@
     // Gets Listing data as an array of JSON Dictionaries from a syncronous REST call
     NSArray *data = [[RESTfulInterface RESTAPI]getAllListings];
     
+    NSMutableDictionary *props = [[NSMutableDictionary alloc] init];
+    
     // Steps through each JSON Dictionary
-    for (NSDictionary *dict in data){
+    for (NSMutableDictionary *dict in data){
+        
+        [dict setObject:props forKey:@"properties"];
         
         // Passes the Dictionary to a new Listing object
         Listing *new = [[Listing alloc] initWithDictionary:dict];

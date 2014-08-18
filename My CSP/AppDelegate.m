@@ -102,6 +102,34 @@
     [vc presentViewController:toPresent animated:YES completion:nil];
 }
 
+-(void)applicationDidReceiveMemoryWarning:(UIApplication *)application{
+    
+    NSLog(@"Deleting From App Delegate");
+    
+    
+    NSNumber *currentID;
+    UIViewController *vc;
+    
+    NSArray *listings = [(ViewController *)[(ListingTableNavigationController *)self.window.rootViewController viewControllers][0] listings];
+    for (Listing *listing in listings){
+        currentID = nil;
+        vc = [(UINavigationController *)self.window.rootViewController visibleViewController];
+        if ([vc isKindOfClass:[ListingDetailViewController class]]){
+            currentID = [[(ListingDetailViewController *)vc listing] unitID];
+        } else if ([vc isKindOfClass:[RotatingPreviewController class]]){
+            currentID = [[(RotatingPreviewController *)vc listing] unitID];
+        }
+        
+        if (currentID && [listing.unitID isEqualToNumber:currentID]){
+            continue;
+        }
+        
+        if (listing.imageArray.count > 0){
+            listing.imageArray = [NSMutableArray arrayWithObject:listing.imageArray[0]];
+        }
+    }
+    
+}
 
 // Untouched AppDelegate Methods
 

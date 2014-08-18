@@ -9,6 +9,7 @@
 #import <Foundation/Foundation.h>
 #import <CoreLocation/CoreLocation.h>
 #import <UIKit/UIKit.h>
+#import "Property.h"
 
 @interface Listing : NSObject <
     NSCoding
@@ -25,12 +26,12 @@
 @property (strong, nonatomic) NSNumber *baths;
 @property (strong, nonatomic) NSNumber *sqft;
 @property (strong, nonatomic) NSNumber *rent;
-@property (strong, nonatomic) NSNumber *buildiumID;
 @property (strong, nonatomic) NSNumber *unitID;
 @property (strong, nonatomic) NSDate *available;
 @property (strong, nonatomic) NSArray *imageSrc;
 @property (strong, nonatomic) NSMutableArray *imageArray;
 @property (strong, nonatomic) CLLocation *location;
+@property (strong, nonatomic) Property *property;
 
 @property BOOL favorite;
 

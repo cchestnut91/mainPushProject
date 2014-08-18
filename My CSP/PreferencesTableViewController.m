@@ -24,6 +24,8 @@
     // Initializes path for BeaconPreferences File
     beaconPath = [NSSearchPathForDirectoriesInDomains(NSDocumentDirectory, NSUserDomainMask, YES)[0] stringByAppendingPathComponent:@"allowBeacons"];
     
+    [self.tableView setRowHeight:44];
+    
 }
 
 - (void)didReceiveMemoryWarning {
@@ -87,7 +89,7 @@
             return cell;
         } else {
             // Initializes the cell from the storyboard
-            ButtonTableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:@"favoritesCell"];
+            ButtonTableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:@"defaultsCell"];
             
             // Cannot select Cell, only UI elements within
             [cell setSelectionStyle:UITableViewCellSelectionStyleDefault];

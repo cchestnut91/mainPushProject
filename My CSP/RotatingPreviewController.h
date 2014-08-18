@@ -7,7 +7,10 @@
 //
 
 #import <QuickLook/QuickLook.h>
+#import "Listing.h"
 
 @interface RotatingPreviewController : QLPreviewController
+
+@property (strong, nonatomic) Listing *listing;
 
 @end

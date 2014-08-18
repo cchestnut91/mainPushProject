@@ -32,6 +32,7 @@
 		AB7B8BD5196C778F00EFFA8A /* ListingPull.m in Sources */ = {isa = PBXBuildFile; fileRef = AB7B8BD4196C778F00EFFA8A /* ListingPull.m */; };
 		AB7B8BE2196C871000EFFA8A /* ListingTableNavigationController.m in Sources */ = {isa = PBXBuildFile; fileRef = AB7B8BE1196C871000EFFA8A /* ListingTableNavigationController.m */; };
 		AB7B8BE5196C87A400EFFA8A /* ListingTableViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = AB7B8BE4196C87A400EFFA8A /* ListingTableViewController.m */; };
+		ABB694A0199FE884005385E6 /* Property.m in Sources */ = {isa = PBXBuildFile; fileRef = ABB6949F199FE884005385E6 /* Property.m */; };
 		ABDA779B197EEF9600CA0548 /* ListingFeatureCollectionViewCell.m in Sources */ = {isa = PBXBuildFile; fileRef = ABDA779A197EEF9600CA0548 /* ListingFeatureCollectionViewCell.m */; };
 		ABE1721E1947884100B4953B /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = ABE1721D1947884100B4953B /* main.m */; };
 		ABE172211947884100B4953B /* AppDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = ABE172201947884100B4953B /* AppDelegate.m */; };
@@ -99,6 +100,8 @@
 		AB7B8BE1196C871000EFFA8A /* ListingTableNavigationController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ListingTableNavigationController.m; sourceTree = "<group>"; };
 		AB7B8BE3196C87A400EFFA8A /* ListingTableViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ListingTableViewController.h; sourceTree = "<group>"; };
 		AB7B8BE4196C87A400EFFA8A /* ListingTableViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ListingTableViewController.m; sourceTree = "<group>"; };
+		ABB6949E199FE884005385E6 /* Property.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Property.h; sourceTree = "<group>"; };
+		ABB6949F199FE884005385E6 /* Property.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = Property.m; sourceTree = "<group>"; };
 		ABDA7799197EEF9600CA0548 /* ListingFeatureCollectionViewCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ListingFeatureCollectionViewCell.h; sourceTree = "<group>"; };
 		ABDA779A197EEF9600CA0548 /* ListingFeatureCollectionViewCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ListingFeatureCollectionViewCell.m; sourceTree = "<group>"; };
 		ABE172181947884100B4953B /* My CSP.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "My CSP.app"; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -390,6 +393,8 @@
 			children = (
 				ABE1723F194788A000B4953B /* Listing.h */,
 				ABE17240194788A000B4953B /* Listing.m */,
+				ABB6949E199FE884005385E6 /* Property.h */,
+				ABB6949F199FE884005385E6 /* Property.m */,
 				AB44FA5F199A8515005BC223 /* ListingPreview.h */,
 				AB44FA60199A8515005BC223 /* ListingPreview.m */,
 				AB129EA2196D83E80007249C /* ListingFilter.h */,
@@ -537,6 +542,7 @@
 				AB10FAEE1970345B00200D6B /* FilterSettingsTableViewController.m in Sources */,
 				ABFBF336196B127700F5AEEC /* MainMenuTableViewCell.m in Sources */,
 				ABE172211947884100B4953B /* AppDelegate.m in Sources */,
+				ABB694A0199FE884005385E6 /* Property.m in Sources */,
 				AB44FA61199A8515005BC223 /* ListingPreview.m in Sources */,
 				AB10FAF119704EE400200D6B /* RentTableViewCell.m in Sources */,
 				ABFE247F1981F5CC003D77D4 /* SelectorTableViewCell.m in Sources */,
