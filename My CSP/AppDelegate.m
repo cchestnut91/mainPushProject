@@ -22,6 +22,8 @@
 // Called when application launches with options
 - (BOOL)application:(UIApplication *)application didFinishLaunchingWithOptions:(NSDictionary *)launchOptions {
     
+    UILocalNotification *localNotification = [launchOptions objectForKey:UIApplicationLaunchOptionsLocalNotificationKey];
+    
     // Checks to see if app opened with a URL
     if ([launchOptions objectForKey:UIApplicationLaunchOptionsURLKey]) {
         
@@ -31,6 +33,16 @@
         // Creates notification observer which will open the URL when called
         [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(attemptOpenURL:) name:@"finishLoadingListings" object:nil];
         
+    } else if (localNotification){
+        NSDictionary *userInfo = [localNotification userInfo];
+        
+//        UIAlertView *confirm = [[UIAlertView alloc] initWithTitle:@"LocalNotification" message:@"Triggered" delegate:nil cancelButtonTitle:@"OK" otherButtonTitles:nil, nil];
+//        [confirm show];
+        
+        
+        holdURL = [NSURL URLWithString:userInfo[@"targetURLString"]];
+        
+        [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(attemptOpenURL:) name:@"finishLoadingListings" object:nil];
     }
     
     // Allows app delegate to progress normally
@@ -42,8 +54,9 @@
 // Removes Notification observer
 -(void)attemptOpenURL:(NSURL *)url{
     
-    [self application:[UIApplication sharedApplication] openURL:holdURL sourceApplication:nil annotation:nil];
-    [[NSNotificationCenter defaultCenter] removeObserver:self name:@"finishLoadingListings" object:nil];
+    
+    UIAlertView *openBeacons = [[UIAlertView alloc] initWithTitle:@"Nearby Listings" message:@"Check out these nearby listings" delegate:self cancelButtonTitle:@"No Thanks" otherButtonTitles:@"Show", nil];
+    [openBeacons show];
 }
 
 // Called when URL opened
@@ -57,6 +70,14 @@
     
     // Allows app delegate to progress normally
     return YES;
+}
+
+-(void)application:(UIApplication *)application didReceiveLocalNotification:(UILocalNotification *)notification{
+    NSLog(@"received notification");
+    
+    [[NSNotificationCenter defaultCenter] removeObserver:self name:@"openAfterNotification" object:nil];
+    
+    [self attemptOpenURL:holdURL];
 }
 
 // Allows application to open the URL
@@ -102,9 +123,39 @@
     [vc presentViewController:toPresent animated:YES completion:nil];
 }
 
--(void)applicationDidReceiveMemoryWarning:(UIApplication *)application{
+-(void)application:(UIApplication *)application displayNearbyNotification:(NSURL *)targetURL{
     
-    NSLog(@"Deleting From App Delegate");
+    holdURL = targetURL;
+    
+    UILocalNotification *openBeacons = [[UILocalNotification alloc] init];
+    
+    NSDictionary *userInfo = [[NSDictionary alloc] initWithObjects:@[targetURL.absoluteString] forKeys:@[@"targetURLString"]];
+    
+    [openBeacons setUserInfo:userInfo];
+    
+    [openBeacons setAlertBody:@"Check out some nearby listings"];
+    
+    [openBeacons setAlertAction:@"View"];
+    
+    [openBeacons setSoundName:UILocalNotificationDefaultSoundName];
+    
+    [openBeacons setFireDate:[[NSDate alloc] initWithTimeInterval:5 sinceDate:[[NSDate alloc] init]]];
+    
+    [[UIApplication sharedApplication] scheduleLocalNotification:openBeacons];
+    
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(attemptOpenURL:) name:@"openAfterNotification" object:nil];
+    
+    NSLog(@"close App");
+}
+
+-(void)alertView:(UIAlertView *)alertView didDismissWithButtonIndex:(NSInteger)buttonIndex{
+    if (buttonIndex != 0){
+        [self application:[UIApplication sharedApplication] openURL:holdURL sourceApplication:nil annotation:nil];
+        [[NSNotificationCenter defaultCenter] removeObserver:self name:@"finishLoadingListings" object:nil];
+    }
+}
+
+-(void)applicationDidReceiveMemoryWarning:(UIApplication *)application{
     
     
     NSNumber *currentID;
@@ -148,7 +199,8 @@
 }
 
 - (void)applicationDidBecomeActive:(UIApplication *)application {
-    // Restart any tasks that were paused (or not yet started) while the application was inactive. If the application was previously in the background, optionally refresh the user interface.
+    [[NSNotificationCenter defaultCenter] postNotificationName:@"openAfterNotification" object:nil];
+    [[NSNotificationCenter defaultCenter] removeObserver:self name:@"openAfterNotification" object:nil];
 }
 
 - (void)applicationWillTerminate:(UIApplication *)application {

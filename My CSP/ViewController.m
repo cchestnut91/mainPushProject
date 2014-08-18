@@ -50,6 +50,7 @@
     // Start notification observers
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(openURLListings:) name:@"attemptDisplayListings" object:nil];
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(forceRemoveFavorites:) name:@"updateLocalListings" object:nil];
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(respondToBeacon:) name:@"respondToBeacon" object:nil];
     
     // Creates a file manager to check Documents Directory
     NSFileManager* fm = [NSFileManager defaultManager];
@@ -180,6 +181,11 @@
             [[NSNotificationCenter defaultCenter] postNotificationName:@"finishLoadingListings" object:nil];
         });
     });
+    
+    
+    // Uncomment to simulate beacons after launch
+    // NSTimer *launchBeacon = [NSTimer scheduledTimerWithTimeInterval:5 target:self selector:@selector(simulateBeacon:) userInfo:nil repeats:NO];
+    
     
 }
 
@@ -326,6 +332,31 @@
     }
 }
 
+-(void)simulateBeacon:(NSTimer *)sender{
+    NSURL *unitsURL = [NSURL URLWithString:@"Cspmgmt://?listings=78018,230485"];
+    
+    NSDictionary *userInfo = [[NSDictionary alloc] initWithObjects:@[unitsURL] forKeys:@[@"targetURL"]];
+    
+    [[NSNotificationCenter defaultCenter] postNotificationName:@"respondToBeacon" object:nil userInfo:userInfo];
+}
+
+-(void)respondToBeacon:(NSNotification *)notification{
+    
+    BOOL canShowBeacons = [[NSFileManager defaultManager] fileExistsAtPath:[NSSearchPathForDirectoriesInDomains(NSDocumentDirectory, NSUserDomainMask, YES)[0] stringByAppendingPathComponent:@"allowBeacons"]];
+    if (canShowBeacons){
+        
+        NSDictionary *userInfo = [notification userInfo];
+        
+        NSURL *targetURL = [userInfo objectForKey:@"targetURL"];
+        
+        [(AppDelegate *)[[UIApplication sharedApplication] delegate] application:[UIApplication sharedApplication] displayNearbyNotification:targetURL];
+    
+    } else {
+        NSLog(@"User has not allowed Nearby Notifications");
+    }
+    
+}
+
 // Forces local listings to match expected favorite values
 -(void)checkFavorites:(NSArray *)favorites{
     
@@ -376,13 +407,10 @@
                        options:UIViewAnimationOptionTransitionCrossDissolve
                     animations:^{
                         
-                        NSLog(@"Running animation");
-                        NSLog(@"Image added to heap: %lu KB", CGImageGetBytesPerRow(self.toImage.CGImage) * CGImageGetHeight(self.toImage.CGImage) / 1024);
                         // Defines actual change to the view to be made
                         self.backgroundImageView.image = self.toImage;
                     } completion:^(BOOL completed){
                         
-                        NSLog(@"Animation complete: %d", pos);
                         pos++;
                     }];
 }

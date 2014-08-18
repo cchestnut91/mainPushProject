@@ -161,9 +161,6 @@ dispatch_queue_t imageQueue() {
         self.property = [[Property alloc] initWithID:[NSNumber numberWithInt:0]];
         [infoIn[@"properties"] setObject:self.property forKey:self.property.buildiumID];
     } else {
-        if ([infoIn[@"buildiumID"] isEqualToString:@"28391"]){
-            NSLog(@"Stop");
-        }
         if ([infoIn[@"properties"] objectForKey:[NSNumber numberWithInt:[infoIn[@"buildiumID"] intValue]]]){
             self.property = [infoIn[@"properties"] objectForKey:[NSNumber numberWithInt:[infoIn[@"buildiumID"] intValue]]];
             if (!self.property.firstImage && self.imageSrc.count != 0 && [self isNowBetweenDate:self.start andDate:self.stop]){
@@ -326,7 +323,6 @@ dispatch_queue_t imageQueue() {
             firstImage = [UIImage imageWithData:imageData];
             [self.imageArray addObject:firstImage];
             [self.property setFirstImage:firstImage];
-            NSLog(@"Loaded Listing Image: %lu KB", (unsigned long)imageData.length / 1024);
     });
 }
 

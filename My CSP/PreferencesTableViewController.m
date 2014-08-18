@@ -111,17 +111,13 @@
             // Initializes cell from Storyboard
             ToggleTableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:@"notificationsCell"];
             
-            // Initializes a toggle and sets it's initial value
-            UISwitch *toggle = [[UISwitch alloc] initWithFrame:cell.toggle.frame];
-            
             // If the preferences file exists, beacons allowed. Otherwise not
-            [toggle setOn:[[NSFileManager defaultManager] fileExistsAtPath:beaconPath]];
+            [cell.toggle setOn:[[NSFileManager defaultManager] fileExistsAtPath:beaconPath]];
             
             // Add target for change of switch state
-            [toggle addTarget:self action:@selector(toggleBeacons:) forControlEvents:UIControlEventValueChanged];
+            [cell.toggle addTarget:self action:@selector(toggleBeacons:) forControlEvents:UIControlEventTouchUpInside];
             
             // Set the cell's toggle to the new UISwitch
-            cell.toggle = toggle;
             return cell;
         }
         // Cell to link to Settings.app on iOS 8

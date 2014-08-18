@@ -99,6 +99,12 @@
         [self.pickerDates addObject:[formatter dateFromString:date]];
 
     }
+    
+    
+    if (![[(ListingTableNavigationController *)self.parentViewController source] isEqualToString:@"settings"]){
+        UIBarButtonItem *button = [[UIBarButtonItem alloc] initWithTitle:@"Go" style:UIBarButtonItemStyleDone target:self action:@selector(donePressed:)];
+        [self.navigationItem setRightBarButtonItem:button];
+    }
 }
 
 // Run when viewIsDismissed
@@ -112,7 +118,7 @@
 #pragma mark- TableView DataSource
 
 -(NSInteger)numberOfSectionsInTableView:(UITableView *)tableView{
-    return 5;
+    return 6;
 }
 
 -(NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section{
@@ -131,6 +137,10 @@
     // Fourth section has three cells for preferences
     if (section == 3){
         return 3;
+    }
+    
+    if (section == 5){
+        return 1;
     }
     
     // All other toggles, minus the three in section 4, go in the amenities section
@@ -277,6 +287,16 @@
             
             if (cell) return cell;
         }
+    } else if (indexPath.section == 5){
+        SliderTableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:@"sliderCell"];
+        
+        self.rangeLabel = cell.rangeLabel;
+        [self.rangeLabel setText:[NSString stringWithFormat:@"%.0f",self.filter.range]];
+        cell.rangeSlider.value = self.filter.range / 50;
+        
+        [cell.rangeSlider addTarget:self action:@selector(sliderUpdated:) forControlEvents:UIControlEventValueChanged];
+        
+        return cell;
     }
     // For Preferences or Amenities sections
     else {
@@ -352,7 +372,7 @@
     } else if (section == 1){
         return @"Only listings with rent in between these two values will be shown";
     } else if (section == 2){
-        return @"Show only listings available starting this month";
+        return @"Some listings may not be shown until closer to their Move-In date. Check the app regularly to see new listings available in the future";
     } else if (section == 3){
         return @"Listings fitting these preferences will be shown";
     }

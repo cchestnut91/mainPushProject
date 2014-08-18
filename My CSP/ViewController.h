@@ -67,5 +67,7 @@
 // Fades to the next image in the backgroundArray
 -(void)fadeImage:(NSTimer *)sender;
 
+-(void)respondToBeacon:(NSNotification *)notification;
+
 
 @end

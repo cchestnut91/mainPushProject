@@ -194,8 +194,12 @@
                                         <constraint firstAttribute="centerY" secondItem="mxw-Ed-Xad" secondAttribute="centerY" id="IUe-NF-eSB"/>
                                         <constraint firstAttribute="trailing" secondItem="mxw-Ed-Xad" secondAttribute="trailing" constant="20" id="J5x-cR-fDW"/>
                                         <constraint firstAttribute="centerY" secondItem="dUN-Gc-S6T" secondAttribute="centerY" constant="-1" id="aYH-05-6bf"/>
+                                        <constraint firstItem="mxw-Ed-Xad" firstAttribute="leading" secondItem="fAp-C5-AXC" secondAttribute="leading" constant="251" id="xSo-YR-zZt"/>
                                     </constraints>
                                 </tableViewCellContentView>
+                                <connections>
+                                    <outlet property="toggle" destination="mxw-Ed-Xad" id="Mtg-L6-1pb"/>
+                                </connections>
                             </tableViewCell>
                             <tableViewCell contentMode="scaleToFill" selectionStyle="default" accessoryType="disclosureIndicator" indentationWidth="10" reuseIdentifier="searchCell" textLabel="SfZ-tL-eT1" style="IBUITableViewCellStyleDefault" id="HWT-Be-Kye">
                                 <rect key="frame" x="0.0" y="163" width="320" height="44"/>
@@ -329,7 +333,7 @@
                         <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
                         <prototypes>
                             <tableViewCell contentMode="scaleToFill" selectionStyle="default" indentationWidth="10" reuseIdentifier="listingCell" rowHeight="136" id="eO6-m4-6eB" customClass="ListingTableViewCell">
-                                <rect key="frame" x="0.0" y="22" width="320" height="136"/>
+                                <rect key="frame" x="0.0" y="86" width="320" height="136"/>
                                 <autoresizingMask key="autoresizingMask"/>
                                 <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" tableViewCell="eO6-m4-6eB" id="IDt-AM-JxK">
                                     <rect key="frame" x="0.0" y="0.0" width="320" height="136"/>
@@ -405,7 +409,7 @@
                                 </connections>
                             </tableViewCell>
                             <tableViewCell contentMode="scaleToFill" selectionStyle="default" indentationWidth="10" reuseIdentifier="noFoundCell" rowHeight="136" id="0Pa-pI-1Dw" customClass="ListingTableViewCell">
-                                <rect key="frame" x="0.0" y="158" width="320" height="136"/>
+                                <rect key="frame" x="0.0" y="222" width="320" height="136"/>
                                 <autoresizingMask key="autoresizingMask"/>
                                 <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" tableViewCell="0Pa-pI-1Dw" id="biz-SA-gVA">
                                     <rect key="frame" x="0.0" y="0.0" width="320" height="136"/>
@@ -1701,6 +1705,6 @@
     </simulatedMetricsContainer>
     <inferredMetricsTieBreakers>
         <segue reference="R9I-il-CaE"/>
-        <segue reference="eCp-dC-9fH"/>
+        <segue reference="nGs-wG-eqf"/>
     </inferredMetricsTieBreakers>
 </document>
