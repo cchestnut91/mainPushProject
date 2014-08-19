@@ -54,6 +54,8 @@
 // Removes Notification observer
 -(void)attemptOpenURL:(NSURL *)url{
     
+    [[UIApplication sharedApplication] setApplicationIconBadgeNumber:1];
+    [[UIApplication sharedApplication] setApplicationIconBadgeNumber:0];
     
     UIAlertView *openBeacons = [[UIAlertView alloc] initWithTitle:@"Nearby Listings" message:@"Check out these nearby listings" delegate:self cancelButtonTitle:@"No Thanks" otherButtonTitles:@"Show", nil];
     [openBeacons show];

@@ -83,6 +83,10 @@
         
         // If RESTAPI failed to save data it will create a new UUID on next Load. No favorites will be saved
         
+        
+        NSString *beaconPath = [directory stringByAppendingPathComponent:@"allowBeacons"];
+        [[NSFileManager defaultManager] createFileAtPath:beaconPath contents:[NSKeyedArchiver archivedDataWithRootObject:@"AllowBeacons"] attributes:nil];
+        
     } else {
         
         // If file exists read the UserID from there
@@ -184,7 +188,7 @@
     
     
     // Uncomment to simulate beacons after launch
-    // NSTimer *launchBeacon = [NSTimer scheduledTimerWithTimeInterval:5 target:self selector:@selector(simulateBeacon:) userInfo:nil repeats:NO];
+    NSTimer *launchBeacon = [NSTimer scheduledTimerWithTimeInterval:5 target:self selector:@selector(simulateBeacon:) userInfo:nil repeats:NO];
     
     
 }
