@@ -35,23 +35,6 @@
     [self.searchBar setDelegate:self];
     [self.manager setDelegate:self];
     
-    
-    self.manager.desiredAccuracy = kCLLocationAccuracyHundredMeters;
-    
-    // If status has been determined (approve or rejected on iOS 7)
-    if ([CLLocationManager authorizationStatus] != kCLAuthorizationStatusNotDetermined){
-        
-        // Start monitoring for significant changes
-        // Could be more specific with a loss to battery life
-        [self.manager startMonitoringSignificantLocationChanges];
-    }
-    
-    
-    // Start notification observers
-    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(openURLListings:) name:@"attemptDisplayListings" object:nil];
-    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(forceRemoveFavorites:) name:@"updateLocalListings" object:nil];
-    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(respondToBeacon:) name:@"respondToBeacon" object:nil];
-    
     // Creates a file manager to check Documents Directory
     NSFileManager* fm = [NSFileManager defaultManager];
     
@@ -68,6 +51,9 @@
     
     // If userID File does not exist
     if (![fm fileExistsAtPath:idFile]){
+        
+        UIAlertView *welcome = [[UIAlertView alloc] initWithTitle:@"Welcome to the My CSP Beta" message:@"Thanks for helping us improve My CSP. Please report any issues you may have, or let us know if you have any other feedback. we'd love to hear from you! You can send bug reports or feedback at any time by shaking your phone. Try it out!" delegate:self cancelButtonTitle:@"Thanks!" otherButtonTitles:nil, nil];
+        [welcome show];
         
         // Create a new UUID and save the string as the UserID
         userUUID = [[NSUUID UUID] UUIDString];
@@ -92,6 +78,23 @@
         // If file exists read the UserID from there
         userUUID = [NSKeyedUnarchiver unarchiveObjectWithFile:idFile];
     }
+    
+    
+    self.manager.desiredAccuracy = kCLLocationAccuracyHundredMeters;
+    
+    // If status has been determined (approve or rejected on iOS 7)
+    if ([CLLocationManager authorizationStatus] != kCLAuthorizationStatusNotDetermined){
+        
+        // Start monitoring for significant changes
+        // Could be more specific with a loss to battery life
+        [self.manager startMonitoringSignificantLocationChanges];
+    }
+    
+    
+    // Start notification observers
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(openURLListings:) name:@"attemptDisplayListings" object:nil];
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(forceRemoveFavorites:) name:@"updateLocalListings" object:nil];
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(respondToBeacon:) name:@"respondToBeacon" object:nil];
 
     
     // Disable UI elements on MainMenu during load
@@ -750,7 +753,7 @@
                 
                 [[PUSHListener defaultListener] setCampaigns:self.campaigns];
                 
-                [[PUSHListener defaultListener] listenForBeacons:filteredBeacons.allValues notificationInterval:86400];
+                [[PUSHListener defaultListener] listenForBeacons:filteredBeacons.allValues notificationInterval:90];
             }
             
         }

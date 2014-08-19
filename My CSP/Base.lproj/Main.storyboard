@@ -333,7 +333,7 @@
                         <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
                         <prototypes>
                             <tableViewCell contentMode="scaleToFill" selectionStyle="default" indentationWidth="10" reuseIdentifier="listingCell" rowHeight="136" id="eO6-m4-6eB" customClass="ListingTableViewCell">
-                                <rect key="frame" x="0.0" y="86" width="320" height="136"/>
+                                <rect key="frame" x="0.0" y="22" width="320" height="136"/>
                                 <autoresizingMask key="autoresizingMask"/>
                                 <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" tableViewCell="eO6-m4-6eB" id="IDt-AM-JxK">
                                     <rect key="frame" x="0.0" y="0.0" width="320" height="136"/>
@@ -409,7 +409,7 @@
                                 </connections>
                             </tableViewCell>
                             <tableViewCell contentMode="scaleToFill" selectionStyle="default" indentationWidth="10" reuseIdentifier="noFoundCell" rowHeight="136" id="0Pa-pI-1Dw" customClass="ListingTableViewCell">
-                                <rect key="frame" x="0.0" y="222" width="320" height="136"/>
+                                <rect key="frame" x="0.0" y="158" width="320" height="136"/>
                                 <autoresizingMask key="autoresizingMask"/>
                                 <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" tableViewCell="0Pa-pI-1Dw" id="biz-SA-gVA">
                                     <rect key="frame" x="0.0" y="0.0" width="320" height="136"/>
@@ -1704,7 +1704,7 @@
         <simulatedScreenMetrics key="destination" type="retina4"/>
     </simulatedMetricsContainer>
     <inferredMetricsTieBreakers>
+        <segue reference="eCp-dC-9fH"/>
         <segue reference="R9I-il-CaE"/>
-        <segue reference="nGs-wG-eqf"/>
     </inferredMetricsTieBreakers>
 </document>

@@ -9,6 +9,7 @@
 #import <UIKit/UIKit.h>
 #import "ListingDetailViewController.h"
 #import "ViewController.h"
+#import <Instabug/Instabug.h>
 
 @interface AppDelegate : UIResponder <UIApplicationDelegate, UIAlertViewDelegate>
 

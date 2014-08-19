@@ -23,6 +23,8 @@
 // Called when application launches with options
 - (BOOL)application:(UIApplication *)application didFinishLaunchingWithOptions:(NSDictionary *)launchOptions {
     
+    [Instabug startWithToken:@"a5ff3ac4448286e3f46ce37d55688f7e" captureSource:IBGCaptureSourceUIKit invocationEvent:IBGInvocationEventShake];
+    
     UILocalNotification *localNotification = [launchOptions objectForKey:UIApplicationLaunchOptionsLocalNotificationKey];
     
     // Checks to see if app opened with a URL
