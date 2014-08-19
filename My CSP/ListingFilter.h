@@ -60,7 +60,7 @@
 -(id)initWithDefault;
 
 // Take in an array of Listings and return the ones which pass the filter
--(NSArray *)filterListings:(NSArray *)listings;
+-(NSArray *)filterListings:(NSArray *)listings overrideDate:(BOOL)override;
 
 // Takes in an array of listings and returns only ones which have UnitIDS stored in self.unitIDS
 -(NSArray *)getSpecific:(NSArray *)listings;

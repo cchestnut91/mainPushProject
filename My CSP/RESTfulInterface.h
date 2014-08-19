@@ -25,9 +25,11 @@
 -(NSArray*)getUserFavorites:(NSString*)uuid;
 -(BOOL)addUserFavorite:(NSString*)uuid :(NSString*)favorite_id;
 -(BOOL)removeUserFavorite:(NSString*)uuid :(NSString*)favorite_id;
+-(BOOL)registerTriggeredBeaconAction: (NSString*)campaign_id :(NSString*)action_type :(BOOL)clicked :(NSString*)userUUID;
 -(NSString*)addNewAnonUser:(NSString*)uuid;
--(NSDictionary*)getAllBeacons;
+-(NSArray*)getAllBeacons;
 -(NSArray*)getAllListings;
+-(NSArray*)getCampaignHasBeacon;
 //-(NSData*)synchronousRequestWithString:(NSString*)urlString; // may not be needed as public mehtod
 
 @end

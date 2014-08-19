@@ -17,6 +17,7 @@
     
     // Used to hold URL while app loads Listings
     NSURL *holdURL;
+    NSArray *campaignIDs;
 }
 
 // Called when application launches with options
@@ -41,6 +42,7 @@
         
         
         holdURL = [NSURL URLWithString:userInfo[@"targetURLString"]];
+        campaignIDs = userInfo[@"campaignIDs"];
         
         [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(attemptOpenURL:) name:@"finishLoadingListings" object:nil];
     }
@@ -57,8 +59,23 @@
     [[UIApplication sharedApplication] setApplicationIconBadgeNumber:1];
     [[UIApplication sharedApplication] setApplicationIconBadgeNumber:0];
     
-    UIAlertView *openBeacons = [[UIAlertView alloc] initWithTitle:@"Nearby Listings" message:@"Check out these nearby listings" delegate:self cancelButtonTitle:@"No Thanks" otherButtonTitles:@"Show", nil];
-    [openBeacons show];
+    NSArray *listings = [[self parseQueryString:url.query][@"listings"] componentsSeparatedByString:@","];
+    
+    
+    if (listings.count > 0){
+        
+        NSString *message;
+        
+        if (listings.count == 1){
+            message = @"There's a listing nearby you may be interested in";
+        } else {
+            message = [NSString stringWithFormat:@"There are %d listings nearby you may be interested in", listings.count];
+        }
+        
+        UIAlertView *openBeacons = [[UIAlertView alloc] initWithTitle:@"Nearby Listings" message:message delegate:self cancelButtonTitle:@"No Thanks" otherButtonTitles:@"Show", nil];
+        [openBeacons show];
+        
+    }
 }
 
 // Called when URL opened
@@ -125,25 +142,35 @@
     [vc presentViewController:toPresent animated:YES completion:nil];
 }
 
--(void)application:(UIApplication *)application displayNearbyNotification:(NSURL *)targetURL{
+-(void)application:(UIApplication *)application displayNearbyNotification:(NSNotification *)notification{
+    
+    NSDictionary *userInfo = [notification userInfo];
+    
+    NSURL *targetURL = userInfo[@"targetURL"];
     
     holdURL = targetURL;
+    campaignIDs = userInfo[@"campaignIDs"];
+    
     
     UILocalNotification *openBeacons = [[UILocalNotification alloc] init];
     
-    NSDictionary *userInfo = [[NSDictionary alloc] initWithObjects:@[targetURL.absoluteString] forKeys:@[@"targetURLString"]];
+    userInfo = [[NSDictionary alloc] initWithObjects:@[targetURL.absoluteString, userInfo[@"campaignIDs"]] forKeys:@[@"targetURLString", @"campaignIDs"]];
+    
+    NSArray *params = [[self parseQueryString:targetURL.query][@"listings"] componentsSeparatedByString:@","];;
     
     [openBeacons setUserInfo:userInfo];
     
-    [openBeacons setAlertBody:@"Check out some nearby listings"];
+    if (params.count == 1){
+        [openBeacons setAlertBody:@"There's a listing nearby you may be interested in"];
+    } else {
+        [openBeacons setAlertBody:[NSString stringWithFormat:@"There are %d listings nearby you may be interested in", params.count]];
+    }
     
     [openBeacons setAlertAction:@"View"];
     
     [openBeacons setSoundName:UILocalNotificationDefaultSoundName];
     
-    [openBeacons setFireDate:[[NSDate alloc] initWithTimeInterval:5 sinceDate:[[NSDate alloc] init]]];
-    
-    [[UIApplication sharedApplication] scheduleLocalNotification:openBeacons];
+    [[UIApplication sharedApplication] presentLocalNotificationNow:openBeacons];
     
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(attemptOpenURL:) name:@"openAfterNotification" object:nil];
     
@@ -151,9 +178,20 @@
 }
 
 -(void)alertView:(UIAlertView *)alertView didDismissWithButtonIndex:(NSInteger)buttonIndex{
+    NSString *userUUID = [NSKeyedUnarchiver unarchiveObjectWithFile:[NSSearchPathForDirectoriesInDomains(NSDocumentDirectory, NSUserDomainMask, YES)[0] stringByAppendingPathComponent:@"user.txt"]];
+    
     if (buttonIndex != 0){
+        for (NSString *campaignID in campaignIDs){
+            [[RESTfulInterface RESTAPI] registerTriggeredBeaconAction:campaignID :@"rental" :YES :userUUID];
+        }
+        
         [self application:[UIApplication sharedApplication] openURL:holdURL sourceApplication:nil annotation:nil];
+        
         [[NSNotificationCenter defaultCenter] removeObserver:self name:@"finishLoadingListings" object:nil];
+    } else {
+        for (NSString *campaignID in campaignIDs){
+            [[RESTfulInterface RESTAPI] registerTriggeredBeaconAction:campaignID :@"rental" :NO :userUUID];
+        }
     }
 }
 
@@ -201,7 +239,7 @@
 }
 
 - (void)applicationDidBecomeActive:(UIApplication *)application {
-    [[NSNotificationCenter defaultCenter] postNotificationName:@"openAfterNotification" object:nil];
+    //[[NSNotificationCenter defaultCenter] postNotificationName:@"openAfterNotification" object:nil];
     [[NSNotificationCenter defaultCenter] removeObserver:self name:@"openAfterNotification" object:nil];
 }
 

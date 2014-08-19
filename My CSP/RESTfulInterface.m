@@ -64,16 +64,20 @@
     return nil;
 }
 
--(NSDictionary *)getAllBeacons
+-(NSArray *)getAllBeacons
 {
-    
     NSString *urlString = [NSString stringWithFormat:@"http://experiencepush.com/csp_portal/rest/?PUSH_ID=123&call=getAllBeacons"];
     
     NSData * data = [self synchronousRequestWithStringGET:urlString];
     if (data!=nil) {
         
         NSError *error;
-        NSDictionary *json = [NSJSONSerialization JSONObjectWithData:data options:kNilOptions error:&error];
+        
+        //Receive multi-dimentisonal array
+        //Inner array
+        //ID, EnglishID, UUID, Major, Minor
+        
+        NSArray *json = [NSJSONSerialization JSONObjectWithData:data options:kNilOptions error:&error];
         if (error) {
             return nil;
         }
@@ -101,6 +105,24 @@
     return nil;
 }
 
+-(NSArray*)getCampaignHasBeacon
+{
+    NSString *urlString = [NSString stringWithFormat:@"http://experiencepush.com/csp_portal/rest/index.php?PUSH_ID=123&call=getCampaignHasBeacon"];
+    
+    NSData * data = [self synchronousRequestWithStringGET:urlString];
+    if (data!=nil) {
+        
+        NSError *e = nil;
+        NSArray *jsonArray = [NSJSONSerialization JSONObjectWithData: data options: NSJSONReadingMutableContainers error: &e];
+        
+        if (e) {
+            return nil;
+        }
+        return jsonArray;
+    }
+    return nil;
+}
+
 #pragma mark - RESTful data interface with POST calls
 
 -(BOOL)addUserFavorite: (NSString*)uuid :(NSString*)favorite_id
@@ -110,7 +132,6 @@
     NSData * data = [self synchronousRequestWithStringPOST:urlString :urlVariables];
     if (data!=nil) {
         NSString *content = [NSString stringWithUTF8String:[data bytes]];
-        NSLog(@"responseData: %@", content);
         if ([content isEqualToString:@"0"]||[content isEqualToString:@"-1"]) {
             return false;
         }
@@ -126,7 +147,21 @@
     NSData * data = [self synchronousRequestWithStringPOST:urlString :urlVariables];
     if (data!=nil) {
         NSString *content = [NSString stringWithUTF8String:[data bytes]];
-        NSLog(@"responseData: %@", content);
+        if ([content isEqualToString:@"0"]||[content isEqualToString:@"-1"]) {
+            return false;
+        }
+        return true;
+    }
+    return false;
+}
+
+-(BOOL)registerTriggeredBeaconAction: (NSString*)campaign_id :(NSString*)action_type :(BOOL)clicked :(NSString*)userUUID
+{
+    NSString *urlString =@"http://experiencepush.com/csp_portal/rest/index.php";
+    NSString *urlVariables = [NSString stringWithFormat:@"PUSH_ID=123&call=registerTriggeredBeaconAction&campaign_id=%@&action_type=%@&clicked=%d&uuid=%@",campaign_id,action_type,clicked,userUUID];
+    NSData * data = [self synchronousRequestWithStringPOST:urlString :urlVariables];
+    if (data!=nil) {
+        NSString *content = [NSString stringWithUTF8String:[data bytes]];
         if ([content isEqualToString:@"0"]||[content isEqualToString:@"-1"]) {
             return false;
         }

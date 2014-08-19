@@ -53,7 +53,7 @@
     } else {
         
         // Run the listing filter
-        self.filteredListings = [self.filter filterListings:self.listings];
+        self.filteredListings = [self.filter filterListings:self.listings overrideDate:NO];
     }
     
     // Reload table View

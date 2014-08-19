@@ -78,7 +78,7 @@
 -(NSArray *)getSpecific:(NSArray *)listings{
     
     // Creates array to return
-    NSMutableArray *ret = [[NSMutableArray alloc] init];
+    NSMutableArray *pull = [[NSMutableArray alloc] init];
     
     // Step through each listing
     for (Listing *listing in listings){
@@ -87,10 +87,10 @@
         if ([self.unitIDS containsObject:listing.unitID.stringValue]){
             
             // If so, add that to the return array
-            [ret addObject:listing];
+            [pull addObject:listing];
             
             // If as many Listings as needed have been found
-            if (ret.count == self.unitIDS.count){
+            if (pull.count == self.unitIDS.count){
                 
                 // Break out of the loop
                 break;
@@ -98,13 +98,20 @@
         }
     }
     
-    // Return Listings
+    NSArray *ret = [[[ListingFilter alloc] initWithDefault] filterListings:pull overrideDate:YES];
+    
+    for (Listing *listing in ret){
+        if (!listing.property.firstImage && listing.imageSrc.count > 0){
+            [listing loadFirstImage:listing.imageSrc[0]];
+        }
+    }
+    
     return ret;
 }
 
 
 // Runs listings through a filter and returns array of Listings which have passed
--(NSArray *)filterListings:(NSArray *)listings{
+-(NSArray *)filterListings:(NSArray *)listings overrideDate:(BOOL)override{
     
     // Creates array to be returned
     NSMutableArray *ret = [[NSMutableArray alloc] init];
@@ -116,9 +123,12 @@
         BOOL pass = YES;
         
         // If current date is not between ListDate and StopListDate don't pass
-        if (pass && ![check isNowBetweenDate:check.start andDate:check.stop]){
-            pass = NO;
-            continue;
+        if (!override){
+            
+            if (pass && ![check isNowBetweenDate:check.start andDate:check.stop]){
+                pass = NO;
+                continue;
+            }
         }
         
         // Will not check other options if it has already failed to pass

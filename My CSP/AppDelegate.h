@@ -18,7 +18,7 @@
 // Takes desired ViewController to be presented as a paramter
 -(void)presentViewControllerFromVisibleViewController:(UIViewController *)toPresent;
 
--(void)application:(UIApplication *)application displayNearbyNotification:(NSURL *)targetURL;
+-(void)application:(UIApplication *)application displayNearbyNotification:(NSNotification *)notification;
 
 @end
 

@@ -12,6 +12,7 @@
 #import "ListingPull.h"
 #import "ListingTableNavigationController.h"
 #import "ListingDetailViewController.h"
+#import "PUSHListener.h"
 #import "AppDelegate.h"
 
 // Delegates for TableView, SearchBar, AlertView, and LocationManager
@@ -49,6 +50,10 @@
 
 // Array of images to fade through in the background imageView
 @property (strong, nonatomic) NSMutableArray *backgroundArray;
+
+@property (strong, nonatomic) NSMutableDictionary *beaconDictionary;
+
+@property (strong, nonatomic) NSMutableArray *campaigns;
 
 @property (weak, nonatomic) UIImage *toImage;
 

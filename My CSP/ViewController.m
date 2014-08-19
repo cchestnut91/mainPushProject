@@ -188,7 +188,7 @@
     
     
     // Uncomment to simulate beacons after launch
-    NSTimer *launchBeacon = [NSTimer scheduledTimerWithTimeInterval:5 target:self selector:@selector(simulateBeacon:) userInfo:nil repeats:NO];
+    // NSTimer *launchBeacon = [NSTimer scheduledTimerWithTimeInterval:5 target:self selector:@selector(simulateBeacon:) userInfo:nil repeats:NO];
     
     
 }
@@ -227,7 +227,7 @@
      */
     
     // If Device is not running iOS 8 AND authorizationStatus for LoactionManager has not been determined
-    if ( [[[UIDevice currentDevice] systemVersion] floatValue] < 8  && [CLLocationManager authorizationStatus] == kCLAuthorizationStatusNotDetermined){
+    if ( [CLLocationManager authorizationStatus] == kCLAuthorizationStatusNotDetermined){
         
         // Ask if the User would like to allow Location Services
         // AlertView Delegate method handles the rest
@@ -295,7 +295,7 @@
                 
                 
                 // Request app delegate
-                AppDelegate *delegate = [UIApplication sharedApplication].delegate;
+                AppDelegate *delegate = (AppDelegate *)[UIApplication sharedApplication].delegate;
                 
                 // Instruct app delegate to display navigationController modally from currently visible ViewController
                 [delegate presentViewControllerFromVisibleViewController:nav];
@@ -328,7 +328,7 @@
         nav.listings = self.listings;
         
         // Request App delegate
-        AppDelegate *delegate = [UIApplication sharedApplication].delegate;
+        AppDelegate *delegate = (AppDelegate *)[UIApplication sharedApplication].delegate;
         
         // Instruct app delegate to display navigationController modally from currently visible ViewController
         [delegate presentViewControllerFromVisibleViewController:nav];
@@ -337,7 +337,7 @@
 }
 
 -(void)simulateBeacon:(NSTimer *)sender{
-    NSURL *unitsURL = [NSURL URLWithString:@"Cspmgmt://?listings=78018,230485"];
+    NSURL *unitsURL = [NSURL URLWithString:@"Cspmgmt://?listings=78018"];
     
     NSDictionary *userInfo = [[NSDictionary alloc] initWithObjects:@[unitsURL] forKeys:@[@"targetURL"]];
     
@@ -349,11 +349,8 @@
     BOOL canShowBeacons = [[NSFileManager defaultManager] fileExistsAtPath:[NSSearchPathForDirectoriesInDomains(NSDocumentDirectory, NSUserDomainMask, YES)[0] stringByAppendingPathComponent:@"allowBeacons"]];
     if (canShowBeacons){
         
-        NSDictionary *userInfo = [notification userInfo];
         
-        NSURL *targetURL = [userInfo objectForKey:@"targetURL"];
-        
-        [(AppDelegate *)[[UIApplication sharedApplication] delegate] application:[UIApplication sharedApplication] displayNearbyNotification:targetURL];
+        [(AppDelegate *)[[UIApplication sharedApplication] delegate] application:[UIApplication sharedApplication] displayNearbyNotification:notification];
     
     } else {
         NSLog(@"User has not allowed Nearby Notifications");
@@ -676,7 +673,87 @@
     if (status == kCLAuthorizationStatusAuthorized){
         
         // Load beacon info from REST API call and begin monitoring for Beacons
-#warning Beacon initialization and monitoring goes here
+        
+        NSString *directory = NSSearchPathForDirectoriesInDomains(NSDocumentDirectory, NSUserDomainMask, YES)[0];
+        NSString *beaconSaveLocation = [directory stringByAppendingPathComponent:@"savedBeacons"];
+        
+        self.beaconDictionary = [[NSMutableDictionary alloc] init];
+        
+        NSArray *beaconData = [[RESTfulInterface RESTAPI] getAllBeacons];
+        if (beaconData){
+            for (NSArray *beaconArray in beaconData){
+                CLBeaconRegion *beacon = [[CLBeaconRegion alloc] initWithProximityUUID:[[NSUUID UUID] initWithUUIDString:beaconArray[2]] major:[beaconArray[3] intValue] minor:[beaconArray[4] intValue] identifier:beaconArray[0]];
+                [self.beaconDictionary setObject:beacon forKey:beaconArray[0]];
+            }
+            
+            NSData *data =[NSKeyedArchiver archivedDataWithRootObject:self.beaconDictionary];
+            [data writeToFile:beaconSaveLocation atomically:YES];
+            
+        } else {
+            NSLog(@"Attempting to load beacons from local copy");
+            
+            if ([[NSFileManager defaultManager] fileExistsAtPath:beaconSaveLocation]){
+                self.beaconDictionary = [NSKeyedUnarchiver unarchiveObjectWithFile:beaconSaveLocation];
+            } else {
+                NSLog(@"No Saved Beacons");
+            }
+        }
+        
+        if (self.beaconDictionary.count > 0){
+            // Pull campaign data
+            
+            self.campaigns = [[NSMutableArray alloc] init];
+            
+            NSArray *campaigns = [[RESTfulInterface RESTAPI] getCampaignHasBeacon];
+            NSString *campaignPath = [directory stringByAppendingPathComponent:@"savedCampaigns"];
+            
+            if (campaigns){
+                for (NSArray *campaign in campaigns){
+                    NSDictionary *newCampaign = [[NSDictionary alloc] initWithObjects:@[campaign[0], campaign[1], campaign[2]] forKeys:@[@"campaignID", @"unitID", @"beaconID"]];
+                    [self.campaigns addObject:newCampaign];
+                }
+                
+                NSData *data = [NSKeyedArchiver archivedDataWithRootObject:self.campaigns];
+                [data writeToFile:campaignPath atomically:YES];
+            } else {
+                
+                NSLog(@"Erorr loading campaigns");
+                // Attempt to load local campaigns
+                
+                if ([[NSFileManager defaultManager] fileExistsAtPath:campaignPath]){
+                    self.campaigns = [NSKeyedUnarchiver unarchiveObjectWithFile:campaignPath];
+                } else {
+                    NSLog(@"No local copy");
+                }
+                
+            }
+            
+            if (self.campaigns.count > 0){
+                NSMutableDictionary *filteredBeacons = [[NSMutableDictionary alloc] init];
+                NSMutableDictionary *beaconsToListings = [[NSMutableDictionary alloc] init];
+                
+                for (NSDictionary *campaign in self.campaigns){
+                    [filteredBeacons setObject:[self.beaconDictionary objectForKey:campaign[@"beaconID"]] forKey:campaign[@"beaconID"]];
+                    
+                    if (![beaconsToListings objectForKey:campaign[@"beaconID"]]){
+                        [beaconsToListings setObject:[[NSMutableArray alloc] initWithObjects:campaign[@"unitID"], nil] forKey:campaign[@"beaconID"]];
+                    } else {
+                        [[beaconsToListings objectForKey:campaign[@"beaconID"]] addObject:campaign[@"unitID"]];
+                    }
+                }
+                
+                // Filter for beacons within a campaign
+                
+                //filteredBeacons = self.beaconDictionary.allValues;
+                
+                [[PUSHListener defaultListener] setBeaconToListing:beaconsToListings];
+                
+                [[PUSHListener defaultListener] setCampaigns:self.campaigns];
+                
+                [[PUSHListener defaultListener] listenForBeacons:filteredBeacons.allValues notificationInterval:86400];
+            }
+            
+        }
     }
 }
 
