@@ -35,8 +35,8 @@
     self.microwave = [NSNumber numberWithBool:NO];
     self.closet = [NSNumber numberWithBool:NO];
     
-    // Near is 200 meters
-    self.range = 200;
+    // Near is 600 meters
+    self.range = 600;
     
     // Beds and Baths are 0 or more
     self.beds = 0;

@@ -165,6 +165,8 @@ NSTimeInterval const kPUSHDefaultTimeInterval = 0;
             // [[NSNotificationCenter defaultCenter] postNotificationName:kPUSHDidFindNotification object:nil userInfo:@{kPUSHBeacon:beacon}];
         }
         
+    } else {
+        NSLog(@"Don't show notification");
     }
 }
 
