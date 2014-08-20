@@ -30,6 +30,8 @@
     // Checks to see if app opened with a URL
     if ([launchOptions objectForKey:UIApplicationLaunchOptionsURLKey]) {
         
+        NSLog(@"launchOptions URL");
+        
         // Saves this URL to the class to come back to when Listings have loaded
         holdURL = [launchOptions objectForKey:UIApplicationLaunchOptionsURLKey];
         
@@ -37,6 +39,9 @@
         [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(attemptOpenURL:) name:@"finishLoadingListings" object:nil];
         
     } else if (localNotification){
+        
+        NSLog(@"launchOptions localNotification");
+        
         NSDictionary *userInfo = [localNotification userInfo];
         
 //        UIAlertView *confirm = [[UIAlertView alloc] initWithTitle:@"LocalNotification" message:@"Triggered" delegate:nil cancelButtonTitle:@"OK" otherButtonTitles:nil, nil];
@@ -63,7 +68,7 @@
     
     NSArray *listings = [[self parseQueryString:url.query][@"listings"] componentsSeparatedByString:@","];
     
-    
+    NSLog(@"Begining to open URL: %@", url.absoluteString);
     if (listings.count > 0){
         
         NSString *message;
@@ -71,8 +76,10 @@
         if (listings.count == 1){
             message = @"There's a listing nearby you may be interested in";
         } else {
-            message = [NSString stringWithFormat:@"There are %d listings nearby you may be interested in", listings.count];
+            message = [NSString stringWithFormat:@"There are %lu listings nearby you may be interested in", (unsigned long)listings.count];
         }
+        
+        NSLog(@"Displaying alert with %d listings", listings.count);
         
         UIAlertView *openBeacons = [[UIAlertView alloc] initWithTitle:@"Nearby Listings" message:message delegate:self cancelButtonTitle:@"No Thanks" otherButtonTitles:@"Show", nil];
         [openBeacons show];
@@ -140,6 +147,8 @@
     // Determines the currently visible ViewController
     UIViewController *vc = [(UINavigationController *)self.window.rootViewController visibleViewController];
     
+    NSLog(@"Displaying notification over %@", vc.class);
+    
     // Present desired ViewController modally from currently visible ViewController
     [vc presentViewController:toPresent animated:YES completion:nil];
 }
@@ -165,7 +174,7 @@
     if (params.count == 1){
         [openBeacons setAlertBody:@"There's a listing nearby you may be interested in"];
     } else {
-        [openBeacons setAlertBody:[NSString stringWithFormat:@"There are %d listings nearby you may be interested in", params.count]];
+        [openBeacons setAlertBody:[NSString stringWithFormat:@"There are %lu listings nearby you may be interested in", (unsigned long)params.count]];
     }
     
     [openBeacons setAlertAction:@"View"];
@@ -183,6 +192,7 @@
     NSString *userUUID = [NSKeyedUnarchiver unarchiveObjectWithFile:[NSSearchPathForDirectoriesInDomains(NSDocumentDirectory, NSUserDomainMask, YES)[0] stringByAppendingPathComponent:@"user.txt"]];
     
     if (buttonIndex != 0){
+        NSLog(@"User clicked Yes to see listings");
         for (NSString *campaignID in campaignIDs){
             [[RESTfulInterface RESTAPI] registerTriggeredBeaconAction:campaignID :@"rental" :YES :userUUID];
         }
@@ -191,6 +201,7 @@
         
         [[NSNotificationCenter defaultCenter] removeObserver:self name:@"finishLoadingListings" object:nil];
     } else {
+        NSLog(@"User clicked No to see listings");
         for (NSString *campaignID in campaignIDs){
             [[RESTfulInterface RESTAPI] registerTriggeredBeaconAction:campaignID :@"rental" :NO :userUUID];
         }
@@ -199,7 +210,7 @@
 
 -(void)applicationDidReceiveMemoryWarning:(UIApplication *)application{
     
-    
+    NSLog(@"Received memory warning");
     NSNumber *currentID;
     UIViewController *vc;
     
@@ -241,8 +252,8 @@
 }
 
 - (void)applicationDidBecomeActive:(UIApplication *)application {
-    //[[NSNotificationCenter defaultCenter] postNotificationName:@"openAfterNotification" object:nil];
-    [[NSNotificationCenter defaultCenter] removeObserver:self name:@"openAfterNotification" object:nil];
+    // [[NSNotificationCenter defaultCenter] postNotificationName:@"openAfterNotification" object:nil];
+    // [[NSNotificationCenter defaultCenter] removeObserver:self name:@"openAfterNotification" object:nil];
 }
 
 - (void)applicationWillTerminate:(UIApplication *)application {

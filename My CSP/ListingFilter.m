@@ -184,10 +184,23 @@
         // If filter should check for current location
         if (pass && self.checkLocation.boolValue){
             
+            NSLog(@"Filtering for location");
+            NSLog(@"Users Location Lat: %.5f \nLong: %.5f", self.location.coordinate.latitude, self.location.coordinate.longitude);
+            NSLog(@"User's horizontal accuracy: %.5f", self.location.horizontalAccuracy);
+            
+            NSLog(@"Listing: %@ \nLocation Lat: %.5f \nLong: %.5f", check.addressShort, check.location.coordinate.latitude, check.location.coordinate.longitude);
+            NSLog(@"Listing horizontal accuracy: %.5f", check.location.horizontalAccuracy);
+            
+            NSLog(@"Calculated distance: %.5f m", [self.location distanceFromLocation:check.location]);
+            NSLog(@"Max range: %.0f", self.range);
+            
             // If user's current location is not within range of Listing's location
             if ([self.location distanceFromLocation:check.location] > self.range){
+                NSLog(@"Did not pass");
                 pass = NO;
                 continue;
+            } else {
+                NSLog(@"Did pass");
             }
         }
         

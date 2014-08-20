@@ -92,6 +92,8 @@ NSTimeInterval const kPUSHDefaultTimeInterval = 0;
         [self.locationManager requestStateForRegion:beaconRegion];
         [self.beaconRegions setObject:beaconRegion forKey:beaconRegion.proximityUUID.UUIDString];
     }
+    
+    NSLog(@"Started monitoring for %d regions", beacons.count);
 }
 
 - (void)listenForBeacons:(NSArray *)beacons notificationInterval:(NSTimeInterval)seconds {
@@ -131,6 +133,8 @@ NSTimeInterval const kPUSHDefaultTimeInterval = 0;
         
         NSArray *listings = [initialFilter getSpecific:[(ViewController *)[(ListingTableNavigationController *)[UIApplication sharedApplication].delegate.window.rootViewController viewControllers][0] listings]];
         
+        NSLog(@"Filtered campaign Listings");
+        
         if (listings.count > 0){
             
             for (Listing *listing in listings){
@@ -142,6 +146,7 @@ NSTimeInterval const kPUSHDefaultTimeInterval = 0;
                     urlQueryString = [urlQueryString stringByAppendingString:[NSString stringWithFormat:@",%@", listing.unitID.stringValue]];
                 }
             }
+            
             
             NSURL *listingURL = [NSURL URLWithString:[NSString stringWithFormat:@"cspmtmg://?listings=%@", urlQueryString]];
             

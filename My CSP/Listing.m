@@ -27,7 +27,6 @@ dispatch_queue_t imageQueue() {
     
     self = [super init];
     
-    //firstImage = [[UIImage alloc] init];
     
     self.address = infoIn[@"address"];
     
@@ -53,16 +52,6 @@ dispatch_queue_t imageQueue() {
     self.addressShort = [self.addressShort componentsSeparatedByString:@","][0];
     
     
-    // First attempt to create a geocoder to get Location from Address
-    CLGeocoder *geocoder = [[CLGeocoder alloc] init];
-    [geocoder geocodeAddressString:[NSString stringWithFormat:@"%@",self.address] completionHandler:^(NSArray* placemarks, NSError* error){
-        if (!error){
-            
-            // Saves to self.location if completed without error
-            self.location = [(CLPlacemark *)[placemarks lastObject] location];
-        }
-    }];
-    
     // Creates a dateFormatter to set available, start and end dates
     NSDateFormatter *formatter = [[NSDateFormatter alloc] init];
     [formatter setTimeZone:[NSTimeZone systemTimeZone]];
@@ -79,6 +68,27 @@ dispatch_queue_t imageQueue() {
     self.start = [formatter dateFromString:date];
     date = [infoIn[@"unavailable"] componentsSeparatedByString:@"T"][0];
     self.stop = [formatter dateFromString:date];
+    
+    
+    if ([self isNowBetweenDate:self.start andDate:self.stop]){
+        // First attempt to create a geocoder to get Location from Address
+        CLGeocoder *geocoder = [[CLGeocoder alloc] init];
+        
+        NSLog(@"Attempting to geocode %@", self.addressShort);
+        
+        [geocoder geocodeAddressString:[NSString stringWithFormat:@"%@",self.address] completionHandler:^(NSArray* placemarks, NSError* error){
+            if (!error){
+                CLLocation *location = [(CLPlacemark *)[placemarks lastObject] location];
+                NSLog(@"No Error receiving geolocation for %@ \nLat: %.5f, Long: %.5f", self.addressShort, location.coordinate.latitude, location.coordinate.longitude);
+                NSLog(@"Horizontal accuracy: %.5f", location.horizontalAccuracy);
+                
+                // Saves to self.location if completed without error
+                self.location = location;
+            } else {
+                NSLog(@"Error %@ receiving geolocation for %@", error, self.addressShort);
+            }
+        }];
+    }
     
     // If info Contains a valid description
     if ([infoIn[@"description"] isKindOfClass:[NSString class]]){

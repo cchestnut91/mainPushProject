@@ -32,6 +32,8 @@
         // Adds the Listing object to the array to be returned
         [listings addObject:new];
     }
+    
+    NSLog(@"Downloaded %d Listings", listings.count);
 
     // Returns the array of Listings
     return listings;

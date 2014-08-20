@@ -106,9 +106,6 @@
     [self.loadingView setBackgroundColor:[UIColor colorWithRed:51/255.0 green:60/255.0 blue:77/255.0 alpha:.9]];
     
     
-   
-    
-    
     // Create download queue for GCD
     dispatch_queue_t downloadListingQueue = dispatch_queue_create("com.Push.CSPListingDownload", 0);
     
@@ -783,6 +780,10 @@
     
     // set current location to the user's last known location
     self.location = locations.lastObject;
+    
+    NSLog(@"Did update Location");
+    NSLog(@"New Location Lat: %.5f\nLong: %.5f", self.location.coordinate.latitude, self.location.coordinate.longitude);
+    NSLog(@"Accuracy: %.5f", self.location.horizontalAccuracy);
     
     // update current location in filter object as well
     self.filter.location = self.location;
