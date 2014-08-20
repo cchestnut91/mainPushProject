@@ -53,7 +53,7 @@ extern NSString * const kPUSHBeacon;
  *
  *  @param beaconJSON NSDictonary
  */
-- (void)listenForBeaconsFromJSONScheme:(NSDictionary *)beaconsWithinJSON;
+// - (void)listenForBeaconsFromJSONScheme:(NSDictionary *)beaconsWithinJSON;
 
 /**
  *  Tells the listener to start listening for iBeacons with a dictionaty of beacon credentials. JSON scheme is predetermined and grabed via the RESTful service. The notification interval sets the number of seconds to wait after seeing a beacon before notifying again.
@@ -61,7 +61,7 @@ extern NSString * const kPUSHBeacon;
  *  @param beaconJSON NSDictonary
  *  @param secons     NSTimeInterval
  */
-- (void)listenForBeaconsFromJSONScheme:(NSDictionary *)beaconsWithinJSON notificationInterval:(NSTimeInterval)seconds;
+// - (void)listenForBeaconsFromJSONScheme:(NSDictionary *)beaconsWithinJSON notificationInterval:(NSTimeInterval)seconds;
 
 #pragma mark - Stop Listening
 
@@ -71,7 +71,7 @@ extern NSString * const kPUSHBeacon;
  *  @param uuid NSUUID
  */
 
--(void)stopListeningForBeaconsWithProximityBeaconID:(NSString *)beaconId;
+// -(void)stopListeningForBeaconsWithProximityBeaconID:(NSString *)beaconId;
 
 #pragma mark - Notification
 /**

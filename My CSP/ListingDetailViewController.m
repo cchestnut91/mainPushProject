@@ -61,10 +61,6 @@ dispatch_queue_t moreimages() {
     [self.featuresCollection setDelegate:self];
     [self.mapView setDelegate:self];
     
-    // Set title to match mockups
-#warning Should we change this to something more relevant?
-    [self setTitle:@"C.S.P. Managment"];
-    
     //Initialize variables
     imgPos = 0;
     previews = [[NSMutableArray alloc] init];
@@ -428,16 +424,19 @@ dispatch_queue_t moreimages() {
 // Run when view is closing
 -(void)viewWillDisappear:(BOOL)animated{
     
+    NSString *directory = NSSearchPathForDirectoriesInDomains(NSDocumentDirectory, NSUserDomainMask, YES)[0];
+    NSString *savePlist = [directory stringByAppendingPathComponent:@"saves.plist"];
+    
+    NSMutableDictionary *saveDict = [[NSMutableDictionary alloc] initWithContentsOfFile:savePlist];
+    
     // Checks to see if listing favorite value is different that it was originally
     if ((wasFav && !listing.favorite) || (!wasFav && listing.favorite)){
         
         // if so find the userID from the documents directory
-        NSString *directory = NSSearchPathForDirectoriesInDomains(NSDocumentDirectory, NSUserDomainMask, YES)[0];
-        NSString *idFile = [directory stringByAppendingPathComponent:@"user.txt"];
-        NSString *uuid = [NSKeyedUnarchiver unarchiveObjectWithFile:idFile];
         
         // Open the local saved favorites
-        NSMutableArray *favorites = [NSMutableArray arrayWithArray:[NSKeyedUnarchiver unarchiveObjectWithFile:[directory stringByAppendingPathComponent:@"favs.txt"]]];
+        NSMutableArray *favorites = [NSMutableArray arrayWithArray:saveDict[@"savedFavorites"]];
+        NSString *uuid = saveDict[@"userUUID"];
         
         // if the Listing is now a favorite
         if (listing.favorite){
@@ -455,7 +454,8 @@ dispatch_queue_t moreimages() {
                 [favorites addObject:listing.unitID.stringValue];
                 
                 // save the local copy of the favorites to the favorites file
-                [NSKeyedArchiver archiveRootObject:favorites toFile:[directory stringByAppendingPathComponent:@"favs.txt"]];
+                [saveDict setObject:favorites forKey:@"savedFavorites"];
+                [saveDict writeToFile:savePlist atomically:YES];
             }
         }
         // If listing has been unfavorited
@@ -473,7 +473,8 @@ dispatch_queue_t moreimages() {
                 
                 // remove unitID and resave
                 [favorites removeObject:listing.unitID.stringValue];
-                [NSKeyedArchiver archiveRootObject:favorites toFile:[directory stringByAppendingPathComponent:@"favs.txt"]];
+                [saveDict setObject:favorites forKey:@"savedFavorites"];
+                [saveDict writeToFile:savePlist atomically:YES];
             }
         }
     }

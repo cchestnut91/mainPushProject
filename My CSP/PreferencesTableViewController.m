@@ -14,15 +14,22 @@
 
 @implementation PreferencesTableViewController {
     
-    // Determines path for beaconPreferences file
-    NSString *beaconPath;
+    NSString *prefFile;
+    NSString *savePlist;
+    NSMutableDictionary *saveDict;
+    NSMutableDictionary *prefDict;
 }
 
 - (void)viewDidLoad {
     [super viewDidLoad];
     
-    // Initializes path for BeaconPreferences File
-    beaconPath = [NSSearchPathForDirectoriesInDomains(NSDocumentDirectory, NSUserDomainMask, YES)[0] stringByAppendingPathComponent:@"allowBeacons"];
+    NSString *directory = NSSearchPathForDirectoriesInDomains(NSDocumentDirectory, NSUserDomainMask, YES)[0];
+    prefFile = [directory stringByAppendingPathComponent:@"prefs.plist"];
+    savePlist = [directory stringByAppendingPathComponent:@"saves.plist"];
+    
+    saveDict = [[NSMutableDictionary alloc] initWithContentsOfFile:savePlist];
+    prefDict = [[NSMutableDictionary alloc] initWithContentsOfFile:prefFile];
+
     
     [self.tableView setRowHeight:44];
     
@@ -112,7 +119,7 @@
             ToggleTableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:@"notificationsCell"];
             
             // If the preferences file exists, beacons allowed. Otherwise not
-            [cell.toggle setOn:[[NSFileManager defaultManager] fileExistsAtPath:beaconPath]];
+            [cell.toggle setOn:[prefDict[@"allowBeacons"] boolValue]];
             
             // Add target for change of switch state
             [cell.toggle addTarget:self action:@selector(toggleBeacons:) forControlEvents:UIControlEventTouchUpInside];
@@ -185,17 +192,18 @@
 
 // Toggles beacon preferences
 // There's probably a better way to do this
-#warning Look up Storing users preferences in a plist
 -(IBAction)toggleBeacons:(id)sender{
     // If file already exists
-    if ([[NSFileManager defaultManager] fileExistsAtPath:beaconPath]){
+    if ([prefDict[@"allowBeacons"] boolValue]){
         
         // Remove the file
-        [[NSFileManager defaultManager] removeItemAtPath:beaconPath error:nil];
+        [prefDict setObject:[NSNumber numberWithBool:NO] forKey:@"allowBeacons"];
+        [prefDict writeToFile:prefFile atomically:YES];
     } else {
         
         // Create the file with dummy data
-        [[NSFileManager defaultManager] createFileAtPath:beaconPath contents:[NSKeyedArchiver archivedDataWithRootObject:@"AllowBeacons"] attributes:nil];
+        [prefDict setObject:[NSNumber numberWithBool:YES] forKey:@"allowBeacons"];
+        [prefDict writeToFile:prefFile atomically:YES];
     }
 }
 
@@ -217,17 +225,16 @@
         // If user did not click cancel button
         if (buttonIndex != 0){
             
-            // Determine path of favorites file
-            NSString *path = [NSSearchPathForDirectoriesInDomains(NSDocumentDirectory, NSUserDomainMask, YES)[0] stringByAppendingPathComponent:@"favs.txt"];
             
             // Read the items from the file
-            NSArray *favorites = [NSKeyedUnarchiver unarchiveObjectWithData:[NSData dataWithContentsOfFile:path]];
+            NSArray *favorites = saveDict[@"savedFavorites"];
             
             // Remove the file from the Documents directory
-            [[NSFileManager defaultManager] removeItemAtPath:path error:nil];
+            [saveDict setObject:[[NSMutableArray alloc] init] forKey:@"savedFavorites"];
+            [saveDict writeToFile:savePlist atomically:YES];
             
             // Determine the userID to update favorites on server
-            NSString *userID = [NSKeyedUnarchiver unarchiveObjectWithData:[NSData dataWithContentsOfFile:[path stringByReplacingOccurrencesOfString:@"favs.txt" withString:@"user.txt"]]];
+            NSString *userID = saveDict[@"userUUID"];
             
             // For each favorite unitID in the favorites array
             for (NSString *favorite in favorites){
@@ -248,7 +255,8 @@
         if (buttonIndex != 0) {
             
             // Remove the save file from Docuemnts directory
-            [[NSFileManager defaultManager] removeItemAtPath:[NSSearchPathForDirectoriesInDomains(NSDocumentDirectory, NSUserDomainMask, YES)[0] stringByAppendingPathComponent:@"savedFilter"] error:nil];
+            [prefDict removeObjectForKey:@"savedFilter"];
+            [prefDict writeToFile:prefFile atomically:YES];
         }
     }
 }

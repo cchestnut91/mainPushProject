@@ -33,7 +33,7 @@
         [listings addObject:new];
     }
     
-    NSLog(@"Downloaded %d Listings", listings.count);
+    NSLog(@"Downloaded %lu Listings", (unsigned long)listings.count);
 
     // Returns the array of Listings
     return listings;

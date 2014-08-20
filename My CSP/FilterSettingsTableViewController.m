@@ -588,11 +588,10 @@
         // If source of this page is the preferences screen
         else if ([[(ListingTableNavigationController *)self.parentViewController source] isEqualToString:@"settings"]){
             
-            // Path for saved filter data
-            NSString *filterFile = [NSSearchPathForDirectoriesInDomains(NSDocumentDirectory, NSUserDomainMask, YES)[0] stringByAppendingPathComponent:@"savedFilter"];
+            NSMutableDictionary *prefDict = [[NSMutableDictionary alloc] initWithContentsOfFile:[NSSearchPathForDirectoriesInDomains(NSDocumentDirectory, NSUserDomainMask, YES)[0] stringByAppendingPathComponent:@"prefs.plist"]];
             
-            // Save filter to path
-            [[NSKeyedArchiver archivedDataWithRootObject:self.filter] writeToFile:filterFile atomically:YES];
+            [prefDict setObject:[NSKeyedArchiver archivedDataWithRootObject:self.filter] forKey:@"savedFilter"];
+            [prefDict writeToFile:[NSSearchPathForDirectoriesInDomains(NSDocumentDirectory, NSUserDomainMask, YES)[0] stringByAppendingPathComponent:@"prefs.plist"] atomically:YES];
             
             // Dismiss containing viewController
             [self.parentViewController dismissViewControllerAnimated:YES completion:nil];

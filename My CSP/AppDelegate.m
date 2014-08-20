@@ -79,7 +79,7 @@
             message = [NSString stringWithFormat:@"There are %lu listings nearby you may be interested in", (unsigned long)listings.count];
         }
         
-        NSLog(@"Displaying alert with %d listings", listings.count);
+        NSLog(@"Displaying alert with %lu listings", (unsigned long)listings.count);
         
         UIAlertView *openBeacons = [[UIAlertView alloc] initWithTitle:@"Nearby Listings" message:message delegate:self cancelButtonTitle:@"No Thanks" otherButtonTitles:@"Show", nil];
         [openBeacons show];
@@ -189,7 +189,7 @@
 }
 
 -(void)alertView:(UIAlertView *)alertView didDismissWithButtonIndex:(NSInteger)buttonIndex{
-    NSString *userUUID = [NSKeyedUnarchiver unarchiveObjectWithFile:[NSSearchPathForDirectoriesInDomains(NSDocumentDirectory, NSUserDomainMask, YES)[0] stringByAppendingPathComponent:@"user.txt"]];
+    NSString *userUUID = [[NSMutableDictionary alloc] initWithContentsOfFile:[NSSearchPathForDirectoriesInDomains(NSDocumentDirectory, NSUserDomainMask, YES)[0] stringByAppendingPathComponent:@"saves.plist"]][@"userUUID"];
     
     if (buttonIndex != 0){
         NSLog(@"User clicked Yes to see listings");

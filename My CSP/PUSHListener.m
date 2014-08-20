@@ -64,13 +64,14 @@ NSTimeInterval const kPUSHDefaultTimeInterval = 0;
         self.beaconInterval = kPUSHDefaultTimeInterval;
         self.beaconRegions = [NSMutableDictionary dictionary];
         
-        NSString *seenPath = [NSSearchPathForDirectoriesInDomains(NSDocumentDirectory, NSUserDomainMask, YES)[0] stringByAppendingPathComponent:@"savedSeen.txt"];
+        NSMutableDictionary *saveDict = [[NSMutableDictionary alloc] initWithContentsOfFile:[NSSearchPathForDirectoriesInDomains(NSDocumentDirectory, NSUserDomainMask, YES)[0] stringByAppendingPathComponent:@"saves.plist"]];
         
-        if ([[NSFileManager defaultManager] fileExistsAtPath:seenPath]){
-            self.seenBeacons = (NSMutableDictionary *)[NSKeyedUnarchiver unarchiveObjectWithFile:seenPath];
+        if ([saveDict objectForKey:@"seenBeacons"]){
+            self.seenBeacons = saveDict[@"seenBeacons"];
         } else {
             self.seenBeacons = [NSMutableDictionary dictionary];
-            [NSKeyedArchiver archiveRootObject:self.seenBeacons toFile:seenPath];
+            [saveDict setObject:self.seenBeacons forKey:@"seenBeacons"];
+            [saveDict writeToFile:[NSSearchPathForDirectoriesInDomains(NSDocumentDirectory, NSUserDomainMask, YES)[0] stringByAppendingPathComponent:@"saves.plist"] atomically:YES];
         }
         
         self.campaigns = [[NSMutableArray alloc] init];
@@ -93,7 +94,7 @@ NSTimeInterval const kPUSHDefaultTimeInterval = 0;
         [self.beaconRegions setObject:beaconRegion forKey:beaconRegion.proximityUUID.UUIDString];
     }
     
-    NSLog(@"Started monitoring for %d regions", beacons.count);
+    NSLog(@"Started monitoring for %lu regions", (unsigned long)beacons.count);
 }
 
 - (void)listenForBeacons:(NSArray *)beacons notificationInterval:(NSTimeInterval)seconds {
@@ -180,8 +181,10 @@ NSTimeInterval const kPUSHDefaultTimeInterval = 0;
 
 - (void)addRegionToSeenBeaconsDictionary:(CLBeaconRegion *)beacon {
     [self.seenBeacons setObject:[NSDate date] forKey:[beacon identifier]];
-    NSString *seenPath = [NSSearchPathForDirectoriesInDomains(NSDocumentDirectory, NSUserDomainMask, YES)[0] stringByAppendingPathComponent:@"savedListings.txt"];
-    [NSKeyedArchiver archiveRootObject:self.seenBeacons toFile:seenPath];
+    NSString *savePlist = [NSSearchPathForDirectoriesInDomains(NSDocumentDirectory, NSUserDomainMask, YES)[0] stringByAppendingPathComponent:@"saves.plist"];
+    NSMutableDictionary *saveDict = [[NSMutableDictionary alloc] initWithContentsOfFile:savePlist];
+    [saveDict setObject:self.seenBeacons forKey:@"seenBeacons"];
+    [saveDict writeToFile:savePlist atomically:YES];
 }
 
 

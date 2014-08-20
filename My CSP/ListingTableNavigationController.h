@@ -12,7 +12,7 @@
 #import "ViewController.h"
 
 // Navigation controllers hold and pass values between modal views and their presenting views
-#warning Rename this class to CSPNavigationController when Xcode gets the stick out of it's ass
+// Rename this class to CSPNavigationController when Xcode gets the stick out of it's ass
 @interface ListingTableNavigationController : UINavigationController
 
 

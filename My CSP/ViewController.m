@@ -19,6 +19,11 @@
     
     // Timer to handle image fade transitions
     NSTimer *timer;
+    
+    NSMutableDictionary *prefDict;
+    NSMutableDictionary *saveDict;
+    NSString *prefFile;
+    NSString *savePlist;
 }
 
 #pragma mark-ViewLoading & Appearing
@@ -35,22 +40,30 @@
     [self.searchBar setDelegate:self];
     [self.manager setDelegate:self];
     
-    // Creates a file manager to check Documents Directory
-    NSFileManager* fm = [NSFileManager defaultManager];
-    
     // Locates default documents directory
     NSString *directory = NSSearchPathForDirectoriesInDomains(NSDocumentDirectory, NSUserDomainMask, YES)[0];
     
     // Define files for saving data
-    NSString *saveFile = [directory stringByAppendingPathComponent:@"savedListings.txt"];
-    NSString *idFile = [directory stringByAppendingPathComponent:@"user.txt"];
-    NSString *favFile = [directory stringByAppendingPathComponent:@"favs.txt"];
+    prefFile = [directory stringByAppendingPathComponent:@"prefs.plist"];
+    savePlist = [directory stringByAppendingPathComponent:@"saves.plist"];
+    
+    if ([[NSFileManager defaultManager] fileExistsAtPath:savePlist]){
+        prefDict = [[NSMutableDictionary alloc] initWithContentsOfFile:prefFile];
+        saveDict = [[NSMutableDictionary alloc] initWithContentsOfFile:savePlist];
+    } else {
+        prefDict = [[NSMutableDictionary alloc] init];
+        saveDict = [[NSMutableDictionary alloc] init];
+        
+        [prefDict writeToFile:prefFile atomically:YES];
+        [saveDict writeToFile:savePlist atomically:YES];
+        
+    }
     
     // String to hold UserID
     NSString *userUUID;
     
     // If userID File does not exist
-    if (![fm fileExistsAtPath:idFile]){
+    if (![saveDict objectForKey:@"userUUID"]){
         
         UIAlertView *welcome = [[UIAlertView alloc] initWithTitle:@"Welcome to the My CSP Beta" message:@"Thanks for helping us improve My CSP. Please report any issues you may have, or let us know if you have any other feedback. we'd love to hear from you! You can send bug reports or feedback at any time by shaking your phone. Try it out!" delegate:self cancelButtonTitle:@"Thanks!" otherButtonTitles:nil, nil];
         [welcome show];
@@ -62,21 +75,19 @@
         // If it does not fail
         if (![[[RESTfulInterface RESTAPI] addNewAnonUser:userUUID] isEqualToString:@"0"]){
             
-            // Save the ID as NSData and write to UserID file location
-            NSData *userID = [NSKeyedArchiver archivedDataWithRootObject:userUUID];
-            [userID writeToFile:idFile atomically:YES];
+            [saveDict setObject:userUUID forKey:@"userUUID"];
+            [saveDict writeToFile:savePlist atomically:YES];
         }
         
         // If RESTAPI failed to save data it will create a new UUID on next Load. No favorites will be saved
         
-        
-        NSString *beaconPath = [directory stringByAppendingPathComponent:@"allowBeacons"];
-        [[NSFileManager defaultManager] createFileAtPath:beaconPath contents:[NSKeyedArchiver archivedDataWithRootObject:@"AllowBeacons"] attributes:nil];
+        [prefDict setObject:[NSNumber numberWithBool:YES] forKey:@"allowBeacons"];
+        [prefDict writeToFile:prefFile atomically:YES];
         
     } else {
         
         // If file exists read the UserID from there
-        userUUID = [NSKeyedUnarchiver unarchiveObjectWithFile:idFile];
+        userUUID = saveDict[@"userUUID"];
     }
     
     
@@ -122,10 +133,10 @@
         if (self.listings.count == 0){
             
             // If a previous save of the data is available
-            if ([fm fileExistsAtPath:saveFile]){
+            if ([saveDict objectForKey:@"savedListings"]){
                 
                 // Load the listings from that data
-                self.listings = [NSKeyedUnarchiver unarchiveObjectWithData:[NSData dataWithContentsOfFile:saveFile]];
+                self.listings = [NSKeyedUnarchiver unarchiveObjectWithData:[saveDict objectForKey:@"savedListings"]];
                 
                 // This is not new data
                 new = NO;
@@ -135,9 +146,8 @@
         // If data is new
         if (new){
             
-            // Save backup to local file
-            NSData *data =[NSKeyedArchiver archivedDataWithRootObject:self.listings];
-            [data writeToFile:saveFile atomically:YES];
+            [saveDict setObject:[NSKeyedArchiver archivedDataWithRootObject:self.listings] forKey:@"savedListings"];
+            [saveDict writeToFile:savePlist atomically:YES];
         }
         
         // Get favorites from server using UserID and RESTAPI
@@ -147,7 +157,9 @@
         if (favorites.count == 0){
             
             // Read favorites from save file
-            favorites = [NSKeyedUnarchiver unarchiveObjectWithFile:favFile];
+            if (saveDict[@"savedFavorites"]){
+                favorites = [saveDict objectForKey:@"savedFavorites"];
+            }
             // Make sure favorites match local listings favorites values
             [self checkFavorites:favorites];
             
@@ -170,7 +182,8 @@
         }
         
         // Save favorites to local file as backup
-        [NSKeyedArchiver archiveRootObject:favorites toFile:favFile];
+        [saveDict setObject:favorites forKey:@"savedFavorites"];
+        [saveDict writeToFile:savePlist atomically:YES];
         
         // Return to the main queue for UI updates
         dispatch_async(dispatch_get_main_queue(), ^{
@@ -185,6 +198,7 @@
             [[NSNotificationCenter defaultCenter] postNotificationName:@"finishLoadingListings" object:nil];
         });
     });
+    
     
     
     // Uncomment to simulate beacons after launch
@@ -346,9 +360,8 @@
 
 -(void)respondToBeacon:(NSNotification *)notification{
     
-    BOOL canShowBeacons = [[NSFileManager defaultManager] fileExistsAtPath:[NSSearchPathForDirectoriesInDomains(NSDocumentDirectory, NSUserDomainMask, YES)[0] stringByAppendingPathComponent:@"allowBeacons"]];
+    BOOL canShowBeacons = [prefDict[@"allowBeacons"] boolValue];
     if (canShowBeacons){
-        
         
         [(AppDelegate *)[[UIApplication sharedApplication] delegate] application:[UIApplication sharedApplication] displayNearbyNotification:notification];
     
@@ -674,9 +687,6 @@
         
         // Load beacon info from REST API call and begin monitoring for Beacons
         
-        NSString *directory = NSSearchPathForDirectoriesInDomains(NSDocumentDirectory, NSUserDomainMask, YES)[0];
-        NSString *beaconSaveLocation = [directory stringByAppendingPathComponent:@"savedBeacons"];
-        
         self.beaconDictionary = [[NSMutableDictionary alloc] init];
         
         NSArray *beaconData = [[RESTfulInterface RESTAPI] getAllBeacons];
@@ -686,14 +696,14 @@
                 [self.beaconDictionary setObject:beacon forKey:beaconArray[0]];
             }
             
-            NSData *data =[NSKeyedArchiver archivedDataWithRootObject:self.beaconDictionary];
-            [data writeToFile:beaconSaveLocation atomically:YES];
+            [saveDict setObject:[NSKeyedArchiver archivedDataWithRootObject:self.beaconDictionary] forKey:@"savedBeacons"];
+            [saveDict writeToFile:savePlist atomically:YES];
             
         } else {
             NSLog(@"Attempting to load beacons from local copy");
             
-            if ([[NSFileManager defaultManager] fileExistsAtPath:beaconSaveLocation]){
-                self.beaconDictionary = [NSKeyedUnarchiver unarchiveObjectWithFile:beaconSaveLocation];
+            if (saveDict[@"savedBeacons"]){
+                self.beaconDictionary = [NSKeyedUnarchiver unarchiveObjectWithData:saveDict[@"savedBeacons"]];
             } else {
                 NSLog(@"No Saved Beacons");
             }
@@ -705,7 +715,6 @@
             self.campaigns = [[NSMutableArray alloc] init];
             
             NSArray *campaigns = [[RESTfulInterface RESTAPI] getCampaignHasBeacon];
-            NSString *campaignPath = [directory stringByAppendingPathComponent:@"savedCampaigns"];
             
             if (campaigns){
                 for (NSArray *campaign in campaigns){
@@ -713,15 +722,15 @@
                     [self.campaigns addObject:newCampaign];
                 }
                 
-                NSData *data = [NSKeyedArchiver archivedDataWithRootObject:self.campaigns];
-                [data writeToFile:campaignPath atomically:YES];
+                [saveDict setObject:self.campaigns forKey:@"savedCampaigns"];
+                [saveDict writeToFile:savePlist atomically:YES];
             } else {
                 
                 NSLog(@"Erorr loading campaigns");
                 // Attempt to load local campaigns
                 
-                if ([[NSFileManager defaultManager] fileExistsAtPath:campaignPath]){
-                    self.campaigns = [NSKeyedUnarchiver unarchiveObjectWithFile:campaignPath];
+                if (saveDict[@"savedCampaigns"]){
+                    self.campaigns = saveDict[@"savedCampaigns"];
                 } else {
                     NSLog(@"No local copy");
                 }
@@ -784,6 +793,8 @@
     NSLog(@"Did update Location");
     NSLog(@"New Location Lat: %.5f\nLong: %.5f", self.location.coordinate.latitude, self.location.coordinate.longitude);
     NSLog(@"Accuracy: %.5f", self.location.horizontalAccuracy);
+    
+    [Instabug setUserData:[NSString stringWithFormat:@"Lat:%.5f, Long:%.5f, accur:%f", self.location.coordinate.latitude, self.location.coordinate.longitude, self.location.horizontalAccuracy]];
     
     // update current location in filter object as well
     self.filter.location = self.location;

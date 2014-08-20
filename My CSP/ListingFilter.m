@@ -53,14 +53,12 @@
 -(id)initWithDefault{
     self = [super init];
     
-    // Default save location for Filter File
-    NSString *filterFile = [NSSearchPathForDirectoriesInDomains(NSDocumentDirectory, NSUserDomainMask, YES)[0] stringByAppendingPathComponent:@"savedFilter"];
+     NSMutableDictionary *prefDict = [[NSMutableDictionary alloc] initWithContentsOfFile:[NSSearchPathForDirectoriesInDomains(NSDocumentDirectory, NSUserDomainMask, YES)[0] stringByAppendingPathComponent:@"prefs.plist"]];
     
     // If saved filter exits
-    if ([[NSFileManager defaultManager] fileExistsAtPath:filterFile]){
+    if (prefDict[@"savedFilter"]){
         
-        // Unarchive that data using the NSCoding Init method below
-        self = [NSKeyedUnarchiver unarchiveObjectWithData:[NSData dataWithContentsOfFile:filterFile]];
+        self = [NSKeyedUnarchiver unarchiveObjectWithData:prefDict[@"savedFilter"]];
     } else {
         
         // Otherwise initialize empty filter
