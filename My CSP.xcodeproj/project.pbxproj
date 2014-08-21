@@ -42,7 +42,6 @@
 		AB8F4BD819A3F1640032E84F /* AudioToolbox.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = AB8F4BD719A3F1640032E84F /* AudioToolbox.framework */; };
 		AB8F4BDA19A3F1780032E84F /* QuartzCore.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = AB8F4BD919A3F1780032E84F /* QuartzCore.framework */; };
 		AB8F4BDC19A3F17F0032E84F /* SystemConfiguration.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = AB8F4BDB19A3F17F0032E84F /* SystemConfiguration.framework */; };
-		AB8F4BDE19A3F1870032E84F /* libc++.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = AB8F4BDD19A3F1870032E84F /* libc++.dylib */; };
 		AB8F4BE019A3F1900032E84F /* MessageUI.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = AB8F4BDF19A3F1900032E84F /* MessageUI.framework */; };
 		AB8F4BE219A3F1970032E84F /* OpenGLES.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = AB8F4BE119A3F1970032E84F /* OpenGLES.framework */; };
 		AB8F4BE419A3F19D0032E84F /* GLKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = AB8F4BE319A3F19D0032E84F /* GLKit.framework */; };
@@ -52,7 +51,6 @@
 		AB8F4BEC19A3F1B40032E84F /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = AB8F4BEB19A3F1B40032E84F /* Foundation.framework */; };
 		AB8F4BEF19A3F5330032E84F /* CoreTelephony.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = AB8F4BEE19A3F5330032E84F /* CoreTelephony.framework */; };
 		ABB694A0199FE884005385E6 /* Property.m in Sources */ = {isa = PBXBuildFile; fileRef = ABB6949F199FE884005385E6 /* Property.m */; };
-		ABBAE2FF19A6B0C300B5E250 /* Crashlytics.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = ABBAE2FE19A6B0C300B5E250 /* Crashlytics.framework */; };
 		ABDA779B197EEF9600CA0548 /* ListingFeatureCollectionViewCell.m in Sources */ = {isa = PBXBuildFile; fileRef = ABDA779A197EEF9600CA0548 /* ListingFeatureCollectionViewCell.m */; };
 		ABE1721E1947884100B4953B /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = ABE1721D1947884100B4953B /* main.m */; };
 		ABE172211947884100B4953B /* AppDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = ABE172201947884100B4953B /* AppDelegate.m */; };
@@ -62,6 +60,7 @@
 		ABE17241194788A000B4953B /* Listing.m in Sources */ = {isa = PBXBuildFile; fileRef = ABE17240194788A000B4953B /* Listing.m */; };
 		ABE29C27199290A3004EEA50 /* PickerTableViewCell.m in Sources */ = {isa = PBXBuildFile; fileRef = ABE29C26199290A3004EEA50 /* PickerTableViewCell.m */; };
 		ABE29C2A199290B3004EEA50 /* MonthSelectTableViewCell.m in Sources */ = {isa = PBXBuildFile; fileRef = ABE29C29199290B3004EEA50 /* MonthSelectTableViewCell.m */; };
+		ABE8EE8419A6B76A00C963BE /* libc++.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = AB8F4BDD19A3F1870032E84F /* libc++.dylib */; };
 		ABFBF336196B127700F5AEEC /* MainMenuTableViewCell.m in Sources */ = {isa = PBXBuildFile; fileRef = ABFBF335196B127700F5AEEC /* MainMenuTableViewCell.m */; };
 		ABFE247F1981F5CC003D77D4 /* SelectorTableViewCell.m in Sources */ = {isa = PBXBuildFile; fileRef = ABFE247E1981F5CC003D77D4 /* SelectorTableViewCell.m */; };
 /* End PBXBuildFile section */
@@ -143,7 +142,6 @@
 		AB8F4BEE19A3F5330032E84F /* CoreTelephony.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreTelephony.framework; path = System/Library/Frameworks/CoreTelephony.framework; sourceTree = SDKROOT; };
 		ABB6949E199FE884005385E6 /* Property.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Property.h; sourceTree = "<group>"; };
 		ABB6949F199FE884005385E6 /* Property.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = Property.m; sourceTree = "<group>"; };
-		ABBAE2FE19A6B0C300B5E250 /* Crashlytics.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; path = Crashlytics.framework; sourceTree = "<group>"; };
 		ABDA7799197EEF9600CA0548 /* ListingFeatureCollectionViewCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ListingFeatureCollectionViewCell.h; sourceTree = "<group>"; };
 		ABDA779A197EEF9600CA0548 /* ListingFeatureCollectionViewCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ListingFeatureCollectionViewCell.m; sourceTree = "<group>"; };
 		ABE172181947884100B4953B /* My CSP.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "My CSP.app"; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -175,6 +173,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				ABE8EE8419A6B76A00C963BE /* libc++.dylib in Frameworks */,
 				AB8F4BEF19A3F5330032E84F /* CoreTelephony.framework in Frameworks */,
 				AB8F4BEC19A3F1B40032E84F /* Foundation.framework in Frameworks */,
 				AB8F4BEA19A3F1AF0032E84F /* CoreFoundation.framework in Frameworks */,
@@ -183,9 +182,7 @@
 				AB8F4BE419A3F19D0032E84F /* GLKit.framework in Frameworks */,
 				AB8F4BE219A3F1970032E84F /* OpenGLES.framework in Frameworks */,
 				AB8F4BE019A3F1900032E84F /* MessageUI.framework in Frameworks */,
-				AB8F4BDE19A3F1870032E84F /* libc++.dylib in Frameworks */,
 				AB8F4BDC19A3F17F0032E84F /* SystemConfiguration.framework in Frameworks */,
-				ABBAE2FF19A6B0C300B5E250 /* Crashlytics.framework in Frameworks */,
 				AB8F4BDA19A3F1780032E84F /* QuartzCore.framework in Frameworks */,
 				AB8F4BD819A3F1640032E84F /* AudioToolbox.framework in Frameworks */,
 				AB8F4BD619A3F15E0032E84F /* AVFoundation.framework in Frameworks */,
@@ -386,7 +383,6 @@
 		AB8F4BED19A3F2100032E84F /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
-				ABBAE2FE19A6B0C300B5E250 /* Crashlytics.framework */,
 				AB8F4BEE19A3F5330032E84F /* CoreTelephony.framework */,
 				AB8F4BEB19A3F1B40032E84F /* Foundation.framework */,
 				AB8F4BE919A3F1AF0032E84F /* CoreFoundation.framework */,
@@ -631,7 +627,7 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
-			shellScript = "./Crashlytics.framework/run 6e63974ab6878886d46e46575c43005ded0cfa08 f6ab159dc485d68d8e3ab7929d50ea2fa90052c3518ce0f98874b30bfe22a3e8";
+			shellScript = "";
 		};
 /* End PBXShellScriptBuildPhase section */
 
