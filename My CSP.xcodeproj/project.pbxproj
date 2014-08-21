@@ -61,6 +61,7 @@
 		ABE29C27199290A3004EEA50 /* PickerTableViewCell.m in Sources */ = {isa = PBXBuildFile; fileRef = ABE29C26199290A3004EEA50 /* PickerTableViewCell.m */; };
 		ABE29C2A199290B3004EEA50 /* MonthSelectTableViewCell.m in Sources */ = {isa = PBXBuildFile; fileRef = ABE29C29199290B3004EEA50 /* MonthSelectTableViewCell.m */; };
 		ABE8EE8419A6B76A00C963BE /* libc++.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = AB8F4BDD19A3F1870032E84F /* libc++.dylib */; };
+		ABE8EE8619A6B7A300C963BE /* Crashlytics.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = ABE8EE8519A6B7A300C963BE /* Crashlytics.framework */; };
 		ABFBF336196B127700F5AEEC /* MainMenuTableViewCell.m in Sources */ = {isa = PBXBuildFile; fileRef = ABFBF335196B127700F5AEEC /* MainMenuTableViewCell.m */; };
 		ABFE247F1981F5CC003D77D4 /* SelectorTableViewCell.m in Sources */ = {isa = PBXBuildFile; fileRef = ABFE247E1981F5CC003D77D4 /* SelectorTableViewCell.m */; };
 /* End PBXBuildFile section */
@@ -162,6 +163,7 @@
 		ABE29C26199290A3004EEA50 /* PickerTableViewCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = PickerTableViewCell.m; sourceTree = "<group>"; };
 		ABE29C28199290B3004EEA50 /* MonthSelectTableViewCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MonthSelectTableViewCell.h; sourceTree = "<group>"; };
 		ABE29C29199290B3004EEA50 /* MonthSelectTableViewCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = MonthSelectTableViewCell.m; sourceTree = "<group>"; };
+		ABE8EE8519A6B7A300C963BE /* Crashlytics.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; path = Crashlytics.framework; sourceTree = "<group>"; };
 		ABFBF334196B127700F5AEEC /* MainMenuTableViewCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MainMenuTableViewCell.h; sourceTree = "<group>"; };
 		ABFBF335196B127700F5AEEC /* MainMenuTableViewCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = MainMenuTableViewCell.m; sourceTree = "<group>"; };
 		ABFE247D1981F5CC003D77D4 /* SelectorTableViewCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SelectorTableViewCell.h; sourceTree = "<group>"; };
@@ -183,6 +185,7 @@
 				AB8F4BE219A3F1970032E84F /* OpenGLES.framework in Frameworks */,
 				AB8F4BE019A3F1900032E84F /* MessageUI.framework in Frameworks */,
 				AB8F4BDC19A3F17F0032E84F /* SystemConfiguration.framework in Frameworks */,
+				ABE8EE8619A6B7A300C963BE /* Crashlytics.framework in Frameworks */,
 				AB8F4BDA19A3F1780032E84F /* QuartzCore.framework in Frameworks */,
 				AB8F4BD819A3F1640032E84F /* AudioToolbox.framework in Frameworks */,
 				AB8F4BD619A3F15E0032E84F /* AVFoundation.framework in Frameworks */,
@@ -383,6 +386,7 @@
 		AB8F4BED19A3F2100032E84F /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
+				ABE8EE8519A6B7A300C963BE /* Crashlytics.framework */,
 				AB8F4BEE19A3F5330032E84F /* CoreTelephony.framework */,
 				AB8F4BEB19A3F1B40032E84F /* Foundation.framework */,
 				AB8F4BE919A3F1AF0032E84F /* CoreFoundation.framework */,
@@ -627,7 +631,7 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
-			shellScript = "";
+			shellScript = "./Crashlytics.framework/run 6e63974ab6878886d46e46575c43005ded0cfa08 f6ab159dc485d68d8e3ab7929d50ea2fa90052c3518ce0f98874b30bfe22a3e8";
 		};
 /* End PBXShellScriptBuildPhase section */
 
