@@ -52,7 +52,7 @@
 		AB8F4BEC19A3F1B40032E84F /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = AB8F4BEB19A3F1B40032E84F /* Foundation.framework */; };
 		AB8F4BEF19A3F5330032E84F /* CoreTelephony.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = AB8F4BEE19A3F5330032E84F /* CoreTelephony.framework */; };
 		ABB694A0199FE884005385E6 /* Property.m in Sources */ = {isa = PBXBuildFile; fileRef = ABB6949F199FE884005385E6 /* Property.m */; };
-		ABBAE2FD19A6AFAD00B5E250 /* Crashlytics.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = ABBAE2FC19A6AFAD00B5E250 /* Crashlytics.framework */; };
+		ABBAE2FF19A6B0C300B5E250 /* Crashlytics.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = ABBAE2FE19A6B0C300B5E250 /* Crashlytics.framework */; };
 		ABDA779B197EEF9600CA0548 /* ListingFeatureCollectionViewCell.m in Sources */ = {isa = PBXBuildFile; fileRef = ABDA779A197EEF9600CA0548 /* ListingFeatureCollectionViewCell.m */; };
 		ABE1721E1947884100B4953B /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = ABE1721D1947884100B4953B /* main.m */; };
 		ABE172211947884100B4953B /* AppDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = ABE172201947884100B4953B /* AppDelegate.m */; };
@@ -143,7 +143,7 @@
 		AB8F4BEE19A3F5330032E84F /* CoreTelephony.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreTelephony.framework; path = System/Library/Frameworks/CoreTelephony.framework; sourceTree = SDKROOT; };
 		ABB6949E199FE884005385E6 /* Property.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Property.h; sourceTree = "<group>"; };
 		ABB6949F199FE884005385E6 /* Property.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = Property.m; sourceTree = "<group>"; };
-		ABBAE2FC19A6AFAD00B5E250 /* Crashlytics.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; path = Crashlytics.framework; sourceTree = "<group>"; };
+		ABBAE2FE19A6B0C300B5E250 /* Crashlytics.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; path = Crashlytics.framework; sourceTree = "<group>"; };
 		ABDA7799197EEF9600CA0548 /* ListingFeatureCollectionViewCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ListingFeatureCollectionViewCell.h; sourceTree = "<group>"; };
 		ABDA779A197EEF9600CA0548 /* ListingFeatureCollectionViewCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ListingFeatureCollectionViewCell.m; sourceTree = "<group>"; };
 		ABE172181947884100B4953B /* My CSP.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "My CSP.app"; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -185,7 +185,7 @@
 				AB8F4BE019A3F1900032E84F /* MessageUI.framework in Frameworks */,
 				AB8F4BDE19A3F1870032E84F /* libc++.dylib in Frameworks */,
 				AB8F4BDC19A3F17F0032E84F /* SystemConfiguration.framework in Frameworks */,
-				ABBAE2FD19A6AFAD00B5E250 /* Crashlytics.framework in Frameworks */,
+				ABBAE2FF19A6B0C300B5E250 /* Crashlytics.framework in Frameworks */,
 				AB8F4BDA19A3F1780032E84F /* QuartzCore.framework in Frameworks */,
 				AB8F4BD819A3F1640032E84F /* AudioToolbox.framework in Frameworks */,
 				AB8F4BD619A3F15E0032E84F /* AVFoundation.framework in Frameworks */,
@@ -386,7 +386,7 @@
 		AB8F4BED19A3F2100032E84F /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
-				ABBAE2FC19A6AFAD00B5E250 /* Crashlytics.framework */,
+				ABBAE2FE19A6B0C300B5E250 /* Crashlytics.framework */,
 				AB8F4BEE19A3F5330032E84F /* CoreTelephony.framework */,
 				AB8F4BEB19A3F1B40032E84F /* Foundation.framework */,
 				AB8F4BE919A3F1AF0032E84F /* CoreFoundation.framework */,
