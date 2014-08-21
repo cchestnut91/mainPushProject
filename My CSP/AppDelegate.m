@@ -44,9 +44,6 @@
         
         NSDictionary *userInfo = [localNotification userInfo];
         
-//        UIAlertView *confirm = [[UIAlertView alloc] initWithTitle:@"LocalNotification" message:@"Triggered" delegate:nil cancelButtonTitle:@"OK" otherButtonTitles:nil, nil];
-//        [confirm show];
-        
         
         holdURL = [NSURL URLWithString:userInfo[@"targetURLString"]];
         campaignIDs = userInfo[@"campaignIDs"];

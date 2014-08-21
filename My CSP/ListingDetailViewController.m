@@ -107,6 +107,7 @@ dispatch_queue_t moreimages() {
     } else {
         [[NSFileManager defaultManager] createDirectoryAtPath:imgDir withIntermediateDirectories:NO attributes:nil error:nil];
     }
+    
 
     if (listing.property.firstImage && listing.imageArray.count == 0){
         [listing.imageArray insertObject:listing.property.firstImage atIndex:0];
@@ -121,6 +122,9 @@ dispatch_queue_t moreimages() {
     // If an image has been downloaded for each imageURL in listing.imageSrc and there are more than one image
     if (listing.imageSrc.count == listing.imageArray.count && listing.imageSrc.count > 1){
         
+        
+        NSLog(@"Case 1");
+        
         // Set the page indicator to the appropriate number
         [self.pageIndicator setNumberOfPages:listing.imageArray.count];
         
@@ -134,26 +138,29 @@ dispatch_queue_t moreimages() {
         // Disabled by default for image Loading
         [self.imageView setUserInteractionEnabled:YES];
         
+        dispatch_async(moreimages(), ^{
+            // For each image in the imageArray
+            for (UIImage *image in listing.imageArray){
+                
+                // Generate a unique URL for the image using a UUID
+                NSString *imgURL = [[[NSUUID UUID] UUIDString] stringByAppendingPathExtension:@"png"];
+                
+                // Save the UIImage as NSData with PNG format and write to the url within the image directory
+                [UIImagePNGRepresentation(image) writeToFile:[imgDir stringByAppendingPathComponent:imgURL] atomically:YES];
+                
+                // Create a new instance of a ListingPreview item
+                // This is what gets passed to the PreviewController and displays an image
+                ListingPreview *preview = [[ListingPreview alloc] init];
+                
+                NSString *filePath = [imgDir stringByAppendingPathComponent:imgURL];
+                preview.previewItemURL = [NSURL fileURLWithPath:filePath];
+                preview.previewItemTitle = listing.addressShort;
+                
+                [previews addObject:preview];
+            }
+        });
         
-        // For each image in the imageArray
-        for (UIImage *image in listing.imageArray){
-            
-            // Generate a unique URL for the image using a UUID
-            NSString *imgURL = [[[NSUUID UUID] UUIDString] stringByAppendingPathExtension:@"png"];
-            
-            // Save the UIImage as NSData with PNG format and write to the url within the image directory
-            [UIImagePNGRepresentation(image) writeToFile:[imgDir stringByAppendingPathComponent:imgURL] atomically:YES];
-            
-            // Create a new instance of a ListingPreview item
-            // This is what gets passed to the PreviewController and displays an image
-            ListingPreview *preview = [[ListingPreview alloc] init];
-            
-            NSString *filePath = [imgDir stringByAppendingPathComponent:imgURL];
-            preview.previewItemURL = [NSURL fileURLWithPath:filePath];
-            preview.previewItemTitle = listing.addressShort;
-            
-            [previews addObject:preview];
-        }
+       
     }
     // If more than one imageURL but not all images have been downloaded
     else if (listing.imageSrc.count > 1){
@@ -353,7 +360,6 @@ dispatch_queue_t moreimages() {
     self.detailText.preferredMaxLayoutWidth = 280;
     
     
-    
     // If listing location hasn't been properly set
     if (listing.location == nil){
         
@@ -391,6 +397,7 @@ dispatch_queue_t moreimages() {
     
     // If location is already determined
     else {
+        
         
         // Create a pin for the Listing and pass address and coordinate
         MKPointAnnotation *pin = [[MKPointAnnotation alloc] init];
@@ -582,16 +589,19 @@ dispatch_queue_t moreimages() {
         // Show the intended subview, and hide the other two
         case 0:
             [self.mapView setHidden:YES];
+            [self.directionsButton setHidden:YES];
             [self.featuresCollection setHidden:YES];
             [self.scrollView setHidden:NO];
             break;
         case 1:
             [self.mapView setHidden:YES];
+            [self.directionsButton setHidden:YES];
             [self.featuresCollection setHidden:NO];
             [self.scrollView setHidden:YES];
             break;
         case 2:
             [self.mapView setHidden:NO];
+            [self.directionsButton setHidden:NO];
             [self.featuresCollection setHidden:YES];
             [self.scrollView setHidden:YES];
             break;
@@ -735,6 +745,22 @@ dispatch_queue_t moreimages() {
 
 }
 
+- (IBAction)getDirections:(id)sender {
+    
+    // Create an MKMapItem to pass to the Maps app
+    CLLocationCoordinate2D coordinate = CLLocationCoordinate2DMake(listing.location.coordinate.latitude, listing.location.coordinate.longitude);
+    MKPlacemark *placemark = [[MKPlacemark alloc] initWithCoordinate:coordinate
+                                                   addressDictionary:nil];
+    MKMapItem *mapItem = [[MKMapItem alloc] initWithPlacemark:placemark];
+    
+    // Sets the name of the callout
+    [mapItem setName:listing.addressShort];
+    
+    // Sends the pin and the user to Maps.app
+    [mapItem openInMapsWithLaunchOptions:nil];
+}
+    
+
 // Opens up contact action sheet.
 // Does not guarentee you will call Carol
 - (IBAction)callCarol:(id)sender {
@@ -754,13 +780,6 @@ dispatch_queue_t moreimages() {
     //Initializes a new Pin Annotation View
     MKPinAnnotationView *annotationView = [[MKPinAnnotationView alloc] initWithAnnotation:annotation reuseIdentifier:@"String"];
     
-    // Creates a button to be placed in the annotationView to open in Maps
-    UIButton *button = [[UIButton alloc] initWithFrame:CGRectMake(0, 0, 40, 40)];
-    [button setImage:[UIImage imageNamed:@"carport"] forState:UIControlStateNormal];
-    
-    // Add the button to the annotation view's callout
-    // The callout is what appears when the pin is clicked
-    annotationView.leftCalloutAccessoryView = button;
     annotationView.enabled = YES;
     
     // Allows the callout to show up when clicked
@@ -777,17 +796,7 @@ dispatch_queue_t moreimages() {
 // Reacts to the user tapping the button in the callout
 -(void)mapView:(MKMapView *)mapView annotationView:(MKAnnotationView *)view calloutAccessoryControlTapped:(UIControl *)control{
     
-    // Create an MKMapItem to pass to the Maps app
-    CLLocationCoordinate2D coordinate = CLLocationCoordinate2DMake(listing.location.coordinate.latitude, listing.location.coordinate.longitude);
-    MKPlacemark *placemark = [[MKPlacemark alloc] initWithCoordinate:coordinate
-                                                   addressDictionary:nil];
-    MKMapItem *mapItem = [[MKMapItem alloc] initWithPlacemark:placemark];
     
-    // Sets the name of the callout
-    [mapItem setName:listing.addressShort];
-    
-    // Sends the pin and the user to Maps.app
-    [mapItem openInMapsWithLaunchOptions:nil];
 }
 
 #pragma mark - PreviewController DataSource
@@ -1018,5 +1027,4 @@ dispatch_queue_t moreimages() {
  
  }
  */
-
 @end

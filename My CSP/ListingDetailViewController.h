@@ -42,6 +42,7 @@
 @property (weak, nonatomic) IBOutlet UILabel *rentLabel;
 @property (weak, nonatomic) IBOutlet UILabel *availableLabel;
 @property (weak, nonatomic) IBOutlet UIButton *contactButton;
+@property (weak, nonatomic) IBOutlet UIButton *directionsButton;
 @property (weak, nonatomic) IBOutlet UILabel *detailText;
 
 // MapView
@@ -80,6 +81,8 @@
 
 // Contact realtor. may not be Carol
 - (IBAction)callCarol:(id)sender;
+
+- (IBAction)getDirections:(id)sender;
 
 // Initializes gesture recognizers and adds them to imageView
 -(void)addGestures;

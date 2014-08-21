@@ -530,7 +530,7 @@
                                     <action selector="updateSubView:" destination="y3S-Cj-6E9" eventType="valueChanged" id="7sA-3s-i8Z"/>
                                 </connections>
                             </segmentedControl>
-                            <view hidden="YES" contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="mdU-j0-cv6">
+                            <view hidden="YES" contentMode="scaleToFill" misplaced="YES" translatesAutoresizingMaskIntoConstraints="NO" id="mdU-j0-cv6">
                                 <rect key="frame" x="110" y="56" width="100" height="100"/>
                                 <subviews>
                                     <activityIndicatorView opaque="NO" contentMode="scaleToFill" horizontalHuggingPriority="750" verticalHuggingPriority="750" hidesWhenStopped="YES" animating="YES" style="whiteLarge" translatesAutoresizingMaskIntoConstraints="NO" id="g7Q-eM-h60">
@@ -597,9 +597,6 @@
                                     </collectionViewCell>
                                 </cells>
                             </collectionView>
-                            <mapView hidden="YES" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" mapType="standard" showsUserLocation="YES" translatesAutoresizingMaskIntoConstraints="NO" id="2ds-a0-JDO">
-                                <rect key="frame" x="0.0" y="300" width="320" height="268"/>
-                            </mapView>
                             <scrollView opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" minimumZoomScale="0.0" maximumZoomScale="0.0" translatesAutoresizingMaskIntoConstraints="NO" id="9aY-v6-0Qr">
                                 <rect key="frame" x="0.0" y="299" width="320" height="269"/>
                                 <subviews>
@@ -704,6 +701,19 @@
                                     <constraint firstAttribute="trailing" secondItem="7f7-gq-XI9" secondAttribute="trailing" id="t9C-0u-xQH"/>
                                 </constraints>
                             </scrollView>
+                            <mapView hidden="YES" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" mapType="standard" showsUserLocation="YES" translatesAutoresizingMaskIntoConstraints="NO" id="2ds-a0-JDO">
+                                <rect key="frame" x="0.0" y="300" width="320" height="268"/>
+                            </mapView>
+                            <button hidden="YES" appearanceType="aqua" opaque="NO" contentMode="scaleToFill" fixedFrame="YES" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="iCZ-fx-AeT">
+                                <rect key="frame" x="0.0" y="513" width="320" height="55"/>
+                                <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                                <state key="normal" title="Get Directions">
+                                    <color key="titleShadowColor" white="0.5" alpha="1" colorSpace="calibratedWhite"/>
+                                </state>
+                                <connections>
+                                    <action selector="getDirections:" destination="y3S-Cj-6E9" eventType="touchUpInside" id="KSV-nt-wlq"/>
+                                </connections>
+                            </button>
                         </subviews>
                         <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
                         <constraints>
@@ -754,6 +764,7 @@
                         <outlet property="bottomImage" destination="M8W-P1-qpx" id="JDh-M7-DEG"/>
                         <outlet property="contactButton" destination="x6F-VY-o6x" id="fN8-wQ-Amh"/>
                         <outlet property="detailText" destination="9kM-dw-hHj" id="2dO-Yf-zta"/>
+                        <outlet property="directionsButton" destination="iCZ-fx-AeT" id="el8-0Q-2U8"/>
                         <outlet property="featuresCollection" destination="Rhf-6W-sX1" id="mjJ-bj-fGZ"/>
                         <outlet property="imageView" destination="pDH-c2-OTl" id="DdB-j1-gt5"/>
                         <outlet property="infoView" destination="7f7-gq-XI9" id="feK-Xw-QzG"/>
@@ -1696,10 +1707,10 @@
         </scene>
     </scenes>
     <resources>
-        <image name="CSP" width="1267" height="646"/>
+        <image name="CSP" width="280" height="143"/>
         <image name="background" width="800" height="532"/>
-        <image name="background.jpg" width="2400" height="1600"/>
-        <image name="bed" width="257" height="257"/>
+        <image name="background.jpg" width="912" height="608"/>
+        <image name="bed" width="55" height="55"/>
     </resources>
     <color key="tintColor" red="0.29803921568627451" green="0.41568627450980394" blue="0.92549019607843142" alpha="1" colorSpace="calibratedRGB"/>
     <simulatedMetricsContainer key="defaultSimulatedMetrics">
@@ -1708,7 +1719,7 @@
         <simulatedScreenMetrics key="destination" type="retina4"/>
     </simulatedMetricsContainer>
     <inferredMetricsTieBreakers>
+        <segue reference="Xbh-O6-6ZB"/>
         <segue reference="6uH-h1-I4A"/>
-        <segue reference="eCp-dC-9fH"/>
     </inferredMetricsTieBreakers>
 </document>
