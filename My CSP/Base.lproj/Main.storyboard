@@ -314,6 +314,9 @@
                     <navigationBar key="navigationBar" contentMode="scaleToFill" id="EBl-ef-YTd">
                         <rect key="frame" x="0.0" y="0.0" width="320" height="44"/>
                         <autoresizingMask key="autoresizingMask"/>
+                        <textAttributes key="titleTextAttributes">
+                            <fontDescription key="fontDescription" name="HelveticaNeue-Light" family="Helvetica Neue" pointSize="20"/>
+                        </textAttributes>
                     </navigationBar>
                     <connections>
                         <segue destination="yka-1s-oDI" kind="relationship" relationship="rootViewController" id="aqR-Il-WM1"/>
@@ -333,7 +336,7 @@
                         <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
                         <prototypes>
                             <tableViewCell contentMode="scaleToFill" selectionStyle="default" indentationWidth="10" reuseIdentifier="listingCell" rowHeight="136" id="eO6-m4-6eB" customClass="ListingTableViewCell">
-                                <rect key="frame" x="0.0" y="22" width="320" height="136"/>
+                                <rect key="frame" x="0.0" y="86" width="320" height="136"/>
                                 <autoresizingMask key="autoresizingMask"/>
                                 <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" tableViewCell="eO6-m4-6eB" id="IDt-AM-JxK">
                                     <rect key="frame" x="0.0" y="0.0" width="320" height="136"/>
@@ -410,7 +413,7 @@
                                 </connections>
                             </tableViewCell>
                             <tableViewCell contentMode="scaleToFill" selectionStyle="default" indentationWidth="10" reuseIdentifier="noFoundCell" rowHeight="136" id="0Pa-pI-1Dw" customClass="ListingTableViewCell">
-                                <rect key="frame" x="0.0" y="158" width="320" height="136"/>
+                                <rect key="frame" x="0.0" y="222" width="320" height="136"/>
                                 <autoresizingMask key="autoresizingMask"/>
                                 <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" tableViewCell="0Pa-pI-1Dw" id="biz-SA-gVA">
                                     <rect key="frame" x="0.0" y="0.0" width="320" height="136"/>
@@ -1693,10 +1696,10 @@
         </scene>
     </scenes>
     <resources>
-        <image name="CSP" width="2534" height="1293"/>
+        <image name="CSP" width="1267" height="646"/>
         <image name="background" width="800" height="532"/>
         <image name="background.jpg" width="2400" height="1600"/>
-        <image name="bed" width="515" height="515"/>
+        <image name="bed" width="257" height="257"/>
     </resources>
     <color key="tintColor" red="0.29803921568627451" green="0.41568627450980394" blue="0.92549019607843142" alpha="1" colorSpace="calibratedRGB"/>
     <simulatedMetricsContainer key="defaultSimulatedMetrics">
@@ -1705,7 +1708,7 @@
         <simulatedScreenMetrics key="destination" type="retina4"/>
     </simulatedMetricsContainer>
     <inferredMetricsTieBreakers>
+        <segue reference="6uH-h1-I4A"/>
         <segue reference="eCp-dC-9fH"/>
-        <segue reference="R9I-il-CaE"/>
     </inferredMetricsTieBreakers>
 </document>

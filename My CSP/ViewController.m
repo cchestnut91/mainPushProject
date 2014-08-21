@@ -245,7 +245,7 @@
         
         // Ask if the User would like to allow Location Services
         // AlertView Delegate method handles the rest
-        UIAlertView *tryAgain = [[UIAlertView alloc] initWithTitle:@"Use Current Location" message:@"My CSP can use your location to show you listings closest to you. Would you like to allow this?" delegate:self cancelButtonTitle:@"No" otherButtonTitles:@"Ok!", nil];
+        UIAlertView *tryAgain = [[UIAlertView alloc] initWithTitle:@"Use Current Location" message:@"My CSP can use your location to show you listings closest to you. Would you like to allow this?" delegate:self cancelButtonTitle:@"No" otherButtonTitles:@"Okay", nil];
         [tryAgain show];
     }
     
@@ -596,7 +596,7 @@
         if (buttonIndex == 0){
             [self.manager requestAlwaysAuthorization];
         } else {
-            UIAlertView *tryAgain = [[UIAlertView alloc] initWithTitle:@"Use Current Location" message:@"My CSP Can also use your location only within the app to show you places closest to you. Would you like to allow this?" delegate:self cancelButtonTitle:@"No" otherButtonTitles:@"Ok!", nil];
+            UIAlertView *tryAgain = [[UIAlertView alloc] initWithTitle:@"Use Current Location" message:@"My CSP Can also use your location only within the app to show you places closest to you. Would you like to allow this?" delegate:self cancelButtonTitle:@"No" otherButtonTitles:@"Okay", nil];
             [tryAgain show];
         }
     } else 
