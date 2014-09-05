@@ -469,9 +469,9 @@
 		ABE1723E1947886D00B4953B /* Interface */ = {
 			isa = PBXGroup;
 			children = (
+				AB44FA6B199AA4A6005BC223 /* View Controllers */,
 				AB44FA69199AA45D005BC223 /* Images */,
 				AB44FA76199AA5BD005BC223 /* Storyboards */,
-				AB44FA6B199AA4A6005BC223 /* View Controllers */,
 				AB44FA75199AA580005BC223 /* Navigation Controllers */,
 				AB44FA6F199AA50C005BC223 /* UI Elements */,
 			);

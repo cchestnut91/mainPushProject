@@ -113,6 +113,9 @@ dispatch_queue_t imageQueue() {
             // Resaves description without link to the Tour
             self.descrip = [NSString stringWithFormat:@"%@%@", [self.descrip componentsSeparatedByString:@"To view the virtual"][0], [self.descrip componentsSeparatedByString:@">"][2]];
         }
+        if ([self.descrip rangeOfString:@"<a"].location != NSNotFound){
+            self.descrip = [NSString stringWithFormat:@"%@%@", [self.descrip componentsSeparatedByString:@"<"][0], [self.descrip componentsSeparatedByString:@">"][[[self.descrip componentsSeparatedByString:@">"] count] - 1]];
+        }
     } else {
         self.descrip = @"No Description Available";
     }
