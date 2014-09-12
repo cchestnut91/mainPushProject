@@ -321,11 +321,7 @@ dispatch_queue_t moreimages() {
     NSString *address = listing.addressShort;
     
     // Clarifies Unit for ambiguous apartment text
-    /*
-     iOS 8
     if (![address containsString:@"Apt"] && ![address containsString:@"Room"] && ![address containsString:@"Terrace"] && [address containsString:@"-"]){
-    */
-    if ([address rangeOfString:@"Apt"].location == NSNotFound && [address rangeOfString:@"Room"].location == NSNotFound && [address rangeOfString:@"Terrace"].location == NSNotFound && [address rangeOfString:@"-"].location != NSNotFound){
         address = [address stringByReplacingOccurrencesOfString:@"-" withString:@"- Unit"];
     }
     
@@ -415,16 +411,13 @@ dispatch_queue_t moreimages() {
     
     
     // Blur effect
-    /*
-     iOS 8
     UIBlurEffect *blurEffect = [UIBlurEffect effectWithStyle:UIBlurEffectStyleExtraLight];
     UIVisualEffectView *blurEffectView = [[UIVisualEffectView alloc] initWithEffect:blurEffect];
     [blurEffectView setFrame:self.view.bounds];
     [self.blurView addSubview:blurEffectView];
-    */
     
     // Set blur to opaque white color on iOS 7
-    [self.blurView setBackgroundColor:[UIColor whiteColor]];
+    //[self.blurView setBackgroundColor:[UIColor whiteColor]];
 }
 
 

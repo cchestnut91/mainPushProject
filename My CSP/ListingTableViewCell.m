@@ -59,17 +59,7 @@
     NSString *address = listingIn.addressShort;
     
     // Cleaner if statement, requires iOS 8
-    /*
-     iOS 8
      if (![address containsString:@"Apt"] && ![address containsString:@"Room"] && ![address containsString:@"Terrace"] && [address containsString:@"-"]){
-     */
-    
-    // This if statement eliminates confusing addresses like "101 Main Street - 1" with "101 Main Street - Unit 1"
-    // This will not apply if there is already a clarifier such as
-    // "101 Main Street Apt 1"
-    
-    // If address doesn't contain "Apt", "Room" or "Terrace" but includes "-"
-    if ([address rangeOfString:@"Apt"].location == NSNotFound && [address rangeOfString:@"Room"].location == NSNotFound && [address rangeOfString:@"Terrace"].location == NSNotFound && [address rangeOfString:@"-"].location != NSNotFound){
         
         // Add unit clarification
         address = [address stringByReplacingOccurrencesOfString:@"-" withString:@"- Unit"];

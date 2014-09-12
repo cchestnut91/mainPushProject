@@ -669,7 +669,7 @@
      */
     
     // If alwaysAuthorized enabled
-    if (status == kCLAuthorizationStatusAuthorized){
+    if (status == kCLAuthorizationStatusAuthorized || status == kCLAuthorizationStatusAuthorizedAlways){
         
         // Load beacon info from REST API call and begin monitoring for Beacons
         
@@ -745,7 +745,7 @@
                 
                 [[PUSHListener defaultListener] setCampaigns:self.campaigns];
                 
-                [[PUSHListener defaultListener] listenForBeacons:filteredBeacons.allValues notificationInterval:90];
+                [[PUSHListener defaultListener] listenForBeacons:filteredBeacons.allValues notificationInterval:86400];
             }
             
         }
@@ -755,15 +755,8 @@
 
 // Determines if location services are enabled
 -(BOOL)locationEnabled{
-    /*
-     iOS 8 + 7
-    if ([CLLocationManager authorizationStatus] == kCLAuthorizationStatusAuthorized || [CLLocationManager authorizationStatus] == kCLAuthorizationStatusAuthorizedAlways || [CLLocationManager authorizationStatus] == kCLAuthorizationStatusAuthorizedWhenInUse){
-        return true;
-    }
-     */
     
-    // If locationServices authorized
-    if ([CLLocationManager authorizationStatus] == kCLAuthorizationStatusAuthorized){
+    if ([CLLocationManager authorizationStatus] == kCLAuthorizationStatusAuthorized || [CLLocationManager authorizationStatus] == kCLAuthorizationStatusAuthorizedAlways || [CLLocationManager authorizationStatus] == kCLAuthorizationStatusAuthorizedWhenInUse){
         return true;
     }
     

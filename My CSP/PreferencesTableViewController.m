@@ -52,10 +52,7 @@
     // in iOS 8 you can link direcly to app's section in Settings.app
     // This section allows that by adding a new row
     // Return the number of rows in the section.
-    /*
-     iOS 8
     if (section == 1 && UIApplicationOpenSettingsURLString != nil) return 2;
-    */
     
     // First section has a cell to clear preferences
     if (section == 0) return 2;
@@ -154,12 +151,9 @@
 
 -(void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath{
     [tableView deselectRowAtIndexPath:indexPath animated:YES];
-    /*
-     iOS 8
-     if (indexPath.section == 1 && indexPath.row == 1){
-     [[UIApplication sharedApplication] openURL:[NSURL URLWithString:UIApplicationOpenSettingsURLString]];
-     }
-     */
+    if (indexPath.section == 1 && indexPath.row == 1){
+        [[UIApplication sharedApplication] openURL:[NSURL URLWithString:UIApplicationOpenSettingsURLString]];
+    }
     if (indexPath.section == 0 && indexPath.row == 0){
         [self performSegueWithIdentifier:@"searchPreferences" sender:self];
     }

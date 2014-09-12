@@ -97,13 +97,7 @@ dispatch_queue_t imageQueue() {
         self.descrip = infoIn[@"description"];
         
         
-        /*
-         iOS 8
          if ([self.descrip containsString:@"To view the virtual tour"]){
-         */
-        
-        // Checks if the description contains a link to a virtual tour
-        if ([self.descrip rangeOfString:@"To view the virtual tour"].location != NSNotFound){
             
             // Pull the URL for the tour from the description and saves to Listing
             NSString *url = [self.descrip componentsSeparatedByString:@"href=\""][1];
