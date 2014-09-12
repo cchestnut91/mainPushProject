@@ -232,16 +232,10 @@
     [super viewDidAppear:animated];
     
     // Method for iOS to allowAlwaysAuthorization. Requires iOS 8. Uncomment and refactor when iOS 8 reaches GM
-    /*
-     iOS 8 + 7
      if ([CLLocationManager authorizationStatus] == kCLAuthorizationStatusNotDetermined && [[[UIDevice currentDevice] systemVersion] floatValue] >= 8){
-     UIAlertView *authorizeBeacons = [[UIAlertView alloc] initWithTitle:@"Find Listings With Beacons" message:@"Would you like to allow My CSP to use low energy Bluetooth to find places around you that you may be interested in the background?" delegate:self cancelButtonTitle:@"Sure!" otherButtonTitles:@"No Thanks", nil];
-     [authorizeBeacons show];
-     }
-     */
-    
-    // If Device is not running iOS 8 AND authorizationStatus for LoactionManager has not been determined
-    if ( [CLLocationManager authorizationStatus] == kCLAuthorizationStatusNotDetermined){
+         UIAlertView *authorizeBeacons = [[UIAlertView alloc] initWithTitle:@"Find Listings With Beacons" message:@"Would you like to allow My CSP to use low energy Bluetooth to find places around you that you may be interested in the background?" delegate:self cancelButtonTitle:@"No Thanks" otherButtonTitles:@"Sure!", nil];
+         [authorizeBeacons show];
+     } else if ( [CLLocationManager authorizationStatus] == kCLAuthorizationStatusNotDetermined){
         
         // Ask if the User would like to allow Location Services
         // AlertView Delegate method handles the rest
@@ -590,20 +584,14 @@
     
     // Respond to request for AlwaysAuthroization
     // iOS 8 only
-    /* 
-     iOS 8
     if ([alertView.title isEqualToString:@"Find Listings With Beacons"]){
-        if (buttonIndex == 0){
+        if (buttonIndex == 1){
             [self.manager requestAlwaysAuthorization];
         } else {
             UIAlertView *tryAgain = [[UIAlertView alloc] initWithTitle:@"Use Current Location" message:@"My CSP Can also use your location only within the app to show you places closest to you. Would you like to allow this?" delegate:self cancelButtonTitle:@"No" otherButtonTitles:@"Okay", nil];
             [tryAgain show];
         }
-    } else 
-     */
-    
-    // Check alert title to see if it is the Use Current Location request
-    if ([alertView.title isEqualToString:@"Use Current Location"]){
+    } else if ([alertView.title isEqualToString:@"Use Current Location"]){
         
         // If user did not click "No"
         if (buttonIndex == 1){
@@ -611,16 +599,14 @@
              iOS 7
              */
             // Automatically asks user for permission a second time
-            [self.manager startMonitoringSignificantLocationChanges];
+            // [self.manager startMonitoringSignificantLocationChanges];
             
-            /*
-            iOS 8 & 7
-            if ( [[[UIDevice currentDevice] systemVersion] floatValue] < 8 ){
+        
+            if ([[[UIDevice currentDevice] systemVersion] floatValue] < 8 ){
                 [self.manager startMonitoringSignificantLocationChanges];
             } else {
                 [self.manager requestWhenInUseAuthorization];
             }
-            */
         }
     }
 }

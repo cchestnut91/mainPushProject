@@ -32,6 +32,8 @@
     // Initialize webview
     [self.webView setDelegate:self];
     
+    self.request = [[NSURLRequest alloc] initWithURL:self.url cachePolicy: NSURLRequestUseProtocolCachePolicy timeoutInterval:10];
+    
     // Load request passed from the previous view
     [self.webView loadRequest:self.request];
 }

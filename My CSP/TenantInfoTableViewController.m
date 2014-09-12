@@ -173,7 +173,9 @@
     if ([segue.identifier isEqualToString:@"openWebview"]){
         
         // Set request for webview
-        [(WebViewController *)segue.destinationViewController setRequest:[[NSURLRequest alloc] initWithURL: [NSURL URLWithString: selectedURL] cachePolicy: NSURLRequestUseProtocolCachePolicy timeoutInterval:10]];
+        WebViewController *dest = (WebViewController *)segue.destinationViewController;
+        //[dest setRequest:req];
+        [dest setUrl:[NSURL URLWithString: selectedURL]];
         
         // Set title for webViewController
         [segue.destinationViewController setTitle:titleString];
