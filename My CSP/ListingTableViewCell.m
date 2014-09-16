@@ -38,7 +38,7 @@
     } else {
         
         // Display the default "No Images" image formatted for the cell
-        [self.backgroundImageView setImage:[UIImage imageNamed:@"defaultWide"]];
+        [self.backgroundImageView setImage:[UIImage imageNamed:@"defaultWide.png"]];
     }
     
     // If no info for number of Beds show the appropriate label
@@ -59,7 +59,7 @@
     NSString *address = listingIn.addressShort;
     
     // Cleaner if statement, requires iOS 8
-     if (![address containsString:@"Apt"] && ![address containsString:@"Room"] && ![address containsString:@"Terrace"] && [address containsString:@"-"]){
+     if (![listingIn doesString:address containString:@"Apt"] && ![listingIn doesString:address containString:@"Room"] && ![listingIn doesString:address containString:@"Terrace"] && [listingIn doesString:address containString:@"-"]){
         
         // Add unit clarification
         address = [address stringByReplacingOccurrencesOfString:@"-" withString:@"- Unit"];

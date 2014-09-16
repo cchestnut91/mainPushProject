@@ -52,7 +52,7 @@
     // in iOS 8 you can link direcly to app's section in Settings.app
     // This section allows that by adding a new row
     // Return the number of rows in the section.
-    if (section == 1 && UIApplicationOpenSettingsURLString != nil) return 2;
+    if (section == 1 && [[UIDevice currentDevice].systemVersion floatValue] >= 8) return 2;
     
     // First section has a cell to clear preferences
     if (section == 0) return 2;

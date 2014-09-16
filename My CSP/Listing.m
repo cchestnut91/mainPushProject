@@ -97,7 +97,7 @@ dispatch_queue_t imageQueue() {
         self.descrip = infoIn[@"description"];
         
         
-         if ([self.descrip containsString:@"To view the virtual tour"]){
+         if ([self doesString:self.descrip containString:@"To view the virtual tour"]){
             
             // Pull the URL for the tour from the description and saves to Listing
             NSString *url = [self.descrip componentsSeparatedByString:@"href=\""][1];
@@ -465,6 +465,14 @@ dispatch_queue_t imageQueue() {
     }
     
     return self;
+}
+
+-(BOOL)doesString:(NSString *)stringA containString:(NSString *)stringB{
+    if ([[UIDevice currentDevice].systemVersion floatValue] >= 8){
+        return [stringA containsString:stringB];
+    } else {
+        return [stringA rangeOfString:stringB].location != NSNotFound;
+    }
 }
 
 @end

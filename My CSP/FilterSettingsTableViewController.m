@@ -109,6 +109,7 @@
 
 // Run when viewIsDismissed
 -(void)viewWillDisappear:(BOOL)animated{
+    [super viewWillDisappear:animated];
     
     // will dismiss keyboard if it is currently showing before view dissapears
     [self.minRentField resignFirstResponder];

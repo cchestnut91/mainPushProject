@@ -117,21 +117,17 @@
     // Step through each Listing in the array
     for (Listing *check in listings){
         
-        // Listings pass unless determined otherwise
-        BOOL pass = YES;
-        
         // If current date is not between ListDate and StopListDate don't pass
         if (!override){
             
-            if (pass && ![check isNowBetweenDate:check.start andDate:check.stop]){
-                pass = NO;
+            if (![check isNowBetweenDate:check.start andDate:check.stop]){
                 continue;
             }
         }
         
         // Will not check other options if it has already failed to pass
         // If filter by year is set
-        if (pass && self.year){
+        if (self.year){
             
             NSDateFormatter *formatter = [[NSDateFormatter alloc] init];
             [formatter setDateFormat:@"yyyy"];
@@ -140,13 +136,12 @@
             
             // If desired year is before the year listing goes available, don't pass
             if (!(y.intValue <= self.year.intValue)){
-                pass = NO;
                 continue;
             }
         }
         
         // if filter by month is set
-        if (pass && self.month){
+        if (self.month){
             
             NSDateFormatter *formatter = [[NSDateFormatter alloc] init];
             [formatter setDateFormat:@"M"];
@@ -162,25 +157,22 @@
             // listing year is not before desired year
             // Honestly, I'm not sure about this bool statement, but it seems to work!
             if (![m isEqualToString:self.month] && !(y.intValue < self.year.intValue)){
-                pass = NO;
                 continue;
             }
         }
         
         // If lowRent is set and Listing rent is not less than lowRent
-        if (pass && self.lowRent != 0 && self.lowRent > check.rent.floatValue){
-            pass = NO;
+        if (self.lowRent != 0 && self.lowRent > check.rent.floatValue){
             continue;
         }
         
         // If highRent is set and Listing rent is not more than highRent
-        if (pass && self.highRent != 0 && self.highRent < check.rent.floatValue){
-            pass = NO;
+        if (self.highRent != 0 && self.highRent < check.rent.floatValue){
             continue;
         }
         
         // If filter should check for current location
-        if (pass && self.checkLocation.boolValue){
+        if (self.checkLocation.boolValue){
             
             NSLog(@"Filtering for location");
             NSLog(@"Users Location Lat: %.5f \nLong: %.5f", self.location.coordinate.latitude, self.location.coordinate.longitude);
@@ -195,7 +187,6 @@
             // If user's current location is not within range of Listing's location
             if ([self.location distanceFromLocation:check.location] > self.range){
                 NSLog(@"Did not pass");
-                pass = NO;
                 continue;
             } else {
                 NSLog(@"Did pass");
@@ -203,95 +194,76 @@
         }
         
         // If desired number of beds is more than Listing's num beds
-        if (pass && self.beds.intValue > check.beds.intValue){
-            pass = NO;
+        if (self.beds.intValue > check.beds.intValue){
             continue;
         }
         // If desired number of baths is more than Listing's num baths
-        if (pass && check.baths.intValue < self.baths.intValue){
-            pass = NO;
+        if (check.baths.intValue < self.baths.intValue){
             continue;
         }
         
         // If filter should only return Listing's with Images
-        if (pass && self.images.boolValue){
+        if (self.images.boolValue){
             
             // If Listing has no images
             if ([check imageSrc].count == 0){
-                pass = NO;
                 continue;
             }
         }
         
         // Simple Bool checks
-        if (pass && self.favorite.boolValue && !check.favorite){
-            pass = NO;
+        if (self.favorite.boolValue && !check.favorite){
             continue;
         }
-        if (pass && self.cable.boolValue && !check.cable){
-            pass = NO;
+        if (self.cable.boolValue && !check.cable){
             continue;
         }
-        if (pass && self.hardWood.boolValue && !check.hardwood){
-            pass = NO;
+        if (self.hardWood.boolValue && !check.hardwood){
             continue;
         }
-        if (pass && self.fridge.boolValue && !check.refrigerator){
-            pass = NO;
+        if (self.fridge.boolValue && !check.refrigerator){
             continue;
         }
-        if (pass && self.laundry.boolValue && !check.laundry){
-            pass = NO;
+        if (self.laundry.boolValue && !check.laundry){
             continue;
         }
-        if (pass && self.oven.boolValue && !check.oven){
-            pass = NO;
+        if (self.oven.boolValue && !check.oven){
             continue;
         }
-        if (pass && self.air.boolValue && !check.airConditioning){
-            pass = NO;
+        if (self.air.boolValue && !check.airConditioning){
             continue;
         }
-        if (pass && self.balcony.boolValue && !check.balcony){
-            pass = NO;
+        if (self.balcony.boolValue && !check.balcony){
             continue;
         }
-        if (pass && self.carport.boolValue && !check.carport){
-            pass = NO;
+        if (self.carport.boolValue && !check.carport){
             continue;
         }
-        if (pass && self.dish.boolValue && !check.dishwasher){
-            pass = NO;
+        if (self.dish.boolValue && !check.dishwasher){
             continue;
         }
-        if (pass && self.fence.boolValue && !check.fenced){
-            pass = NO;
+        if (self.fence.boolValue && !check.fenced){
             continue;
         }
-        if (pass && self.fire.boolValue && !check.fireplace){
-            pass = NO;
+        if (self.fire.boolValue && !check.fireplace){
             continue;
         }
-        if (pass && self.garage.boolValue && !check.garage){
-            pass = NO;
+        if (self.garage.boolValue && !check.garage){
             continue;
         }
-        if (pass && self.internet.boolValue && !check.internet){
-            pass = NO;
+        if (self.internet.boolValue && !check.internet){
             continue;
         }
-        if (pass && self.microwave.boolValue && !check.microwave){
-            pass = NO;
+        if (self.microwave.boolValue && !check.microwave){
             continue;
         }
-        if (pass && self.closet.boolValue && !check.walkCloset){
-            pass = NO;
+        if (self.closet.boolValue && !check.walkCloset){
             continue;
         }
         
         // If array of Keywords is not null
         // Will return true if ANY keywords are found in the Listing
-        if (pass && self.keyWords){
+        if (self.keyWords){
             
             // Initial bool to be changed if keywords are found
             BOOL found = NO;
@@ -310,23 +282,18 @@
                     // Else if the listing description contains any of the keywords
                     else if ([check.descrip.lowercaseString rangeOfString:[keyWord lowercaseString]].location != NSNotFound){
                         found = YES;
-                        break;
                     }
                 }
             }
             
             // If no keywords were found do not pass filter
             if (!found){
-                pass = NO;
                 continue;
             }
             
         }
         
-        // If listing has passed through the filter, add to the ret array
-        if (pass){
-            [ret addObject:check];
-        }
+        [ret addObject:check];
     }
     
     if (ret.count == 0 && self.checkLocation.boolValue && self.range < 1000){

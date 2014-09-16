@@ -73,4 +73,6 @@
 // Determines if the Listing should be displayed using the ListDate and EndListDate
 - (BOOL)isNowBetweenDate:(NSDate *)earlierDate andDate:(NSDate *)laterDate;
 
+-(BOOL)doesString:(NSString *)stringA containString:(NSString *)stringB;
+
 @end

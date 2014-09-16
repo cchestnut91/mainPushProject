@@ -65,9 +65,6 @@
     // If userID File does not exist
     if (![saveDict objectForKey:@"userUUID"]){
         
-        UIAlertView *welcome = [[UIAlertView alloc] initWithTitle:@"Welcome to the My CSP Beta" message:@"Thanks for helping us improve My CSP. Please report any issues you may have, or let us know if you have any other feedback. we'd love to hear from you! You can send bug reports or feedback at any time by shaking your phone. Try it out!" delegate:self cancelButtonTitle:@"Thanks!" otherButtonTitles:nil, nil];
-        [welcome show];
-        
         // Create a new UUID and save the string as the UserID
         userUUID = [[NSUUID UUID] UUIDString];
         
@@ -216,7 +213,7 @@
     [super viewWillAppear:animated];
     
     // Create background array
-    self.backgroundArray = [[NSMutableArray alloc] initWithObjects:@"background", @"scrollB", @"scrollA", @"scrollC", nil];
+    self.backgroundArray = [[NSMutableArray alloc] initWithObjects:@"background.jpg", @"scrollB.jpg", @"scrollA.jpg", @"scrollC.jpg", nil];
     
     // Set the backgound view to the initial image
     [self.backgroundImageView setImage:[UIImage imageNamed:self.backgroundArray[0]]];

@@ -215,7 +215,7 @@ dispatch_queue_t moreimages() {
                 if (imageData){
                     newImage = [UIImage imageWithData:imageData];
                 } else {
-                    newImage = [UIImage imageNamed:@"default"];
+                    newImage = [UIImage imageNamed:@"default.png"];
                 }
                 
                 // Add the image to the listing image array
@@ -301,7 +301,7 @@ dispatch_queue_t moreimages() {
         else {
             
             // Set default image
-            [self.imageView setImage:[UIImage imageNamed:@"default"]];
+            [self.imageView setImage:[UIImage imageNamed:@"default.png"]];
             
             // Deny user interaction of image
             [self.imageView setUserInteractionEnabled:NO];
@@ -321,7 +321,7 @@ dispatch_queue_t moreimages() {
     NSString *address = listing.addressShort;
     
     // Clarifies Unit for ambiguous apartment text
-    if (![address containsString:@"Apt"] && ![address containsString:@"Room"] && ![address containsString:@"Terrace"] && [address containsString:@"-"]){
+    if (![listing doesString:address containString:@"Apt"] && ![listing doesString:address containString:@"Room"] && ![listing doesString:address containString:@"Terrace"] && [listing doesString:address containString:@"-"]){
         address = [address stringByReplacingOccurrencesOfString:@"-" withString:@"- Unit"];
     }
     
@@ -349,11 +349,11 @@ dispatch_queue_t moreimages() {
     NSDateFormatter *formatter = [[NSDateFormatter alloc] init];
     [formatter setDateFormat:@"MMM. d YYYY"];
     [self.availableLabel setText:[NSString stringWithFormat:@"Available %@",[formatter stringFromDate:listing.available]]];
-    
     [self.detailText setText:listing.descrip];
     
     // Necessary for content to fit directly above and below detail text
-    self.detailText.preferredMaxLayoutWidth = 280;
+    float screenWidth = self.navigationController.navigationBar.frame.size.width - 40;
+    self.detailText.preferredMaxLayoutWidth = screenWidth;
     
     
     // If listing location hasn't been properly set
@@ -417,7 +417,9 @@ dispatch_queue_t moreimages() {
     [self.blurView addSubview:blurEffectView];
     
     // Set blur to opaque white color on iOS 7
-    //[self.blurView setBackgroundColor:[UIColor whiteColor]];
+    if ([[UIDevice currentDevice].systemVersion floatValue] < 8){
+        [self.blurView setBackgroundColor:[UIColor whiteColor]];
+    }
 }
 
 
