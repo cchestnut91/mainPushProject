@@ -38,7 +38,7 @@
     } else {
         
         // Display the default "No Images" image formatted for the cell
-        [self.backgroundImageView setImage:[UIImage imageNamed:@"defaultWide.png"]];
+        [self.backgroundImageView setImage:[UIImage imageNamed:@"defaultWide"]];
     }
     
     // If no info for number of Beds show the appropriate label

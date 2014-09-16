@@ -215,7 +215,7 @@ dispatch_queue_t moreimages() {
                 if (imageData){
                     newImage = [UIImage imageWithData:imageData];
                 } else {
-                    newImage = [UIImage imageNamed:@"default.png"];
+                    newImage = [UIImage imageNamed:@"default"];
                 }
                 
                 // Add the image to the listing image array
@@ -301,7 +301,7 @@ dispatch_queue_t moreimages() {
         else {
             
             // Set default image
-            [self.imageView setImage:[UIImage imageNamed:@"default.png"]];
+            [self.imageView setImage:[UIImage imageNamed:@"default"]];
             
             // Deny user interaction of image
             [self.imageView setUserInteractionEnabled:NO];

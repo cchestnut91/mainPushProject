@@ -17,7 +17,7 @@
                         <rect key="frame" x="0.0" y="0.0" width="320" height="568"/>
                         <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                         <subviews>
-                            <imageView userInteractionEnabled="NO" contentMode="scaleAspectFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="background.jpg" translatesAutoresizingMaskIntoConstraints="NO" id="jC7-wO-Hxy">
+                            <imageView userInteractionEnabled="NO" contentMode="scaleAspectFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="background" translatesAutoresizingMaskIntoConstraints="NO" id="jC7-wO-Hxy">
                                 <rect key="frame" x="0.0" y="0.0" width="320" height="305"/>
                             </imageView>
                             <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="w0M-4W-vuA">
@@ -341,7 +341,7 @@
                                     <rect key="frame" x="0.0" y="0.0" width="320" height="136"/>
                                     <autoresizingMask key="autoresizingMask"/>
                                     <subviews>
-                                        <imageView userInteractionEnabled="NO" contentMode="scaleAspectFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="background.jpg" translatesAutoresizingMaskIntoConstraints="NO" id="snV-ky-ZV1">
+                                        <imageView userInteractionEnabled="NO" contentMode="scaleAspectFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="background" translatesAutoresizingMaskIntoConstraints="NO" id="snV-ky-ZV1">
                                             <rect key="frame" x="0.0" y="0.0" width="320" height="137"/>
                                         </imageView>
                                         <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="ZId-Wt-Wat">
@@ -418,7 +418,7 @@
                                     <rect key="frame" x="0.0" y="0.0" width="320" height="136"/>
                                     <autoresizingMask key="autoresizingMask"/>
                                     <subviews>
-                                        <imageView clipsSubviews="YES" userInteractionEnabled="NO" contentMode="scaleAspectFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="background.jpg" translatesAutoresizingMaskIntoConstraints="NO" id="p6c-CO-VZL">
+                                        <imageView clipsSubviews="YES" userInteractionEnabled="NO" contentMode="scaleAspectFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="background" translatesAutoresizingMaskIntoConstraints="NO" id="p6c-CO-VZL">
                                             <rect key="frame" x="0.0" y="0.0" width="320" height="137"/>
                                         </imageView>
                                         <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="Xfc-ZK-Tbz">
@@ -791,7 +791,7 @@
                         <rect key="frame" x="0.0" y="0.0" width="320" height="568"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <subviews>
-                            <imageView userInteractionEnabled="NO" contentMode="scaleAspectFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="background.jpg" translatesAutoresizingMaskIntoConstraints="NO" id="Ypd-5f-QPh">
+                            <imageView userInteractionEnabled="NO" contentMode="scaleAspectFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="background" translatesAutoresizingMaskIntoConstraints="NO" id="Ypd-5f-QPh">
                                 <rect key="frame" x="0.0" y="0.0" width="320" height="300"/>
                                 <constraints>
                                     <constraint firstAttribute="height" constant="300" id="kvM-XM-ZtZ"/>
@@ -1706,8 +1706,7 @@
     </scenes>
     <resources>
         <image name="CSP" width="280" height="143"/>
-        <image name="background" width="800" height="532"/>
-        <image name="background.jpg" width="912" height="608"/>
+        <image name="background" width="912" height="608"/>
         <image name="bed" width="55" height="55"/>
     </resources>
     <simulatedMetricsContainer key="defaultSimulatedMetrics">

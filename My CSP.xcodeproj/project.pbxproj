@@ -17,14 +17,8 @@
 		AB4174731975992A0086F1A6 /* SliderTableViewCell.m in Sources */ = {isa = PBXBuildFile; fileRef = AB4174721975992A0086F1A6 /* SliderTableViewCell.m */; };
 		AB44FA4819994380005BC223 /* WebViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = AB44FA4719994380005BC223 /* WebViewController.m */; };
 		AB44FA4B1999449D005BC223 /* TenantInfoTableViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = AB44FA4A1999449D005BC223 /* TenantInfoTableViewController.m */; };
-		AB44FA58199968E3005BC223 /* background.jpg in Resources */ = {isa = PBXBuildFile; fileRef = AB44FA54199968E3005BC223 /* background.jpg */; };
-		AB44FA59199968E3005BC223 /* scrollA.jpg in Resources */ = {isa = PBXBuildFile; fileRef = AB44FA55199968E3005BC223 /* scrollA.jpg */; };
-		AB44FA5A199968E3005BC223 /* scrollB.jpg in Resources */ = {isa = PBXBuildFile; fileRef = AB44FA56199968E3005BC223 /* scrollB.jpg */; };
-		AB44FA5B199968E3005BC223 /* scrollC.jpg in Resources */ = {isa = PBXBuildFile; fileRef = AB44FA57199968E3005BC223 /* scrollC.jpg */; };
 		AB44FA5E199A5412005BC223 /* RotatingPreviewController.m in Sources */ = {isa = PBXBuildFile; fileRef = AB44FA5D199A5412005BC223 /* RotatingPreviewController.m */; };
 		AB44FA61199A8515005BC223 /* ListingPreview.m in Sources */ = {isa = PBXBuildFile; fileRef = AB44FA60199A8515005BC223 /* ListingPreview.m */; };
-		AB44FA66199A9649005BC223 /* defaultWide.png in Resources */ = {isa = PBXBuildFile; fileRef = AB44FA64199A9649005BC223 /* defaultWide.png */; };
-		AB44FA67199A9649005BC223 /* default.png in Resources */ = {isa = PBXBuildFile; fileRef = AB44FA65199A9649005BC223 /* default.png */; };
 		AB68B2C4198A6FE700CE549F /* PreferencesTableViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = AB68B2C3198A6FE700CE549F /* PreferencesTableViewController.m */; };
 		AB68B2C7198A766100CE549F /* ButtonTableViewCell.m in Sources */ = {isa = PBXBuildFile; fileRef = AB68B2C6198A766100CE549F /* ButtonTableViewCell.m */; };
 		AB7B8BD2196C63FA00EFFA8A /* ListingTableViewCell.m in Sources */ = {isa = PBXBuildFile; fileRef = AB7B8BD1196C63FA00EFFA8A /* ListingTableViewCell.m */; };
@@ -82,16 +76,10 @@
 		AB44FA4719994380005BC223 /* WebViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = WebViewController.m; sourceTree = "<group>"; };
 		AB44FA491999449D005BC223 /* TenantInfoTableViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = TenantInfoTableViewController.h; sourceTree = "<group>"; };
 		AB44FA4A1999449D005BC223 /* TenantInfoTableViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = TenantInfoTableViewController.m; sourceTree = "<group>"; };
-		AB44FA54199968E3005BC223 /* background.jpg */ = {isa = PBXFileReference; lastKnownFileType = image.jpeg; path = background.jpg; sourceTree = "<group>"; };
-		AB44FA55199968E3005BC223 /* scrollA.jpg */ = {isa = PBXFileReference; lastKnownFileType = image.jpeg; path = scrollA.jpg; sourceTree = "<group>"; };
-		AB44FA56199968E3005BC223 /* scrollB.jpg */ = {isa = PBXFileReference; lastKnownFileType = image.jpeg; path = scrollB.jpg; sourceTree = "<group>"; };
-		AB44FA57199968E3005BC223 /* scrollC.jpg */ = {isa = PBXFileReference; lastKnownFileType = image.jpeg; path = scrollC.jpg; sourceTree = "<group>"; };
 		AB44FA5C199A5412005BC223 /* RotatingPreviewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = RotatingPreviewController.h; sourceTree = "<group>"; };
 		AB44FA5D199A5412005BC223 /* RotatingPreviewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = RotatingPreviewController.m; sourceTree = "<group>"; };
 		AB44FA5F199A8515005BC223 /* ListingPreview.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ListingPreview.h; sourceTree = "<group>"; };
 		AB44FA60199A8515005BC223 /* ListingPreview.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ListingPreview.m; sourceTree = "<group>"; };
-		AB44FA64199A9649005BC223 /* defaultWide.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = defaultWide.png; sourceTree = "<group>"; };
-		AB44FA65199A9649005BC223 /* default.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = default.png; sourceTree = "<group>"; };
 		AB68B2C2198A6FE700CE549F /* PreferencesTableViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PreferencesTableViewController.h; sourceTree = "<group>"; };
 		AB68B2C3198A6FE700CE549F /* PreferencesTableViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = PreferencesTableViewController.m; sourceTree = "<group>"; };
 		AB68B2C5198A766100CE549F /* ButtonTableViewCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ButtonTableViewCell.h; sourceTree = "<group>"; };
@@ -183,12 +171,6 @@
 			isa = PBXGroup;
 			children = (
 				ABE172281947884100B4953B /* Images.xcassets */,
-				AB44FA54199968E3005BC223 /* background.jpg */,
-				AB44FA55199968E3005BC223 /* scrollA.jpg */,
-				AB44FA56199968E3005BC223 /* scrollB.jpg */,
-				AB44FA57199968E3005BC223 /* scrollC.jpg */,
-				AB44FA64199A9649005BC223 /* defaultWide.png */,
-				AB44FA65199A9649005BC223 /* default.png */,
 			);
 			name = Images;
 			sourceTree = "<group>";
@@ -543,14 +525,8 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				AB44FA66199A9649005BC223 /* defaultWide.png in Resources */,
-				AB44FA59199968E3005BC223 /* scrollA.jpg in Resources */,
-				AB44FA58199968E3005BC223 /* background.jpg in Resources */,
 				ABE172291947884100B4953B /* Images.xcassets in Resources */,
-				AB44FA5B199968E3005BC223 /* scrollC.jpg in Resources */,
-				AB44FA5A199968E3005BC223 /* scrollB.jpg in Resources */,
 				AB3109DA1986998700F10A95 /* Main.storyboard in Resources */,
-				AB44FA67199A9649005BC223 /* default.png in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

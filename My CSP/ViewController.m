@@ -216,7 +216,7 @@
     [super viewWillAppear:animated];
     
     // Create background array
-    self.backgroundArray = [[NSMutableArray alloc] initWithObjects:@"background.jpg", @"scrollB.jpg", @"scrollA.jpg", @"scrollC.jpg", nil];
+    self.backgroundArray = [[NSMutableArray alloc] initWithObjects:@"background", @"scrollB", @"scrollA", @"scrollC", nil];
     
     // Set the backgound view to the initial image
     [self.backgroundImageView setImage:[UIImage imageNamed:self.backgroundArray[0]]];
@@ -456,7 +456,7 @@
             [cell.iconImageView setImage:[UIImage imageNamed:@"User"]];
             break;
         case 4:
-            cell.label.text = @"Tenent Info";
+            cell.label.text = @"Tenant Info";
             [cell.iconImageView setImage:[UIImage imageNamed:@"Bulb"]];
             break;
             
