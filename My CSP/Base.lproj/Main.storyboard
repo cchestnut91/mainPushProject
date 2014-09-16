@@ -20,11 +20,11 @@
                             <imageView userInteractionEnabled="NO" contentMode="scaleAspectFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="background.jpg" translatesAutoresizingMaskIntoConstraints="NO" id="jC7-wO-Hxy">
                                 <rect key="frame" x="0.0" y="0.0" width="320" height="305"/>
                             </imageView>
-                            <view contentMode="scaleToFill" misplaced="YES" translatesAutoresizingMaskIntoConstraints="NO" id="w0M-4W-vuA">
-                                <rect key="frame" x="0.0" y="0.0" width="320" height="304"/>
+                            <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="w0M-4W-vuA">
+                                <rect key="frame" x="0.0" y="0.0" width="320" height="305"/>
                                 <subviews>
-                                    <imageView userInteractionEnabled="NO" contentMode="scaleAspectFit" horizontalHuggingPriority="251" verticalHuggingPriority="251" misplaced="YES" image="CSP" translatesAutoresizingMaskIntoConstraints="NO" id="Lv7-8c-3Qy">
-                                        <rect key="frame" x="20" y="20" width="280" height="224"/>
+                                    <imageView userInteractionEnabled="NO" contentMode="scaleAspectFit" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="CSP" translatesAutoresizingMaskIntoConstraints="NO" id="Lv7-8c-3Qy">
+                                        <rect key="frame" x="20" y="20" width="280" height="225"/>
                                     </imageView>
                                 </subviews>
                                 <color key="backgroundColor" red="0.20000000000000001" green="0.23529411764705882" blue="0.30196078431372547" alpha="0.35000000000000003" colorSpace="custom" customColorSpace="sRGB"/>
@@ -529,8 +529,8 @@
                                     <action selector="updateSubView:" destination="y3S-Cj-6E9" eventType="valueChanged" id="7sA-3s-i8Z"/>
                                 </connections>
                             </segmentedControl>
-                            <view hidden="YES" contentMode="scaleToFill" misplaced="YES" translatesAutoresizingMaskIntoConstraints="NO" id="mdU-j0-cv6">
-                                <rect key="frame" x="110" y="56" width="100" height="100"/>
+                            <view hidden="YES" contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="mdU-j0-cv6">
+                                <rect key="frame" x="110" y="100" width="100" height="100"/>
                                 <subviews>
                                     <activityIndicatorView opaque="NO" contentMode="scaleToFill" horizontalHuggingPriority="750" verticalHuggingPriority="750" hidesWhenStopped="YES" animating="YES" style="whiteLarge" translatesAutoresizingMaskIntoConstraints="NO" id="g7Q-eM-h60">
                                         <rect key="frame" x="32" y="32" width="37" height="37"/>

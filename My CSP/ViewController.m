@@ -773,8 +773,6 @@
     NSLog(@"New Location Lat: %.5f\nLong: %.5f", self.location.coordinate.latitude, self.location.coordinate.longitude);
     NSLog(@"Accuracy: %.5f", self.location.horizontalAccuracy);
     
-    [Instabug setUserData:[NSString stringWithFormat:@"Lat:%.5f, Long:%.5f, accur:%f", self.location.coordinate.latitude, self.location.coordinate.longitude, self.location.horizontalAccuracy]];
-    
     // update current location in filter object as well
     self.filter.location = self.location;
 }

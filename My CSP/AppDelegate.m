@@ -50,7 +50,6 @@
         [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(attemptOpenURL:) name:@"finishLoadingListings" object:nil];
     }
     
-    [Instabug startWithToken:@"a5ff3ac4448286e3f46ce37d55688f7e" captureSource:IBGCaptureSourceUIKit invocationEvent:IBGInvocationEventShake];
     [Crashlytics startWithAPIKey:@"6e63974ab6878886d46e46575c43005ded0cfa08"];
     
     // Allows app delegate to progress normally

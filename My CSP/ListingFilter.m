@@ -329,6 +329,12 @@
         }
     }
     
+    if (ret.count == 0 && self.checkLocation.boolValue && self.range < 1000){
+        self.range += 100;
+        ret = [NSMutableArray arrayWithArray:[self filterListings:listings overrideDate:override]];
+    }
+    self.range = 600;
+    
     return ret;
 }
 
