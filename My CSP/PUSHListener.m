@@ -194,8 +194,11 @@ NSTimeInterval const kPUSHDefaultTimeInterval = 0;
     // Notify for each Beacon found
     
     if (beacons.count > 0){
+        CLBeacon *beacon = [beacons lastObject];
+        if (beacon.proximity == CLProximityImmediate){
+            [self sendNotificationWithRegion:region];
+        }
         
-        [self sendNotificationWithRegion:region];
     }
 }
 
