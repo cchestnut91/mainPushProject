@@ -500,7 +500,7 @@
 						DevelopmentTeam = A3DHF9BX2R;
 						SystemCapabilities = {
 							com.apple.BackgroundModes = {
-								enabled = 1;
+								enabled = 0;
 							};
 							com.apple.HomeKit = {
 								enabled = 0;

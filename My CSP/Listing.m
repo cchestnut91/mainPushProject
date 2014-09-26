@@ -326,10 +326,13 @@ dispatch_queue_t imageQueue() {
         NSData *imageData = [[NSData alloc] initWithContentsOfURL:[[NSURL alloc] initWithString:srcIn]];
         
         // If data is not empty create an image and store it to ImageArray
-        if (imageData)
+        if (imageData != nil){
             firstImage = [UIImage imageWithData:imageData];
-            [self.imageArray addObject:firstImage];
-            [self.property setFirstImage:firstImage];
+            if (firstImage != nil){
+                [self.imageArray addObject:firstImage];
+                [self.property setFirstImage:firstImage];
+            }
+        }
     });
 }
 

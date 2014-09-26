@@ -23,7 +23,7 @@
 // Called when application launches with options
 - (BOOL)application:(UIApplication *)application didFinishLaunchingWithOptions:(NSDictionary *)launchOptions {
     
-    
+    [application registerUserNotificationSettings:[UIUserNotificationSettings settingsForTypes:UIUserNotificationTypeAlert | UIUserNotificationTypeBadge | UIUserNotificationTypeSound categories:nil]];
     UILocalNotification *localNotification = [launchOptions objectForKey:UIApplicationLaunchOptionsLocalNotificationKey];
     
     // Checks to see if app opened with a URL
@@ -152,6 +152,8 @@
 }
 
 -(void)application:(UIApplication *)application displayNearbyNotification:(NSNotification *)notification{
+    
+    NSLog(@"Prepping Notification");
     
     NSDictionary *userInfo = [notification userInfo];
     

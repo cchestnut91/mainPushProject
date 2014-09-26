@@ -149,7 +149,7 @@ NSTimeInterval const kPUSHDefaultTimeInterval = 0;
             }
             
             
-            NSURL *listingURL = [NSURL URLWithString:[NSString stringWithFormat:@"cspmtmg://?listings=%@", urlQueryString]];
+            NSURL *listingURL = [NSURL URLWithString:[NSString stringWithFormat:@"cspmgmt://?listings=%@", urlQueryString]];
             
             NSMutableArray *campaignIDS = [[NSMutableArray alloc] init];
             
@@ -194,11 +194,7 @@ NSTimeInterval const kPUSHDefaultTimeInterval = 0;
     // Notify for each Beacon found
     
     if (beacons.count > 0){
-        CLBeacon *beacon = [beacons lastObject];
-        if (beacon.proximity == CLProximityImmediate){
-            [self sendNotificationWithRegion:region];
-        }
-        
+        [self sendNotificationWithRegion:region];
     }
 }
 
@@ -207,7 +203,7 @@ NSTimeInterval const kPUSHDefaultTimeInterval = 0;
     if ([region isKindOfClass:[CLBeaconRegion class]] && state == CLRegionStateInside) {
         [self.locationManager startRangingBeaconsInRegion:(CLBeaconRegion *)region];
     }
-    else if ([region isKindOfClass:[CLBeaconRegion class]] && state == CLRegionStateOutside) {
+    else if ([region isKindOfClass:[CLBeaconRegion class]] && state == CLRegionStateUnknown) {
         [self.locationManager stopRangingBeaconsInRegion:(CLBeaconRegion *)region];
     }
 }
